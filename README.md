@@ -55,3 +55,7 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 
 ## 週報家長簽名
 週報範本最下方（存 PNG 按鈕前）有 `<div class="card" id="sigcard">` 家長手指簽名框（canvas `#wsig`、清除鈕、簽名日期）。簽名存 localStorage `roby-weekly-sig-<該週週一 YYYY-MM-DD>`（含簽名圖與簽名日期），存 PNG 時一併畫入（清除鈕隱藏）。**週日排程更新 weekly_template.html 時請保留整個 sigcard 區塊**；build.py 會檢查，缺少時中止。
+
+## 聯絡簿已簽／未帶（二擇一）
+每日必做中「聯絡簿已簽」與「聯絡簿未帶」放在同一列 `<div class="pair">`，兩個勾選框都帶 `data-excl="cb"`（excl.js 互斥：點一個另一個自動取消，可都不選）；「未帶」的 label 有 `class="alt"`，內文 `<span class="tagred">聯絡簿未帶</span>`，勾選時為磚紅實心小標籤，PNG 亦畫紅標籤。不計入「全部完成」判斷。狀態存同一個 `roby-check-YYYY-MM-DD`。**每日排程請保留這段 pair 結構。**
+週報／月報排程可從每日 PNG 統計：聯絡簿已簽天數、**聯絡簿未帶天數**（月報 JSON 可加 `daily.contactMissing`）。

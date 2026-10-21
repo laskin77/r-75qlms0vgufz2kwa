@@ -51,7 +51,7 @@ ov.querySelector('.tp').onclick=function(){var T=getT();if(!T)return;
 ov.querySelector('.tx').onclick=function(){if(confirm('結束這次計時？')){var T=getT();if(T)finish(T.i);setT(null)}};
 setInterval(tick,1000);document.addEventListener('visibilitychange',tick);tick();
 })();
-(function(){var cbs=[...document.querySelectorAll('input[type=checkbox]')],shown=false;
+(function(){var cbs=[...document.querySelectorAll('input[type=checkbox]')].filter(c=>!c.closest('label.alt')),shown=false;
 function chk(){var all=cbs.every(c=>c.checked);if(all&&!shown){shown=true;var d=document.createElement('div');d.id='done';
 d.innerHTML='<img src="monkey-head.png" alt=""><div>全部完成了！</div><small>小猴子替你開心 · 點一下關閉</small>';d.onclick=()=>d.remove();document.body.appendChild(d);}if(!all)shown=false;}
 cbs.forEach(c=>c.addEventListener('change',chk));})();

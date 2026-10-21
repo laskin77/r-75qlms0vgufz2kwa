@@ -124,6 +124,9 @@ body{position:relative}
 .score{display:inline-block;margin-left:10px;padding:1px 9px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;letter-spacing:.05em;vertical-align:1px;text-decoration:none!important}
 .sc-hi{background:#6b7f4e}.sc-mid{background:#b5835a}.sc-low{background:#c0392b}.sc-none{background:#b9aa9a}
 input:checked+span .score{color:#fff!important;opacity:.75}
+.pair{display:flex;gap:10px;align-items:center;border-bottom:1px solid #e2d8c6}.pair label{border:0!important}.pair label:first-child{flex:1}
+.tagred{display:inline-block;padding:1px 10px;border-radius:10px;border:1.5px solid #c0392b;color:#c0392b;font-size:15px;letter-spacing:.05em}
+label.alt input:checked+span{text-decoration:none!important}label.alt input:checked+span .tagred{background:#c0392b;color:#fff!important;font-weight:600}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a><a href="monthly.html" class="">月報</a></div><img class="hero" src="monkey-hero.webp" alt="">
 <h1>📚 Roby 今日檢查　10/21（週三）</h1>
 <div class="card tip">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
@@ -133,7 +136,7 @@ input:checked+span .score{color:#fff!important;opacity:.75}
 <label><input type="checkbox"><span>08:00 理化</span></label>
 <label><input type="checkbox"><span>理化自學檔案</span></label></div>
 <div class="card"><h2>每日必做</h2>
-<label><input type="checkbox"><span>聯絡簿已簽</span></label>
+<div class="pair"><label><input type="checkbox" data-excl="cb"><span>聯絡簿已簽</span></label><label class="alt"><input type="checkbox" data-excl="cb"><span><span class="tagred">聯絡簿未帶</span></span></label></div>
 <label><input type="checkbox"><span id="eng">英文大師<span class="score" data-score="" data-label="小測驗"></span></span></label></div>
 <div class="card" data-timer><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>
 <label><input type="checkbox"><span>寰宇數學回家功課 — <span class="due">10/22（四）前</span></span></label>
@@ -155,14 +158,14 @@ c.onpointermove=e=>{if(d){x.lineTo(...p(e));x.stroke()}};
 c.onpointerup=c.onpointerleave=()=>d=false;});
 function clr(i){const c=cs[i];c.getContext('2d').clearRect(0,0,c.width,c.height)}
 function save(){const INK='#5b4636',GRN='#6b7f4e',ACC='#b5835a';
-const items=[...document.querySelectorAll('label')].map(l=>[l.querySelector('input').checked,l.querySelector('span').innerText,(l.dataset.log||'').replace(/[（）]/g,''),(l.querySelector('.due')||{}).innerText||'',l.querySelector('.score')]);
+const items=[...document.querySelectorAll('label')].map(l=>[l.querySelector('input').checked,l.querySelector('span').innerText,(l.dataset.log||'').replace(/[（）]/g,''),(l.querySelector('.due')||{}).innerText||'',l.querySelector('.score'),l.classList.contains('alt')]);
 const W=820,hero=document.querySelector('.hero'),HH=hero?300:0,H=HH+170+items.reduce((s,i)=>s+(i[2]?84:56),0)+330+230,o=document.createElement('canvas');o.width=W*2;o.height=H*2;const x=o.getContext('2d');x.scale(2,2);
 x.fillStyle='#f3eee2';x.fillRect(0,0,W,H);const pt=document.getElementById('paperimg');if(pt&&pt.complete){x.fillStyle=x.createPattern(pt,'repeat');x.fillRect(0,0,W,H)}
 if(hero){const w=420,h=w*hero.naturalHeight/hero.naturalWidth;x.drawImage(hero,(W-w)/2,10,w,h);x.globalCompositeOperation='source-over'}
 const SF='"Noto Serif TC","Songti TC",serif';x.textAlign='center';x.fillStyle=INK;x.font='600 34px '+SF;x.letterSpacing='6px';x.fillText(document.querySelector('h1').innerText.replace(/^\W+/,''),W/2,HH+60);x.letterSpacing='0px';
 x.strokeStyle=ACC;x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-60,HH+82);x.quadraticCurveTo(W/2,HH+76,W/2+60,HH+84);x.stroke();x.textAlign='left';
-let y=HH+140;items.forEach(([c,t,lg,du,sc])=>{if(sc)t=t.slice(0,t.length-sc.innerText.length).trim();x.strokeStyle=INK;x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(50,y-24,28,28,6):x.rect(50,y-24,28,28);x.stroke();if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
-x.fillStyle=c?'#9a8a7a':INK;x.font='25px '+SF;if(du&&t.endsWith(du)){const a=t.slice(0,-du.length);x.fillText(a,95,y);const ax=95+x.measureText(a).width;x.fillStyle=c?'#b9aa9a':'#c0392b';x.font='600 25px '+SF;x.fillText(du,ax,y)}else x.fillText(t,95,y);if(sc){const st=sc.innerText.trim(),sx=95+x.measureText(t).width+14;x.font='600 20px '+SF;const tw=x.measureText(st).width+20;x.fillStyle=getComputedStyle(sc).backgroundColor;x.beginPath();x.roundRect?x.roundRect(sx,y-23,tw,30,10):x.rect(sx,y-23,tw,30);x.fill();x.fillStyle='#fff';x.fillText(st,sx+10,y-1)}y+=36;if(lg){x.fillStyle=GRN;x.font='20px '+SF;x.fillText(lg,95,y-4);y+=28}y+=20});
+let y=HH+140;items.forEach(([c,t,lg,du,sc,alt])=>{if(sc)t=t.slice(0,t.length-sc.innerText.length).trim();x.strokeStyle=INK;x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(50,y-24,28,28,6):x.rect(50,y-24,28,28);x.stroke();if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
+x.fillStyle=c?'#9a8a7a':INK;x.font='25px '+SF;if(alt&&c){x.font='600 25px '+SF;const tw=x.measureText(t).width+24;x.fillStyle='#c0392b';x.beginPath();x.roundRect?x.roundRect(89,y-26,tw,34,10):x.rect(89,y-26,tw,34);x.fill();x.fillStyle='#fff';}if(du&&t.endsWith(du)){const a=t.slice(0,-du.length);x.fillText(a,95,y);const ax=95+x.measureText(a).width;x.fillStyle=c?'#b9aa9a':'#c0392b';x.font='600 25px '+SF;x.fillText(du,ax,y)}else x.fillText(t,95,y);if(sc){const st=sc.innerText.trim(),sx=95+x.measureText(t).width+14;x.font='600 20px '+SF;const tw=x.measureText(st).width+20;x.fillStyle=getComputedStyle(sc).backgroundColor;x.beginPath();x.roundRect?x.roundRect(sx,y-23,tw,30,10):x.rect(sx,y-23,tw,30);x.fill();x.fillStyle='#fff';x.fillText(st,sx+10,y-1)}y+=36;if(lg){x.fillStyle=GRN;x.font='20px '+SF;x.fillText(lg,95,y-4);y+=28}y+=20});
 const n=document.querySelector('textarea').value;x.fillStyle=INK;x.font='23px '+SF;if(n){x.fillText('備註：'+n,50,y);y+=46}
 x.fillText('家長簽名',50,y+30);x.strokeStyle='rgba(91,70,54,.14)';x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(171,y+1,600,180,14):0;x.stroke();x.strokeStyle='rgba(91,70,54,.6)';x.beginPath();x.roundRect?x.roundRect(170,y,600,180,14):x.rect(170,y,600,180);x.stroke();x.drawImage(cs[0],175,y+5,590,170);const cf=document.querySelector('.foot');if(cf){x.drawImage(cf,(W-280)/2,y+200,280,280*cf.naturalHeight/cf.naturalWidth);x.globalCompositeOperation='source-over'}
 o.toBlob(async b=>{const url=URL.createObjectURL(b);const f=new File([b],'Roby檢查_1021.png',{type:'image/png'});
@@ -171,7 +174,9 @@ showImg(url)},'image/png');}
 function showImg(url){const d=document.createElement('div');d.style.cssText='position:fixed;inset:0;background:#000c;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
 d.innerHTML='<p style="color:#fff;font-size:18px;text-align:center">長按下方圖片，選「加入照片」或「儲存影像」</p><img src="'+url+'" style="max-width:100%;max-height:75vh;background:#fff;border-radius:8px"><button style="margin-top:14px;font-size:17px;padding:10px 24px">關閉</button>';
 d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);}
-</script><img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div><script>document.querySelectorAll('.score').forEach(function(s){var v=(s.dataset.score||'').trim(),n=parseFloat(v),lb=s.dataset.label||'小測驗';
+</script><img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div><script>/* 二擇一：同 data-excl 群組的勾選框互斥，可都不選 */
+document.querySelectorAll('input[data-excl]').forEach(function(e){e.addEventListener('change',function(){if(e.checked)document.querySelectorAll('input[data-excl="'+e.dataset.excl+'"]').forEach(function(o){if(o!==e)o.checked=false})})});
+</script><script>document.querySelectorAll('.score').forEach(function(s){var v=(s.dataset.score||'').trim(),n=parseFloat(v),lb=s.dataset.label||'小測驗';
 s.textContent=lb+' '+(v===''?'—':v+' 分');s.classList.add(v===''||isNaN(n)?'sc-none':n>=90?'sc-hi':n>=70?'sc-mid':'sc-low');});
 </script><script>(function(){
 var K='roby-check-'+'2026-10-21',TK='roby-timer',FOCUS=25*60e3,REST=5*60e3;
@@ -226,7 +231,7 @@ ov.querySelector('.tp').onclick=function(){var T=getT();if(!T)return;
 ov.querySelector('.tx').onclick=function(){if(confirm('結束這次計時？')){var T=getT();if(T)finish(T.i);setT(null)}};
 setInterval(tick,1000);document.addEventListener('visibilitychange',tick);tick();
 })();
-(function(){var cbs=[...document.querySelectorAll('input[type=checkbox]')],shown=false;
+(function(){var cbs=[...document.querySelectorAll('input[type=checkbox]')].filter(c=>!c.closest('label.alt')),shown=false;
 function chk(){var all=cbs.every(c=>c.checked);if(all&&!shown){shown=true;var d=document.createElement('div');d.id='done';
 d.innerHTML='<img src="monkey-head.png" alt=""><div>全部完成了！</div><small>小猴子替你開心 · 點一下關閉</small>';d.onclick=()=>d.remove();document.body.appendChild(d);}if(!all)shown=false;}
 cbs.forEach(c=>c.addEventListener('change',chk));})();
