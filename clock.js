@@ -6,10 +6,19 @@ var J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return 
 var esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 var c=document.createElement('button');c.id='clk';c.title='App 內小鬧鐘（需開著 App）';c.innerHTML='<span class="cf"><i class="hh"></i><i class="mm"></i></span><span class="ct">--:--</span><small class="cs"></small><span class="cb">⏰</span>';
 var bar=document.createElement('div');bar.id='clkbar';
-var sa=document.createElement('a');sa.id='sysal';sa.href='clock-alarm://';sa.title='開啟 iPad 鬧鐘';sa.setAttribute('aria-label','開啟 iPad 鬧鐘');sa.innerHTML='<img src="alarm.webp" alt="開啟 iPad 鬧鐘">';
-sa.onclick=function(e){e.preventDefault();var t0=Date.now();try{location.href='clock-alarm://'}catch(_){}
- setTimeout(function(){if(!document.hidden&&Date.now()-t0<2500){try{location.href='clock-timer://'}catch(_){}}},900)};
-bar.appendChild(sa);bar.appendChild(c);document.body.appendChild(bar);
+var SC='shortcuts://run-shortcut?name=Roby%E9%AC%A7%E9%90%98';
+var sw=document.createElement('div');sw.id='sysw';
+var sa=document.createElement('a');sa.id='sysal';sa.href=SC;sa.title='設定 iPad 鬧鐘（捷徑「Roby鬧鐘」）';sa.setAttribute('aria-label','設定 iPad 鬧鐘');sa.innerHTML='<img src="alarm.webp" alt="設定 iPad 鬧鐘">';
+var hl=document.createElement('a');hl.id='schelp';hl.href='#';hl.textContent='第一次使用？';
+hl.onclick=function(e){e.preventDefault();var d=document.createElement('div');d.id='alp';
+ d.innerHTML='<div class="alb"><h2>⏰ 第一次使用：建立「Roby鬧鐘」捷徑</h2><ol class="scol">'+
+ '<li>打開 iPad「捷徑」App，按＋新增捷徑，命名「Roby鬧鐘」。</li>'+
+ '<li>加入動作「要求輸入」，類型選「日期和時間」或「時間」，提示「要設幾點？」。</li>'+
+ '<li>加入動作「加入鬧鐘」（「時鐘」類），時間選上一步的「提供的輸入」，標籤「開始寫功課」。</li>'+
+ '<li>完成。</li></ol><p class="alh">之後點小鬧鐘就會問時間並設好系統鬧鐘（鎖屏也會響）。</p><button class="alclose">我知道了</button></div>';
+ d.onclick=function(ev){if(ev.target==d||ev.target.classList.contains('alclose'))d.remove()};document.body.appendChild(d);};
+sw.appendChild(sa);sw.appendChild(hl);
+bar.appendChild(sw);bar.appendChild(c);document.body.appendChild(bar);
 var ac;function unlock(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();var b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0)}catch(e){}}
 function ring(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(function(d){var o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=d==.25?1046:784;o.connect(g);g.connect(ac.destination);var t=ac.currentTime+d;g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.22);o.start(t);o.stop(t+.22)})}catch(e){}if(navigator.vibrate)navigator.vibrate(300)}
 // 設定面板
