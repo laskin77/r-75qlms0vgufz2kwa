@@ -46,6 +46,7 @@ def build(src,dst,on,store,hero='monkey-hero.webp',foot=True):
     if store: h=h.replace('</body>',STORE+'</body>')
     open(dst,'w',encoding='utf-8').write(h)
 build('../checklist_template.html','index.html',0,True)
+assert 'id="wsig"' in open('../weekly_template.html',encoding='utf-8').read(), '週報範本缺少家長簽名框 (id=wsig)，請保留 sigcard 區塊'
 build('../weekly_template.html','weekly.html',1,False)
 build('../monthly_template.html','monthly.html',2,False,hero='cat-foot.webp',foot=False)
 sw=open('sw.js',encoding='utf-8').read() if os.path.exists('sw.js') else ''

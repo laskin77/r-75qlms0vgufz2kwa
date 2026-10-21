@@ -159,13 +159,31 @@ r.innerHTML='<select>'+opts()+'</select><span class="pts"><button>1</button><but
 var c=r.querySelector('.pts');c.querySelectorAll('button').forEach(b=>b.onclick=function(){var on=b.classList.contains('on');
 c.querySelectorAll('button').forEach(x=>x.classList.remove('on'));if(!on)b.classList.add('on');sum();});
 r.querySelector('.del').onclick=function(){r.remove();sum();};a.closest('.subj').querySelector('.rows').appendChild(r);});
-</script><div class="card" id="savebox" style="text-align:center"><button id="save" style="font-size:17px;padding:10px 24px;border-radius:10px;border:none;background:#4a7bd8;color:#fff">完成並存成圖片</button></div>
+</script><div class="card" id="sigcard"><h2>家長簽名</h2>
+<div class="row" style="justify-content:space-between"><span style="color:#8a7560;font-size:13px">↓ 請用手指在框內簽名</span><button id="wsigclr">清除</button></div>
+<canvas id="wsig" style="display:block;width:100%;height:150px;touch-action:none"></canvas>
+<p id="wsigdate" style="margin:6px 0 0;font-size:15px">簽名日期：—</p></div>
+<script>
+(function(){var c=document.getElementById('wsig'),t=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Taipei'})),d=t.getDay()||7,m=new Date(t);m.setDate(t.getDate()-d+1);
+var p2=n=>String(n).padStart(2,'0'),K='roby-weekly-sig-'+m.getFullYear()+'-'+p2(m.getMonth()+1)+'-'+p2(m.getDate()),dl=document.getElementById('wsigdate');
+var r=window.devicePixelRatio||1,w=c.clientWidth||600,h=c.clientHeight||150;c.width=w*r;c.height=h*r;var x=c.getContext('2d');x.scale(r,r);
+function st(){x.lineWidth=2.5;x.lineCap='round';x.lineJoin='round';x.strokeStyle='#5b4636'}st();
+var S={};try{S=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+if(S.img){var im=new Image();im.onload=function(){x.drawImage(im,0,0,w,h)};im.src=S.img}if(S.date)dl.textContent='簽名日期：'+S.date;
+function now(){var n=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Taipei'}));return (n.getMonth()+1)+'/'+n.getDate()+'（'+'日一二三四五六'[n.getDay()]+'）'}
+var dn=false,P=e=>{var b=c.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+c.onpointerdown=function(e){dn=true;c.setPointerCapture&&c.setPointerCapture(e.pointerId);x.beginPath();x.moveTo(...P(e));e.preventDefault()};
+c.onpointermove=function(e){if(dn){x.lineTo(...P(e));x.stroke()}};
+c.onpointerup=c.onpointercancel=function(){if(!dn)return;dn=false;S={img:c.toDataURL('image/png'),date:now()};dl.textContent='簽名日期：'+S.date;localStorage.setItem(K,JSON.stringify(S))};
+document.getElementById('wsigclr').onclick=function(){x.clearRect(0,0,c.width,c.height);localStorage.removeItem(K);S={};dl.textContent='簽名日期：—'};})();
+</script>
+<div class="card" id="savebox" style="text-align:center"><button id="save" style="font-size:17px;padding:10px 24px;border-radius:10px;border:none;background:#4a7bd8;color:#fff">完成並存成圖片</button></div>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 document.getElementById('save').onclick=function(){var sb=document.getElementById('savebox');sb.style.display='none';
-document.querySelectorAll('.add,.del').forEach(e=>e.style.visibility='hidden');
+document.querySelectorAll('.add,.del,#wsigclr').forEach(e=>e.style.visibility='hidden');
 html2canvas(document.body,{scale:2,backgroundColor:'#f3eee2'}).then(function(c){sb.style.display='';
-document.querySelectorAll('.add,.del').forEach(e=>e.style.visibility='');var url=c.toDataURL('image/png');
+document.querySelectorAll('.add,.del,#wsigclr').forEach(e=>e.style.visibility='');var url=c.toDataURL('image/png');
 c.toBlob(async function(b){var f=new File([b],'Roby週報.png',{type:'image/png'});
 try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return;}}catch(e){}
 var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:9';

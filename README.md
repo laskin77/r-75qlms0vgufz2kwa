@@ -52,3 +52,6 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 ## 英文大師成績
 範本「英文大師」項目內有 `<span class="score" data-score="" data-label="小測驗"></span>`。排程把分數填進 `data-score`（例 `data-score="92"`）；空字串顯示「小測驗 —」（尚無成績）。
 標籤顏色自動：≥90 草綠、70–89 暖棕、<70 磚紅、無成績灰。PNG 也會畫同色圓角標籤。（score.js 由 build.py 注入）
+
+## 週報家長簽名
+週報範本最下方（存 PNG 按鈕前）有 `<div class="card" id="sigcard">` 家長手指簽名框（canvas `#wsig`、清除鈕、簽名日期）。簽名存 localStorage `roby-weekly-sig-<該週週一 YYYY-MM-DD>`（含簽名圖與簽名日期），存 PNG 時一併畫入（清除鈕隱藏）。**週日排程更新 weekly_template.html 時請保留整個 sigcard 區塊**；build.py 會檢查，缺少時中止。
