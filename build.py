@@ -40,6 +40,7 @@ def build(src,dst,on,store):
     h=h.replace('</head>',HEAD.replace('#2e7d32','#6b7f4e')+'<link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet"><style>'+open('theme.css',encoding='utf-8').read()+'</style></head>',1)
     h=re.sub(r'(<body[^>]*>)',lambda m:m.group(1)+nav(on),h,count=1)
     h=h.replace('</body>','<img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div></body>')
+    h=re.sub(r'(— )(\d{1,2}/\d{1,2}（.）前)(</span>)',r'\1<span class="due">\2</span>\3',h)  # 自動補 due span
     if store: h=h.replace('</body>',STORE+'</body>')
     open(dst,'w',encoding='utf-8').write(h)
 build('../checklist_template.html','index.html',0,True)

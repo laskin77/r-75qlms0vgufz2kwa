@@ -93,6 +93,7 @@ canvas{height:150px!important}#save{padding:11px!important;font-size:17px!import
 .nav a,button,#save,.tbtn,.add,.tbtns button{border-radius:14px!important;box-shadow:1px 1px 0 rgba(91,70,54,.12)}
 textarea,canvas{border-radius:14px!important}
 input[type=checkbox]{border-radius:6px}
+.due{color:#c0392b;font-weight:600}input:checked+span .due{color:#b9aa9a!important;font-weight:400}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a></div><img class="hero" src="monkey-hero.webp" alt="小猴子讀書">
 <h1>📚 Roby 今日檢查　10/21（週三）</h1>
 <div class="card tip">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
@@ -105,10 +106,10 @@ input[type=checkbox]{border-radius:6px}
 <label><input type="checkbox"><span>聯絡簿已簽</span></label>
 <label><input type="checkbox"><span id="eng">英文大師</span></label></div>
 <div class="card" data-timer><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>
-<label><input type="checkbox"><span>寰宇數學回家功課 — 10/22（四）前</span></label>
-<label><input type="checkbox"><span>廖柏坤理化每週功課 — 10/24（六）前</span></label>
-<label><input type="checkbox"><span>國文家教功課 — 10/24（六）前</span></label>
-<label><input type="checkbox"><span>ADA 英文家教功課 — 10/30（五）前</span></label></div>
+<label><input type="checkbox"><span>寰宇數學回家功課 — <span class="due">10/22（四）前</span></span></label>
+<label><input type="checkbox"><span>廖柏坤理化每週功課 — <span class="due">10/24（六）前</span></span></label>
+<label><input type="checkbox"><span>國文家教功課 — <span class="due">10/24（六）前</span></span></label>
+<label><input type="checkbox"><span>ADA 英文家教功課 — <span class="due">10/30（五）前</span></span></label></div>
 <div class="card"><h2>備註</h2><textarea rows="3" placeholder="今天的狀況…"></textarea></div>
 <div class="card"><h2>Roby 確認</h2><label><input type="checkbox"><span>我已經自己檢查完今天的項目</span></label></div>
 <div class="card"><h2>家長簽名</h2>
@@ -124,14 +125,14 @@ c.onpointermove=e=>{if(d){x.lineTo(...p(e));x.stroke()}};
 c.onpointerup=c.onpointerleave=()=>d=false;});
 function clr(i){const c=cs[i];c.getContext('2d').clearRect(0,0,c.width,c.height)}
 function save(){const INK='#5b4636',GRN='#6b7f4e',ACC='#b5835a';
-const items=[...document.querySelectorAll('label')].map(l=>[l.querySelector('input').checked,l.querySelector('span').innerText,(l.dataset.log||'').replace(/[（）]/g,'')]);
+const items=[...document.querySelectorAll('label')].map(l=>[l.querySelector('input').checked,l.querySelector('span').innerText,(l.dataset.log||''),(l.querySelector('.due')||{}).innerText||''.replace(/[（）]/g,'')]);
 const W=820,hero=document.querySelector('.hero'),HH=hero?300:0,H=HH+170+items.reduce((s,i)=>s+(i[2]?84:56),0)+330+230,o=document.createElement('canvas');o.width=W*2;o.height=H*2;const x=o.getContext('2d');x.scale(2,2);
 x.fillStyle='#f3eee2';x.fillRect(0,0,W,H);const pt=document.getElementById('paperimg');if(pt&&pt.complete){x.fillStyle=x.createPattern(pt,'repeat');x.fillRect(0,0,W,H)}
 if(hero){const w=420,h=w*hero.naturalHeight/hero.naturalWidth;x.drawImage(hero,(W-w)/2,10,w,h);x.globalCompositeOperation='source-over'}
 const SF='"Noto Serif TC","Songti TC",serif';x.textAlign='center';x.fillStyle=INK;x.font='600 34px '+SF;x.letterSpacing='6px';x.fillText(document.querySelector('h1').innerText.replace(/^\W+/,''),W/2,HH+60);x.letterSpacing='0px';
 x.strokeStyle=ACC;x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-60,HH+82);x.quadraticCurveTo(W/2,HH+76,W/2+60,HH+84);x.stroke();x.textAlign='left';
-let y=HH+140;items.forEach(([c,t,lg])=>{x.strokeStyle=INK;x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(50,y-24,28,28,6):x.rect(50,y-24,28,28);x.stroke();if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
-x.fillStyle=c?'#9a8a7a':INK;x.font='25px '+SF;x.fillText(t,95,y);y+=36;if(lg){x.fillStyle=GRN;x.font='20px '+SF;x.fillText(lg,95,y-4);y+=28}y+=20});
+let y=HH+140;items.forEach(([c,t,lg,du])=>{x.strokeStyle=INK;x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(50,y-24,28,28,6):x.rect(50,y-24,28,28);x.stroke();if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
+x.fillStyle=c?'#9a8a7a':INK;x.font='25px '+SF;if(du&&t.endsWith(du)){const a=t.slice(0,-du.length);x.fillText(a,95,y);const ax=95+x.measureText(a).width;x.fillStyle=c?'#b9aa9a':'#c0392b';x.font='600 25px '+SF;x.fillText(du,ax,y)}else x.fillText(t,95,y);y+=36;if(lg){x.fillStyle=GRN;x.font='20px '+SF;x.fillText(lg,95,y-4);y+=28}y+=20});
 const n=document.querySelector('textarea').value;x.fillStyle=INK;x.font='23px '+SF;if(n){x.fillText('備註：'+n,50,y);y+=46}
 x.fillText('家長簽名',50,y+30);x.strokeStyle='rgba(91,70,54,.14)';x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(171,y+1,600,180,14):0;x.stroke();x.strokeStyle='rgba(91,70,54,.6)';x.beginPath();x.roundRect?x.roundRect(170,y,600,180,14):x.rect(170,y,600,180);x.stroke();x.drawImage(cs[0],175,y+5,590,170);const cf=document.querySelector('.foot');if(cf){x.drawImage(cf,(W-280)/2,y+200,280,280*cf.naturalHeight/cf.naturalWidth);x.globalCompositeOperation='source-over'}
 o.toBlob(async b=>{const url=URL.createObjectURL(b);const f=new File([b],'Roby檢查_1021.png',{type:'image/png'});

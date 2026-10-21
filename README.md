@@ -29,3 +29,8 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 - `theme.css`：紙感手繪主題（4 色：墨棕 #5b4636、草綠 #6b7f4e、暖棕 #b5835a、米紙 #f3eee2）＋緊湊尺寸，由 build.py 內嵌到兩頁。
 - 圖：`monkey-hero.webp`（頁首）、`cat-foot.webp`（頁尾）、`paper.jpg`（紙紋）、`monkey-head.png`（全部勾完的鼓勵＋App 圖示）。存 PNG 也會畫入紙紋、猴子與貓。
 - 原圖在 /workspace/roby/monkey.jpg、cat.jpg。
+
+## 截止日紅字
+「本週待完成」每項的截止日請包成 `<span class="due">10/22（四）前</span>`，例：
+`<label><input type="checkbox"><span>寰宇數學回家功課 — <span class="due">10/22（四）前</span></span></label>`
+（build.py 也會自動把「— M/D（X）前」補成 due span。）網頁顯示磚紅 #c0392b 粗體，勾選後變灰；PNG 也畫紅字。

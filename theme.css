@@ -51,3 +51,4 @@ canvas{height:150px!important}#save{padding:11px!important;font-size:17px!import
 .nav a,button,#save,.tbtn,.add,.tbtns button{border-radius:14px!important;box-shadow:1px 1px 0 rgba(91,70,54,.12)}
 textarea,canvas{border-radius:14px!important}
 input[type=checkbox]{border-radius:6px}
+.due{color:#c0392b;font-weight:600}input:checked+span .due{color:#b9aa9a!important;font-weight:400}
