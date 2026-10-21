@@ -87,6 +87,12 @@ canvas{height:150px!important}#save{padding:11px!important;font-size:17px!import
 .tclock{font-size:64px}.tname,.tphase{font-size:17px}.tbtns button{min-width:120px;min-height:48px;font-size:18px!important}
 #tov{padding:10px 12px calc(10px + env(safe-area-inset-bottom))}body.timing{padding-bottom:200px!important}
 .footnote{font-size:14px;margin-bottom:24px}
+/* 整齊柔圓角（取代不對稱手繪框）*/
+.card{border:1.5px solid rgba(91,70,54,.55)!important;border-radius:16px!important;box-shadow:inset 0 0 0 1px rgba(255,253,247,.6),1px 1px 0 rgba(91,70,54,.12),inset 0 1px 6px rgba(91,70,54,.06)!important}
+.card.warn{border-color:rgba(181,131,90,.85)!important}
+.nav a,button,#save,.tbtn,.add,.tbtns button{border-radius:14px!important;box-shadow:1px 1px 0 rgba(91,70,54,.12)}
+textarea,canvas{border-radius:14px!important}
+input[type=checkbox]{border-radius:6px}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a></div><img class="hero" src="monkey-hero.webp" alt="小猴子讀書">
 <h1>📚 Roby 今日檢查　10/21（週三）</h1>
 <div class="card tip">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
@@ -124,10 +130,10 @@ x.fillStyle='#f3eee2';x.fillRect(0,0,W,H);const pt=document.getElementById('pape
 if(hero){const w=420,h=w*hero.naturalHeight/hero.naturalWidth;x.drawImage(hero,(W-w)/2,10,w,h);x.globalCompositeOperation='source-over'}
 const SF='"Noto Serif TC","Songti TC",serif';x.textAlign='center';x.fillStyle=INK;x.font='600 34px '+SF;x.letterSpacing='6px';x.fillText(document.querySelector('h1').innerText.replace(/^\W+/,''),W/2,HH+60);x.letterSpacing='0px';
 x.strokeStyle=ACC;x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-60,HH+82);x.quadraticCurveTo(W/2,HH+76,W/2+60,HH+84);x.stroke();x.textAlign='left';
-let y=HH+140;items.forEach(([c,t,lg])=>{x.strokeStyle=INK;x.lineWidth=1.6;x.strokeRect(50,y-24,28,28);if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
+let y=HH+140;items.forEach(([c,t,lg])=>{x.strokeStyle=INK;x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(50,y-24,28,28,6):x.rect(50,y-24,28,28);x.stroke();if(c){x.strokeStyle=GRN;x.lineWidth=3.5;x.beginPath();x.moveTo(54,y-10);x.lineTo(63,y);x.lineTo(80,y-28);x.stroke()}
 x.fillStyle=c?'#9a8a7a':INK;x.font='25px '+SF;x.fillText(t,95,y);y+=36;if(lg){x.fillStyle=GRN;x.font='20px '+SF;x.fillText('⏱ '+lg,95,y-4);y+=28}y+=20});
 const n=document.querySelector('textarea').value;x.fillStyle=INK;x.font='23px '+SF;if(n){x.fillText('備註：'+n,50,y);y+=46}
-x.fillText('家長簽名',50,y+30);x.strokeStyle='#8a7560';x.lineWidth=1.2;x.beginPath();x.roundRect?x.roundRect(170,y,600,180,[20,6,22,8]):x.rect(170,y,600,180);x.stroke();x.drawImage(cs[0],175,y+5,590,170);const cf=document.querySelector('.foot');if(cf){x.drawImage(cf,(W-280)/2,y+200,280,280*cf.naturalHeight/cf.naturalWidth);x.globalCompositeOperation='source-over'}
+x.fillText('家長簽名',50,y+30);x.strokeStyle='rgba(91,70,54,.14)';x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(171,y+1,600,180,14):0;x.stroke();x.strokeStyle='rgba(91,70,54,.6)';x.beginPath();x.roundRect?x.roundRect(170,y,600,180,14):x.rect(170,y,600,180);x.stroke();x.drawImage(cs[0],175,y+5,590,170);const cf=document.querySelector('.foot');if(cf){x.drawImage(cf,(W-280)/2,y+200,280,280*cf.naturalHeight/cf.naturalWidth);x.globalCompositeOperation='source-over'}
 o.toBlob(async b=>{const url=URL.createObjectURL(b);const f=new File([b],'Roby檢查_1021.png',{type:'image/png'});
 if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Roby檢查 10/21'});return}catch(e){}}
 showImg(url)},'image/png');}
