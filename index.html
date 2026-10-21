@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-TW"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roby 今日檢查 10/21</title>
+<style>
+body{font-family:-apple-system,"PingFang TC",sans-serif;margin:0;padding:16px;background:#f6f7fb;color:#222}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px #0001}
+h1{font-size:22px;margin:4px 0 12px}h2{font-size:17px;margin:0 0 10px;color:#555}
+label{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #eee;font-size:17px}
+label:last-child{border:0}input[type=checkbox]{width:26px;height:26px;accent-color:#2e7d32}
+input:checked+span{text-decoration:line-through;color:#888}
+textarea{width:100%;box-sizing:border-box;font-size:16px;border:1px solid #ddd;border-radius:8px;padding:8px}
+canvas{display:block;width:100%;min-width:250px;height:150px;border:2px dashed #bbb;border-radius:10px;background:#fff;touch-action:none}
+.row{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px}
+button{font-size:15px;padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:#fff}
+#save{width:100%;padding:12px;font-size:17px;background:#2e7d32;color:#fff;border:0;margin-top:6px}
+</style><meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Roby 今日檢查">
+<meta name="theme-color" content="#2e7d32"><link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png">
+<style>
+body{max-width:820px!important;margin:0 auto!important;padding:20px!important;font-size:20px}
+.nav{display:flex;gap:8px;margin:0 0 16px;position:sticky;top:0;z-index:5;background:#f6f7fb;padding:8px 0}
+.nav a{flex:1;text-align:center;padding:14px;font-size:20px;border-radius:12px;text-decoration:none;color:#2e7d32;background:#fff;border:2px solid #2e7d32;font-weight:600}
+.nav a.on{background:#2e7d32;color:#fff}
+h1{font-size:30px!important}h2{font-size:22px!important}
+label{font-size:22px!important;padding:16px 0!important;gap:18px!important}
+input[type=checkbox]{width:40px!important;height:40px!important;flex:none}
+textarea{font-size:20px!important}button{font-size:19px!important}
+canvas{height:220px!important}#save{padding:18px!important;font-size:22px!important}
+td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
+.pts button{width:60px!important;height:48px!important}.row select{font-size:18px!important;padding:8px!important}
+</style>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</head><body><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a></div>
+<h1>📚 Roby 今日檢查　10/21（週三）</h1>
+<div class="card" style="background:#e8f5e9;font-size:15px">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
+<div class="card" style="background:#fff4e5;border:2px solid #f0a020"><b>⚠️ 明天截止：寰宇數學回家功課（10/23 週五上課）</b></div>
+<div class="card"><h2>讀書計畫進度</h2>
+<label><input type="checkbox"><span>06:00–07:00 ADA</span></label>
+<label><input type="checkbox"><span>08:00 理化</span></label>
+<label><input type="checkbox"><span>理化自學檔案</span></label></div>
+<div class="card"><h2>每日必做</h2>
+<label><input type="checkbox"><span>聯絡簿已簽</span></label>
+<label><input type="checkbox"><span id="eng">英文大師</span></label></div>
+<div class="card"><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>
+<label><input type="checkbox"><span>寰宇數學回家功課 — 10/22（四）前</span></label>
+<label><input type="checkbox"><span>廖柏坤理化每週功課 — 10/24（六）前</span></label>
+<label><input type="checkbox"><span>國文家教功課 — 10/24（六）前</span></label>
+<label><input type="checkbox"><span>ADA 英文家教功課 — 10/30（五）前</span></label></div>
+<div class="card"><h2>備註</h2><textarea rows="3" placeholder="今天的狀況…"></textarea></div>
+<div class="card"><h2>Roby 確認</h2><label><input type="checkbox"><span>我已經自己檢查完今天的項目</span></label></div>
+<div class="card"><h2>家長簽名</h2>
+<div class="row"><b>家長簽名</b><button onclick="clr(0)">清除</button></div><div style="color:#999;font-size:13px">↓ 請用手指在框內簽名</div><canvas width="600" height="150"></canvas>
+<button id="save" onclick="save()">完成並存成圖片</button></div>
+<script>
+const cs=[...document.querySelectorAll('canvas')];
+cs.forEach(c=>{const r=devicePixelRatio||1;const w=c.clientWidth||600,h=c.clientHeight||150;c.width=w*r;c.height=h*r;
+const x=c.getContext('2d');x.scale(r,r);x.lineWidth=2.5;x.lineCap='round';x.strokeStyle='#123';let d=false;
+const p=e=>{const b=c.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+c.onpointerdown=e=>{d=true;x.beginPath();x.moveTo(...p(e))};
+c.onpointermove=e=>{if(d){x.lineTo(...p(e));x.stroke()}};
+c.onpointerup=c.onpointerleave=()=>d=false;});
+function clr(i){const c=cs[i];c.getContext('2d').clearRect(0,0,c.width,c.height)}
+function save(){const items=[...document.querySelectorAll('label')].map(l=>(l.querySelector('input').checked?'☑ ':'☐ ')+l.innerText);
+const W=800,H=300+items.length*44+200,o=document.createElement('canvas');o.width=W;o.height=H;const x=o.getContext('2d');
+x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#222';x.font='bold 34px sans-serif';x.fillText('Roby 今日檢查 10/21（週三）',30,60);
+x.font='26px sans-serif';let y=120;items.forEach(t=>{x.fillText(t,30,y);y+=44});
+const n=document.querySelector('textarea').value;if(n){x.fillText('備註：'+n,30,y);y+=50}
+['家長'].forEach((k,i)=>{x.fillText(k+'簽名：',30,y+30);x.drawImage(cs[i],180,y,560,160);y+=200});
+const url=o.toDataURL('image/png');
+o.toBlob(async b=>{const f=new File([b],'Roby檢查_1021.png',{type:'image/png'});
+if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Roby檢查 10/21'});return}catch(e){}}
+showImg(url)},'image/png');}
+function showImg(url){const d=document.createElement('div');d.style.cssText='position:fixed;inset:0;background:#000c;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
+d.innerHTML='<p style="color:#fff;font-size:18px;text-align:center">長按下方圖片，選「加入照片」或「儲存影像」</p><img src="'+url+'" style="max-width:100%;max-height:75vh;background:#fff;border-radius:8px"><button style="margin-top:14px;font-size:17px;padding:10px 24px">關閉</button>';
+d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);}
+</script><script>
+(function(){var K='roby-check-'+'2026-10-21';var els=[...document.querySelectorAll('input[type=checkbox],textarea')];
+var s={};try{s=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+els.forEach(function(e,i){if(i in s){if(e.type=='checkbox')e.checked=s[i];else e.value=s[i];}
+e.addEventListener(e.type=='checkbox'?'change':'input',function(){var o={};els.forEach(function(x,j){o[j]=x.type=='checkbox'?x.checked:x.value});localStorage.setItem(K,JSON.stringify(o));});});})();
+</script></body></html>
