@@ -21,16 +21,19 @@ textarea{font-size:20px!important}button{font-size:19px!important}
 canvas{height:220px!important}#save{padding:18px!important;font-size:22px!important}
 td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
 .pts button{width:60px!important;height:48px!important}.row select{font-size:18px!important;padding:8px!important}
+/* 戒除拖延 */
+.trow{display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee}.trow label{flex:1;border:0!important}
+.tbtn{flex:none;min-width:110px;min-height:56px;font-size:20px!important;border-radius:12px!important;border:2px solid #2e7d32!important;color:#2e7d32;background:#fff;font-weight:600}
+.tlog{font-size:18px;color:#2e7d32;padding:0 0 12px 58px}
+#tov{position:fixed;left:0;right:0;bottom:0;z-index:8;color:#fff;text-align:center;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px #0003}
+#tov.focus{background:#c62828}#tov.rest{background:#1565c0}body.timing{padding-bottom:300px!important}
+.tname{font-size:22px}.tphase{font-size:22px;opacity:.9}.tclock{font-size:96px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.tbtns{display:flex;gap:16px;justify-content:center;margin-top:8px}.tbtns button{min-width:160px;min-height:64px;font-size:24px!important;border-radius:14px;border:0;background:#fff;color:#222;font-weight:600}
 </style>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
 '''
 def nav(on): return '<div class="nav"><a href="./" class="%s">今日檢查</a><a href="weekly.html" class="%s">週報</a></div>'%('on' if on==0 else '','on' if on==1 else '')
-STORE='''<script>
-(function(){var K='roby-check-'+'%s';var els=[...document.querySelectorAll('input[type=checkbox],textarea')];
-var s={};try{s=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
-els.forEach(function(e,i){if(i in s){if(e.type=='checkbox')e.checked=s[i];else e.value=s[i];}
-e.addEventListener(e.type=='checkbox'?'change':'input',function(){var o={};els.forEach(function(x,j){o[j]=x.type=='checkbox'?x.checked:x.value});localStorage.setItem(K,JSON.stringify(o));});});})();
-</script>'''%date
+STORE='<script>'+open('focus.js',encoding='utf-8').read().replace('__DATE__',date)+'</script>'
 def build(src,dst,on,store):
     h=open(src,encoding='utf-8').read()
     h=h.replace('lang="zh-Hant"','lang="zh-TW"').replace('maximum-scale=1,user-scalable=no','viewport-fit=cover')

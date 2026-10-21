@@ -30,20 +30,28 @@ textarea{font-size:20px!important}button{font-size:19px!important}
 canvas{height:220px!important}#save{padding:18px!important;font-size:22px!important}
 td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
 .pts button{width:60px!important;height:48px!important}.row select{font-size:18px!important;padding:8px!important}
+/* 戒除拖延 */
+.trow{display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee}.trow label{flex:1;border:0!important}
+.tbtn{flex:none;min-width:110px;min-height:56px;font-size:20px!important;border-radius:12px!important;border:2px solid #2e7d32!important;color:#2e7d32;background:#fff;font-weight:600}
+.tlog{font-size:18px;color:#2e7d32;padding:0 0 12px 58px}
+#tov{position:fixed;left:0;right:0;bottom:0;z-index:8;color:#fff;text-align:center;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px #0003}
+#tov.focus{background:#c62828}#tov.rest{background:#1565c0}body.timing{padding-bottom:300px!important}
+.tname{font-size:22px}.tphase{font-size:22px;opacity:.9}.tclock{font-size:96px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.tbtns{display:flex;gap:16px;justify-content:center;margin-top:8px}.tbtns button{min-width:160px;min-height:64px;font-size:24px!important;border-radius:14px;border:0;background:#fff;color:#222;font-weight:600}
 </style>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
 </head><body><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a></div>
 <h1>📚 Roby 今日檢查　10/21（週三）</h1>
 <div class="card" style="background:#e8f5e9;font-size:15px">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
 <div class="card" style="background:#fff4e5;border:2px solid #f0a020"><b>⚠️ 明天截止：寰宇數學回家功課（10/23 週五上課）</b></div>
-<div class="card"><h2>讀書計畫進度</h2>
+<div class="card" data-timer><h2>讀書計畫進度</h2>
 <label><input type="checkbox"><span>06:00–07:00 ADA</span></label>
 <label><input type="checkbox"><span>08:00 理化</span></label>
 <label><input type="checkbox"><span>理化自學檔案</span></label></div>
 <div class="card"><h2>每日必做</h2>
 <label><input type="checkbox"><span>聯絡簿已簽</span></label>
 <label><input type="checkbox"><span id="eng">英文大師</span></label></div>
-<div class="card"><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>
+<div class="card" data-timer><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>
 <label><input type="checkbox"><span>寰宇數學回家功課 — 10/22（四）前</span></label>
 <label><input type="checkbox"><span>廖柏坤理化每週功課 — 10/24（六）前</span></label>
 <label><input type="checkbox"><span>國文家教功課 — 10/24（六）前</span></label>
@@ -62,7 +70,7 @@ c.onpointerdown=e=>{d=true;x.beginPath();x.moveTo(...p(e))};
 c.onpointermove=e=>{if(d){x.lineTo(...p(e));x.stroke()}};
 c.onpointerup=c.onpointerleave=()=>d=false;});
 function clr(i){const c=cs[i];c.getContext('2d').clearRect(0,0,c.width,c.height)}
-function save(){const items=[...document.querySelectorAll('label')].map(l=>(l.querySelector('input').checked?'☑ ':'☐ ')+l.innerText);
+function save(){const items=[...document.querySelectorAll('label')].map(l=>(l.querySelector('input').checked?'☑ ':'☐ ')+l.innerText+(l.dataset.log||''));
 const W=800,H=300+items.length*44+200,o=document.createElement('canvas');o.width=W;o.height=H;const x=o.getContext('2d');
 x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#222';x.font='bold 34px sans-serif';x.fillText('Roby 今日檢查 10/21（週三）',30,60);
 x.font='26px sans-serif';let y=120;items.forEach(t=>{x.fillText(t,30,y);y+=44});
@@ -75,9 +83,51 @@ showImg(url)},'image/png');}
 function showImg(url){const d=document.createElement('div');d.style.cssText='position:fixed;inset:0;background:#000c;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
 d.innerHTML='<p style="color:#fff;font-size:18px;text-align:center">長按下方圖片，選「加入照片」或「儲存影像」</p><img src="'+url+'" style="max-width:100%;max-height:75vh;background:#fff;border-radius:8px"><button style="margin-top:14px;font-size:17px;padding:10px 24px">關閉</button>';
 d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);}
-</script><script>
-(function(){var K='roby-check-'+'2026-10-21';var els=[...document.querySelectorAll('input[type=checkbox],textarea')];
-var s={};try{s=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
-els.forEach(function(e,i){if(i in s){if(e.type=='checkbox')e.checked=s[i];else e.value=s[i];}
-e.addEventListener(e.type=='checkbox'?'change':'input',function(){var o={};els.forEach(function(x,j){o[j]=x.type=='checkbox'?x.checked:x.value});localStorage.setItem(K,JSON.stringify(o));});});})();
+</script><script>(function(){
+var K='roby-check-'+'2026-10-21',TK='roby-timer',FOCUS=25*60e3,REST=5*60e3;
+var els=[...document.querySelectorAll('input[type=checkbox],textarea')];
+var S={};try{S=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+if(!S.t)S.t={};
+function save(){els.forEach(function(x,j){S[j]=x.type=='checkbox'?x.checked:x.value});localStorage.setItem(K,JSON.stringify(S));}
+var hm=function(ms){return new Date(ms).toLocaleTimeString('zh-TW',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})};
+var logs={};
+function render(i){var t=S.t[i],d=logs[i];if(!d)return;var s='';
+ if(t&&t.s){s=hm(t.s)+' 開始';if(t.e)s+='　'+hm(t.e)+' 完成，共 '+Math.max(1,Math.round((t.e-t.s)/60e3))+' 分';}
+ d.textContent=s;d.style.display=s?'':'none';var l=els[i].closest('label');l.dataset.log=s?'（'+s+'）':'';}
+els.forEach(function(e,i){if(i in S){if(e.type=='checkbox')e.checked=S[i];else e.value=S[i];}});
+document.querySelectorAll('[data-timer] label').forEach(function(l){var cb=l.querySelector('input'),i=els.indexOf(cb);
+ var w=document.createElement('div');w.className='trow';l.parentNode.insertBefore(w,l);w.appendChild(l);
+ var b=document.createElement('button');b.className='tbtn';b.textContent='▶ 開始';b.onclick=function(){start(i)};w.appendChild(b);
+ var d=document.createElement('div');d.className='tlog';w.after(d);logs[i]=d;render(i);});
+els.forEach(function(e,i){e.addEventListener(e.type=='checkbox'?'change':'input',function(){
+ if(e.type=='checkbox'&&logs[i]){var t=S.t[i];if(e.checked){if(t&&t.s&&!t.e)t.e=Date.now();var T=getT();if(T&&T.i==i)stop();}else if(t)delete t.e;render(i);}
+ save();});});
+// timer
+var ov=document.createElement('div');ov.id='tov';ov.innerHTML='<div class="tname"></div><div class="tphase"></div><div class="tclock">25:00</div><div class="tbtns"><button class="tp">⏸ 暫停</button><button class="tx">■ 結束</button></div>';
+document.body.appendChild(ov);var ac;
+function getT(){try{return JSON.parse(localStorage.getItem(TK)||'null')}catch(e){return null}}
+function setT(t){t?localStorage.setItem(TK,JSON.stringify(t)):localStorage.removeItem(TK);tick();}
+function name(i){var s=els[i].closest('label').querySelector('span');return s?s.textContent:''}
+function start(i){var T=getT();if(T&&T.i!=i&&!confirm('已經有一個計時在進行（'+name(T.i)+'），要結束它改計時這一項嗎？'))return;
+ if(T&&T.i==i)return;
+ try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
+ if(!S.t[i]||S.t[i].e||!S.t[i].s)S.t[i]={s:Date.now()};render(i);save();
+ setT({k:K,i:i,ph:'f',end:Date.now()+FOCUS});}
+function stop(){setT(null)}
+function beep(n){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();for(var k=0;k<n;k++){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);var t0=ac.currentTime+k*0.5;g.gain.setValueAtTime(0.4,t0);g.gain.exponentialRampToValueAtTime(0.001,t0+0.4);o.start(t0);o.stop(t0+0.4);}}catch(e){}if(navigator.vibrate)navigator.vibrate([300,150,300]);}
+function fmt(ms){ms=Math.max(0,ms);var s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function tick(){var T=getT();if(T&&T.k!==K){T=null;localStorage.removeItem(TK)}
+ if(!T){ov.style.display='none';document.body.classList.remove('timing');return}
+ ov.style.display='';document.body.classList.add('timing');ov.className=T.ph=='f'?'focus':'rest';
+ var left=T.paused!=null?T.paused:T.end-Date.now();
+ if(left<=0&&T.paused==null){if(T.ph=='f'){beep(3);alert('25 分鐘到了！休息 5 分鐘 ☕');T={k:K,i:T.i,ph:'r',end:Date.now()+REST};localStorage.setItem(TK,JSON.stringify(T));left=REST;}
+  else{beep(2);alert('休息結束！可以按「開始」再專注一輪 💪');stop();return;}}
+ ov.querySelector('.tname').textContent=name(T.i);
+ ov.querySelector('.tphase').textContent=T.ph=='f'?'🍅 專注中':'☕ 休息 5 分鐘';
+ ov.querySelector('.tclock').textContent=fmt(left);
+ ov.querySelector('.tp').textContent=T.paused!=null?'▶ 繼續':'⏸ 暫停';}
+ov.querySelector('.tp').onclick=function(){var T=getT();if(!T)return;if(T.paused!=null){T.end=Date.now()+T.paused;delete T.paused}else T.paused=T.end-Date.now();setT(T)};
+ov.querySelector('.tx').onclick=function(){if(confirm('結束這次計時？'))stop()};
+setInterval(tick,500);document.addEventListener('visibilitychange',tick);tick();
+})();
 </script></body></html>
