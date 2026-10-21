@@ -48,3 +48,7 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 - 鬧鐘功能已依 Doc 要求移除（笑臉鬧鐘捷徑按鈕、「第一次使用？」說明、App 內鬧鐘與響鈴彈窗）。
   備份在 `/workspace/roby/backup_alarm/`（`clock.js` 鬧鐘完整版、`alarm.webp`、`shortcut_steps.md`；原圖 `/workspace/roby/alarm.jpg`）。
   要恢復：把備份的 clock.js 與 alarm.webp 複製回 app/ 再 build（theme.css 的鬧鐘樣式仍保留）。
+
+## 英文大師成績
+範本「英文大師」項目內有 `<span class="score" data-score="" data-label="小測驗"></span>`。排程把分數填進 `data-score`（例 `data-score="92"`）；空字串顯示「小測驗 —」（尚無成績）。
+標籤顏色自動：≥90 草綠、70–89 暖棕、<70 磚紅、無成績灰。PNG 也會畫同色圓角標籤。（score.js 由 build.py 注入）
