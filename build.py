@@ -32,19 +32,22 @@ td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
 </style>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
 '''
-def nav(on): return '<img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="%s">今日檢查</a><a href="weekly.html" class="%s">週報</a></div>'%('on' if on==0 else '','on' if on==1 else '')+'<img class="hero" src="monkey-hero.webp" alt="小猴子讀書">'
+def nav(on,hero='monkey-hero.webp'):
+    tabs=[('./','今日檢查'),('weekly.html','週報'),('monthly.html','月報')]
+    return '<img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav">'+''.join('<a href="%s" class="%s">%s</a>'%(u,'on' if i==on else '',t) for i,(u,t) in enumerate(tabs))+'</div><img class="hero" src="%s" alt="">'%hero
 STORE='<script>'+open('focus.js',encoding='utf-8').read().replace('__DATE__',date)+'</script>'
-def build(src,dst,on,store):
+def build(src,dst,on,store,hero='monkey-hero.webp',foot=True):
     h=open(src,encoding='utf-8').read()
     h=h.replace('lang="zh-Hant"','lang="zh-TW"').replace('maximum-scale=1,user-scalable=no','viewport-fit=cover')
     h=h.replace('</head>',HEAD.replace('#2e7d32','#6b7f4e')+'<link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet"><style>'+open('theme.css',encoding='utf-8').read()+'</style></head>',1)
-    h=re.sub(r'(<body[^>]*>)',lambda m:m.group(1)+nav(on),h,count=1)
-    h=h.replace('</body>','<img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div></body>')
+    h=re.sub(r'(<body[^>]*>)',lambda m:m.group(1)+nav(on,hero),h,count=1)
+    if foot: h=h.replace('</body>','<img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div></body>')
     h=re.sub(r'(— )(\d{1,2}/\d{1,2}（.）前)(</span>)',r'\1<span class="due">\2</span>\3',h)  # 自動補 due span
     if store: h=h.replace('</body>',STORE+'</body>')
     open(dst,'w',encoding='utf-8').write(h)
 build('../checklist_template.html','index.html',0,True)
 build('../weekly_template.html','weekly.html',1,False)
+build('../monthly_template.html','monthly.html',2,False,hero='cat-foot.webp',foot=False)
 sw=open('sw.js',encoding='utf-8').read() if os.path.exists('sw.js') else ''
 open('sw.js','w').write(re.sub(r"const V='[^']*'","const V='v%s'"%ver,sw) if sw else '')
 print('built',date)

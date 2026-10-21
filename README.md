@@ -34,3 +34,11 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 「本週待完成」每項的截止日請包成 `<span class="due">10/22（四）前</span>`，例：
 `<label><input type="checkbox"><span>寰宇數學回家功課 — <span class="due">10/22（四）前</span></span></label>`
 （build.py 也會自動把「— M/D（X）前」補成 due span。）網頁顯示磚紅 #c0392b 粗體，勾選後變灰；PNG 也畫紅字。
+
+## 月報 monthly.html（每月 1 日更新上個月）
+- 範本：`/workspace/roby/monthly_template.html`。只需改檔案中 `<script id="data" type="application/json">` 的 JSON：
+  `sample`（true 會顯示紅色「範例資料」標示，真實資料請設 false）、`year`/`month`、`plan{done,total}`、
+  `weeks[{label,done,total}]`、`daily{days,contact,english}`、`homework[{name,ontime,late}]`、
+  `focusMinutes{科目:分鐘}`（來自每日 PNG 的「共 N 分」累加）、`notes[{subject,count,points}]`、`pointsTotal`（累計點數）、`highlights[]`、`advice[]`。
+- 月份標題、日期範圍、百分比、長條圖、時數由頁面自動計算。
+- 產生：`python3 build.py` 會同時產生 index.html、weekly.html、monthly.html（頁首切換列「今日檢查｜週報｜月報」，月報頁首用貓插圖），再 commit/push。
