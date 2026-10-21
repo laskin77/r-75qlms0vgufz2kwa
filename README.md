@@ -43,7 +43,8 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 - 月份標題、日期範圍、百分比、長條圖、時數由頁面自動計算。
 - 產生：`python3 build.py` 會同時產生 index.html、weekly.html、monthly.html（頁首切換列「今日檢查｜週報｜月報」，月報頁首用貓插圖），再 commit/push。
 
-## 小時鐘與鬧鐘（clock.js，由 build.py 注入 index.html）
-- 頁首右上：笑臉鬧鐘圖示按鈕 `alarm.webp`（88px、輕微搖晃，主要）→ 執行 iPad 捷徑 `shortcuts://run-shortcut?name=Roby%E9%AC%A7%E9%90%98`（捷徑名稱「Roby鬧鐘」，會問時間並設系統鬧鐘，鎖屏也會響）。按鈕下方「第一次使用？」打開建立捷徑的步驟說明（同 /workspace/roby/shortcut_steps.md）。（clock-alarm:// 實測 iPad 不支援，已移除。）
-- 下方小時鐘（台北時間 HH:MM＋秒＋手繪小指針）：點開是 App 內鬧鐘（次要），可多個（時間＋標籤）、開關、刪除，存在 localStorage `roby-alarms`（不跟日期，每天沿用）；響鈴為 Web Audio 重複到按「關閉」，可「稍後 5 分鐘」。需開著 App 才會響；開啟設定時順便解鎖 iOS 音效。
-- 鬧鐘不會畫進 PNG。
+## 小時鐘（clock.js，由 build.py 注入 index.html）
+- 頁首右上小時鐘：台北時間 HH:MM＋秒＋手繪小指針，純顯示（點了無動作）。不畫進 PNG。
+- 鬧鐘功能已依 Doc 要求移除（笑臉鬧鐘捷徑按鈕、「第一次使用？」說明、App 內鬧鐘與響鈴彈窗）。
+  備份在 `/workspace/roby/backup_alarm/`（`clock.js` 鬧鐘完整版、`alarm.webp`、`shortcut_steps.md`；原圖 `/workspace/roby/alarm.jpg`）。
+  要恢復：把備份的 clock.js 與 alarm.webp 複製回 app/ 再 build（theme.css 的鬧鐘樣式仍保留）。

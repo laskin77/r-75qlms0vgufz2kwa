@@ -78,3 +78,4 @@ body{position:relative}
 @media (prefers-reduced-motion:reduce){#sysal img{animation:none}}
 #sysw{display:flex;flex-direction:column;align-items:center}#schelp{font-size:11px;color:#8a7560;text-decoration:underline;text-underline-offset:2px;margin-top:-4px;padding:2px 4px}
 .scol{padding-left:22px;margin:6px 0}.scol li{margin:6px 0;font-size:15px;line-height:1.6}
+#clkbar{top:62px!important}#clk{cursor:default}
