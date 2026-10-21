@@ -1,2 +1,2 @@
-{"name":"Roby 今日檢查","short_name":"Roby 檢查","lang":"zh-TW","start_url":"./","scope":"./","display":"standalone","background_color":"#f6f7fb","theme_color":"#2e7d32",
+{"name":"Roby 今日檢查","short_name":"Roby 檢查","lang":"zh-TW","start_url":"./","scope":"./","display":"standalone","background_color":"#f3eee2","theme_color":"#6b7f4e",
 "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}

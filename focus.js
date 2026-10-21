@@ -45,3 +45,7 @@ ov.querySelector('.tp').onclick=function(){var T=getT();if(!T)return;if(T.paused
 ov.querySelector('.tx').onclick=function(){if(confirm('結束這次計時？'))stop()};
 setInterval(tick,500);document.addEventListener('visibilitychange',tick);tick();
 })();
+(function(){var cbs=[...document.querySelectorAll('input[type=checkbox]')],shown=false;
+function chk(){var all=cbs.every(c=>c.checked);if(all&&!shown){shown=true;var d=document.createElement('div');d.id='done';
+d.innerHTML='<img src="monkey-head.png" alt=""><div>全部完成了！</div><small>小猴子替你開心 · 點一下關閉</small>';d.onclick=()=>d.remove();document.body.appendChild(d);}if(!all)shown=false;}
+cbs.forEach(c=>c.addEventListener('change',chk));})();

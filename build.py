@@ -32,13 +32,14 @@ td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
 </style>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
 '''
-def nav(on): return '<div class="nav"><a href="./" class="%s">今日檢查</a><a href="weekly.html" class="%s">週報</a></div>'%('on' if on==0 else '','on' if on==1 else '')
+def nav(on): return '<img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="%s">今日檢查</a><a href="weekly.html" class="%s">週報</a></div>'%('on' if on==0 else '','on' if on==1 else '')+'<img class="hero" src="monkey-hero.webp" alt="小猴子讀書">'
 STORE='<script>'+open('focus.js',encoding='utf-8').read().replace('__DATE__',date)+'</script>'
 def build(src,dst,on,store):
     h=open(src,encoding='utf-8').read()
     h=h.replace('lang="zh-Hant"','lang="zh-TW"').replace('maximum-scale=1,user-scalable=no','viewport-fit=cover')
-    h=h.replace('</head>',HEAD+'</head>',1)
+    h=h.replace('</head>',HEAD.replace('#2e7d32','#6b7f4e')+'<link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet"><style>'+open('theme.css',encoding='utf-8').read()+'</style></head>',1)
     h=re.sub(r'(<body[^>]*>)',lambda m:m.group(1)+nav(on),h,count=1)
+    h=h.replace('</body>','<img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div></body>')
     if store: h=h.replace('</body>',STORE+'</body>')
     open(dst,'w',encoding='utf-8').write(h)
 build('../checklist_template.html','index.html',0,True)
