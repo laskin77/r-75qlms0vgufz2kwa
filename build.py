@@ -35,7 +35,7 @@ td,th{font-size:18px!important;padding:10px 6px!important}p,li{font-size:19px}
 def nav(on,hero='monkey-hero.webp'):
     tabs=[('./','今日檢查'),('weekly.html','週報'),('monthly.html','月報')]
     return '<img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav">'+''.join('<a href="%s" class="%s">%s</a>'%(u,'on' if i==on else '',t) for i,(u,t) in enumerate(tabs))+'</div><img class="hero" src="%s" alt="">'%hero
-STORE='<script>'+open('focus.js',encoding='utf-8').read().replace('__DATE__',date)+'</script>'
+STORE='<script>'+open('focus.js',encoding='utf-8').read().replace('__DATE__',date)+'</script><script>'+open('clock.js',encoding='utf-8').read()+'</script>'
 def build(src,dst,on,store,hero='monkey-hero.webp',foot=True):
     h=open(src,encoding='utf-8').read()
     h=h.replace('lang="zh-Hant"','lang="zh-TW"').replace('maximum-scale=1,user-scalable=no','viewport-fit=cover')

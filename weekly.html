@@ -90,6 +90,24 @@ canvas{height:150px!important}#save{padding:11px!important;font-size:17px!import
 textarea,canvas{border-radius:14px!important}
 input[type=checkbox]{border-radius:6px}
 .due{color:#c0392b;font-weight:600}input:checked+span .due{color:#b9aa9a!important;font-weight:400}
+/* 小時鐘與鬧鐘 */
+body{position:relative}
+#clk{position:absolute;top:62px;right:16px;z-index:4;display:flex;align-items:center;gap:6px;padding:5px 10px!important;background:rgba(255,253,247,.85)!important;border:1.5px solid rgba(91,70,54,.5)!important;border-radius:14px!important;color:#5b4636;font-variant-numeric:tabular-nums}
+#clk .cf{position:relative;width:22px;height:22px;border:1.5px solid #5b4636;border-radius:50%;flex:none}
+#clk .cf i{position:absolute;left:50%;bottom:50%;width:1.6px;background:#5b4636;border-radius:1px;transform-origin:50% 100%;margin-left:-.8px}
+#clk .hh{height:6px}#clk .mm{height:8.5px;background:#b5835a!important}
+#clk .ct{font-size:17px;letter-spacing:.08em;font-weight:600}#clk .cs{font-size:11px;color:#8a7560;width:14px}
+#clk .cb{font-size:12px;opacity:.35}#clk.has .cb{opacity:1}
+#alp,#alr{position:fixed;inset:0;z-index:10;background:rgba(91,70,54,.35);display:flex;align-items:center;justify-content:center;padding:16px}
+.alb{background:#f3eee2 url(paper.jpg);border:1.5px solid rgba(91,70,54,.55);border-radius:16px;padding:16px 18px;width:100%;max-width:460px;box-shadow:0 6px 24px rgba(91,70,54,.25)}
+.ali{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #e2d8c6}.ali b{font-size:20px;font-variant-numeric:tabular-nums}.ali span{flex:1;font-size:15px}
+.ali label{padding:0!important;border:0!important}.ala{display:flex;gap:6px;margin:10px 0 4px;flex-wrap:wrap}.ala input{font-size:16px;padding:6px 8px;border:1.5px solid #b9a88f;border-radius:10px;background:#fffdf7;color:#5b4636;font-family:inherit}
+.ala input#alL{flex:1;min-width:140px}.alh{display:block;color:#8a7560;font-size:13px;margin:4px 0 10px}.aln{color:#8a7560}.alclose{width:100%;padding:8px!important}
+#alr .alb{text-align:center}.alrt{font-size:56px;font-weight:700;color:#5b4636;font-variant-numeric:tabular-nums}.alrl{font-size:20px;margin-bottom:12px}
+#alr .tbtns button{min-width:140px;min-height:52px;font-size:18px!important}#alr .of{background:#6b7f4e!important;color:#f3eee2!important}
+#clkbar{position:absolute;top:62px;right:16px;z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+#clkbar #clk{position:static}
+#sysal{display:inline-block;padding:7px 12px;font-size:15px;color:#f3eee2;background:#6b7f4e;border-radius:14px;text-decoration:none;letter-spacing:.08em;box-shadow:1px 1px 0 rgba(91,70,54,.15)}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="">今日檢查</a><a href="weekly.html" class="on">週報</a><a href="monthly.html" class="">月報</a></div><img class="hero" src="monkey-hero.webp" alt="">
 <h1>Roby 週報</h1><div class="sub" id="wk"></div>
 <div class="card"><h2>本週總覽</h2>

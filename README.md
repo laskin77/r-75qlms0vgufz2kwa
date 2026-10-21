@@ -42,3 +42,8 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
   `focusMinutes{科目:分鐘}`（來自每日 PNG 的「共 N 分」累加）、`notes[{subject,count,points}]`、`pointsTotal`（累計點數）、`highlights[]`、`advice[]`。
 - 月份標題、日期範圍、百分比、長條圖、時數由頁面自動計算。
 - 產生：`python3 build.py` 會同時產生 index.html、weekly.html、monthly.html（頁首切換列「今日檢查｜週報｜月報」，月報頁首用貓插圖），再 commit/push。
+
+## 小時鐘與鬧鐘（clock.js，由 build.py 注入 index.html）
+- 頁首右上：「⏰ 開啟 iPad 鬧鐘」按鈕（主要），連到 iOS 時鐘 App 的 `clock-alarm://`，約 0.9 秒內沒離開頁面就改試 `clock-timer://`；打不開就無動作。系統鬧鐘鎖屏也會響。**此 URL scheme 非 Apple 官方文件記載，需在 iPad 實測。**
+- 下方小時鐘（台北時間 HH:MM＋秒＋手繪小指針）：點開是 App 內鬧鐘（次要），可多個（時間＋標籤）、開關、刪除，存在 localStorage `roby-alarms`（不跟日期，每天沿用）；響鈴為 Web Audio 重複到按「關閉」，可「稍後 5 分鐘」。需開著 App 才會響；開啟設定時順便解鎖 iOS 音效。
+- 鬧鐘不會畫進 PNG。
