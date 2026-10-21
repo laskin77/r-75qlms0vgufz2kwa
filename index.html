@@ -112,6 +112,12 @@ body{position:relative}
 #clkbar{position:absolute;top:62px;right:16px;z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 #clkbar #clk{position:static}
 #sysal{display:inline-block;padding:7px 12px;font-size:15px;color:#f3eee2;background:#6b7f4e;border-radius:14px;text-decoration:none;letter-spacing:.08em;box-shadow:1px 1px 0 rgba(91,70,54,.15)}
+#clkbar{flex-direction:row!important;align-items:center!important;gap:4px!important}
+#sysal{padding:0!important;background:none!important;box-shadow:none!important;width:52px;height:52px}
+#sysal img{width:52px;height:52px;display:block;animation:wob 3.2s ease-in-out infinite;transform-origin:50% 85%}
+#sysal:active img{transform:scale(.92)}
+@keyframes wob{0%,78%,100%{transform:rotate(0)}82%{transform:rotate(-9deg)}86%{transform:rotate(8deg)}90%{transform:rotate(-6deg)}94%{transform:rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){#sysal img{animation:none}}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="on">今日檢查</a><a href="weekly.html" class="">週報</a><a href="monthly.html" class="">月報</a></div><img class="hero" src="monkey-hero.webp" alt="">
 <h1>📚 Roby 今日檢查　10/21（週三）</h1>
 <div class="card tip">✏️ <b>Roby 自己勾</b>：做完的項目自己打勾，全部勾完再拿給爸爸看過簽名。</div>
@@ -224,7 +230,7 @@ var J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return 
 var esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 var c=document.createElement('button');c.id='clk';c.title='App 內小鬧鐘（需開著 App）';c.innerHTML='<span class="cf"><i class="hh"></i><i class="mm"></i></span><span class="ct">--:--</span><small class="cs"></small><span class="cb">⏰</span>';
 var bar=document.createElement('div');bar.id='clkbar';
-var sa=document.createElement('a');sa.id='sysal';sa.href='clock-alarm://';sa.textContent='⏰ 開啟 iPad 鬧鐘';
+var sa=document.createElement('a');sa.id='sysal';sa.href='clock-alarm://';sa.title='開啟 iPad 鬧鐘';sa.setAttribute('aria-label','開啟 iPad 鬧鐘');sa.innerHTML='<img src="alarm.webp" alt="開啟 iPad 鬧鐘">';
 sa.onclick=function(e){e.preventDefault();var t0=Date.now();try{location.href='clock-alarm://'}catch(_){}
  setTimeout(function(){if(!document.hidden&&Date.now()-t0<2500){try{location.href='clock-timer://'}catch(_){}}},900)};
 bar.appendChild(sa);bar.appendChild(c);document.body.appendChild(bar);

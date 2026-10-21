@@ -6,7 +6,7 @@ var J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return 
 var esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 var c=document.createElement('button');c.id='clk';c.title='App 內小鬧鐘（需開著 App）';c.innerHTML='<span class="cf"><i class="hh"></i><i class="mm"></i></span><span class="ct">--:--</span><small class="cs"></small><span class="cb">⏰</span>';
 var bar=document.createElement('div');bar.id='clkbar';
-var sa=document.createElement('a');sa.id='sysal';sa.href='clock-alarm://';sa.textContent='⏰ 開啟 iPad 鬧鐘';
+var sa=document.createElement('a');sa.id='sysal';sa.href='clock-alarm://';sa.title='開啟 iPad 鬧鐘';sa.setAttribute('aria-label','開啟 iPad 鬧鐘');sa.innerHTML='<img src="alarm.webp" alt="開啟 iPad 鬧鐘">';
 sa.onclick=function(e){e.preventDefault();var t0=Date.now();try{location.href='clock-alarm://'}catch(_){}
  setTimeout(function(){if(!document.hidden&&Date.now()-t0<2500){try{location.href='clock-timer://'}catch(_){}}},900)};
 bar.appendChild(sa);bar.appendChild(c);document.body.appendChild(bar);

@@ -108,6 +108,12 @@ body{position:relative}
 #clkbar{position:absolute;top:62px;right:16px;z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 #clkbar #clk{position:static}
 #sysal{display:inline-block;padding:7px 12px;font-size:15px;color:#f3eee2;background:#6b7f4e;border-radius:14px;text-decoration:none;letter-spacing:.08em;box-shadow:1px 1px 0 rgba(91,70,54,.15)}
+#clkbar{flex-direction:row!important;align-items:center!important;gap:4px!important}
+#sysal{padding:0!important;background:none!important;box-shadow:none!important;width:52px;height:52px}
+#sysal img{width:52px;height:52px;display:block;animation:wob 3.2s ease-in-out infinite;transform-origin:50% 85%}
+#sysal:active img{transform:scale(.92)}
+@keyframes wob{0%,78%,100%{transform:rotate(0)}82%{transform:rotate(-9deg)}86%{transform:rotate(8deg)}90%{transform:rotate(-6deg)}94%{transform:rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){#sysal img{animation:none}}
 </style></head><body><img id="paperimg" src="paper.jpg" hidden alt=""><div class="nav"><a href="./" class="">今日檢查</a><a href="weekly.html" class="on">週報</a><a href="monthly.html" class="">月報</a></div><img class="hero" src="monkey-hero.webp" alt="">
 <h1>Roby 週報</h1><div class="sub" id="wk"></div>
 <div class="card"><h2>本週總覽</h2>
