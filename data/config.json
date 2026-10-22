@@ -16,7 +16,8 @@
  "characters": {
   "chinese": {
    "name": "李清照",
-   "avatar": "assets/t-zh.webp"
+   "avatar": "assets/chinese-teacher-face.webp",
+   "full": "assets/chinese-teacher-full.webp"
   },
   "english": {
    "name": "蔡英文",
