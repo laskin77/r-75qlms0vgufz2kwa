@@ -1,7 +1,7 @@
 import json,asyncio,base64
 from playwright.async_api import async_playwright
 B='http://localhost:8765/v2/'
-CFG0=__import__("json").load(open("/workspace/roby/app/data/config.json"));CFG={"characters":CFG0["characters"],"webhooks":{k:{"url":"https://hook.example/"+k,"headers":{"Authorization":"Authorization: Bearer T-"+k,"X-Extra":"1"}} for k in("chinese","english","checklist")}}
+CFG0=__import__("json").load(open(__import__("os").path.join(__import__("os").path.dirname(__file__),"..","data","config.json")));CFG={"characters":CFG0["characters"],"webhooks":{k:{"url":"https://hook.example/"+k,"headers":{"Authorization":"Authorization: Bearer T-"+k,"X-Extra":"1"}} for k in("chinese","english","checklist")}}
 posts=[];fail={'on':True}
 async def main():
   async with async_playwright() as p:
@@ -13,6 +13,9 @@ async def main():
       if r.request.method=='OPTIONS':await r.fulfill(status=204,headers={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*','Access-Control-Allow-Methods':'POST'});return
       posts.append({'url':r.request.url,'h':(r.request.headers.get('authorization'),r.request.headers.get('x-extra')),'body':json.loads(r.request.post_data)})
       await r.fulfill(status=200,headers={'Access-Control-Allow-Origin':'*'},body='ok')
+    FX=open(__import__('os').path.join(__import__('os').path.dirname(__file__),'test_chinese_fixture.json'),encoding='utf-8').read()
+    async def zh(r):await r.fulfill(status=200,content_type='application/json',body=FX)
+    await ctx.route('**/data/chinese/2026-10-22.json*',zh)
     await ctx.route('**/data/config.json*',cfg);await ctx.route('https://hook.example/**',hook)
     pg=await ctx.new_page();errs=[];pg.on('pageerror',lambda e:errs.append(str(e)));pg.on('dialog',lambda d:asyncio.ensure_future(d.accept()))
     await pg.goto(B+'#check');await pg.wait_for_timeout(1500)
