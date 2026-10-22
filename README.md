@@ -107,7 +107,7 @@ git add data/checklist sw.js && git commit -qm "checklist $(TZ=Asia/Taipei date 
 - 時區：Asia/Taipei
 
 ## 檔案
-- `index.html`：今日檢查（由 `../checklist_template.html` 產生）← **每天更新**
+- （舊）`legacy.html`：今日檢查（由 `../checklist_template.html` 產生）← **每天更新**
 - `weekly.html`：週報（由 `../weekly_template.html` 產生）← **每週日更新**
 - `build.py`：把範本加上 PWA head、iPad 版面（最大寬 820px、大字大勾選框）、上方切換列、localStorage 保存（key `roby-check-YYYY-MM-DD`），並更新 `sw.js` 版本號
 - `focus.js`：「戒除拖延」功能（由 build.py 注入 index.html）。範本中 `data-timer` 的卡片（讀書計畫進度、本週待完成）每項會有「開始」鍵、25 分專注＋5 分休息倒數（時間戳計算、同時只一個，存在 `roby-timer`），每項固定顯示「開始 HH:MM｜結束 HH:MM｜共 N 分」（存於每日 key 的 `t`：s 第一次開始、e 最後結束、acc 累計專注毫秒、run 進行中起點；扣除暫停與休息），並寫入 PNG。**每日改範本時請保留卡片上的 `data-timer` 與 save() 裡的 `l.dataset.log`。**
