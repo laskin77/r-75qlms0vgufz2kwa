@@ -1,0 +1,225 @@
+{
+ "date": "2026-10-23",
+ "topic": "The Instant Gratification Monkey",
+ "dialog": {
+  "greet": "Hi Roby! 我是蔡老師，今天的主題是 The Instant Gratification Monkey。先從跟讀開始吧！"
+ },
+ "shadow": {
+  "speaker": "Tim Urban (TED)",
+  "source_url": "https://www.youtube.com/watch?v=arj7oStGLkU",
+  "youtubeId": "arj7oStGLkU",
+  "start": 60,
+  "end": 70,
+  "chunks": [
+   {
+    "start": 60,
+    "end": 65,
+    "text": "I want to tell you about the instant gratification monkey."
+   },
+   {
+    "start": 65,
+    "end": 70,
+    "text": "It lives in the brain of every procrastinator."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "put off",
+    "zh": "拖延"
+   },
+   {
+    "en": "at the last minute",
+    "zh": "在最後一刻"
+   }
+  ],
+  "respond": {
+   "prompt_en": "What do you usually put off? Write one sentence.",
+   "prompt_zh": "你通常會拖延什麼事？用一句英文回答。"
+  }
+ },
+ "vocab": [
+  {
+   "word": "procrastinate",
+   "pos": "v.",
+   "zh": "拖延",
+   "example": "I often procrastinate on my homework.",
+   "note": "名詞 procrastination"
+  },
+  {
+   "word": "deadline",
+   "pos": "n.",
+   "zh": "截止期限",
+   "example": "The deadline is Friday.",
+   "note": ""
+  },
+  {
+   "word": "panic",
+   "pos": "n./v.",
+   "zh": "恐慌",
+   "example": "He started to panic.",
+   "note": "過去式 panicked"
+  },
+  {
+   "word": "instant",
+   "pos": "adj.",
+   "zh": "立即的",
+   "example": "instant gratification 立即的滿足",
+   "note": ""
+  },
+  {
+   "word": "rational",
+   "pos": "adj.",
+   "zh": "理性的",
+   "example": "Make a rational decision.",
+   "note": "反義 irrational"
+  }
+ ],
+ "grammar": {
+  "title": "現在完成式 have/has + p.p.",
+  "explain": "表示從過去持續到現在，或已經完成、對現在有影響的事。常和 already、yet、since、for 一起用。",
+  "examples": [
+   "I have finished my homework.",
+   "She has lived here for three years."
+  ],
+  "practice": {
+   "question": "They ___ never ___ a whale.",
+   "options": [
+    "have / seen",
+    "has / saw",
+    "have / saw",
+    "are / seen"
+   ],
+   "answer": "have / seen",
+   "explanation": "They + have + p.p.（seen）。"
+  }
+ },
+ "uoe": {
+  "passage": "Tim ___1___ procrastinated all his life. He always waits until the ___2___ is close. Then the Panic Monster ___3___ up, and he works very ___4___.",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "has",
+     "have",
+     "is",
+     "was"
+    ],
+    "answer": 0,
+    "explanation": "Tim 第三人稱單數 has + p.p."
+   },
+   {
+    "id": "u2",
+    "options": [
+     "deadline",
+     "breakfast",
+     "weekend",
+     "holiday"
+    ],
+    "answer": "deadline",
+    "explanation": "截止日 deadline。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "wake",
+     "wakes",
+     "waking",
+     "woken"
+    ],
+    "answer": 1,
+    "explanation": "主詞第三人稱單數現在式 wakes。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "hard",
+     "hardly",
+     "harder",
+     "hardest"
+    ],
+    "answer": 0,
+    "explanation": "work hard 努力；hardly 是幾乎不。"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "What does 'procrastinate' mean?",
+   "options": [
+    "to delay doing something",
+    "to finish early",
+    "to forget",
+    "to plan carefully"
+   ],
+   "answer": 0,
+   "explanation": "procrastinate＝拖延。",
+   "source": "vocab"
+  },
+  {
+   "id": "q2",
+   "question": "I ___ already eaten lunch.",
+   "options": [
+    "has",
+    "have",
+    "am",
+    "did"
+   ],
+   "answer": "have",
+   "explanation": "I 搭配 have + p.p.",
+   "source": "grammar"
+  },
+  {
+   "id": "q3",
+   "question": "The ___ for the project is next Monday.",
+   "options": [
+    "deadline",
+    "panic",
+    "instant",
+    "rational"
+   ],
+   "answer": "A",
+   "explanation": "deadline 截止期限。",
+   "source": "vocab"
+  },
+  {
+   "id": "q4",
+   "question": "She ___ here since 2020.",
+   "options": [
+    "lives",
+    "lived",
+    "has lived",
+    "is living"
+   ],
+   "answer": 2,
+   "explanation": "since 搭配現在完成式。",
+   "source": "grammar"
+  },
+  {
+   "id": "q5",
+   "question": "Which word is the opposite of 'rational'?",
+   "options": [
+    "irrational",
+    "national",
+    "natural",
+    "rationally"
+   ],
+   "answer": 0,
+   "explanation": "ir- 表相反。",
+   "source": "vocab"
+  },
+  {
+   "id": "q6",
+   "question": "According to the talk, the 'Panic Monster' wakes up when ___.",
+   "options": [
+    "a deadline gets close",
+    "you eat candy",
+    "you sleep",
+    "you exercise"
+   ],
+   "answer": 0,
+   "explanation": "截止日逼近時恐慌怪獸才會出現。",
+   "source": "shadow"
+  }
+ ]
+}

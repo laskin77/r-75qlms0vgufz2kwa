@@ -1,0 +1,34 @@
+{
+ "webhooks": {
+  "chinese": {
+   "url": "",
+   "key": ""
+  },
+  "english": {
+   "url": "",
+   "key": ""
+  },
+  "checklist": {
+   "url": "",
+   "key": ""
+  }
+ },
+ "characters": {
+  "chinese": {
+   "name": "李清照",
+   "avatar": "assets/t-zh.webp"
+  },
+  "english": {
+   "name": "蔡英文",
+   "avatar": "assets/t-en.webp"
+  },
+  "monkey": {
+   "name": "小猴子",
+   "avatar": "assets/monkey.png"
+  },
+  "cat": {
+   "name": "小貓",
+   "avatar": "assets/cat.webp"
+  }
+ }
+}
