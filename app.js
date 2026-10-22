@@ -38,26 +38,38 @@ function lines(k,d){var b=CH[k]||{},o={};for(var x in b)o[x]=b[x];var cc=((DATA.
 function pick(v){return Array.isArray(v)?v[Math.floor(Math.random()*v.length)]:v}
 function buddy(k,d,sticky){var L=lines(k,d),w=document.createElement('div');w.className='buddy'+(sticky?' sticky':'');
  w.innerHTML='<div class="av"><img src="'+L.img+'" alt=""><br><b>'+esc(L.name)+'</b></div><div class="bubble"></div>';
- var b=$('.bubble',w);w.say=function(t){b.textContent=t;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')};w.L=L;w.say(L.greet);return w}
+ var b=$('.bubble',w);
+ w.attach=function(el,anchor){if(!el||!el.parentNode)return;anchor=anchor||el;var t0=anchor.getBoundingClientRect().top;
+  if(el.classList.contains('q')){if(el.previousSibling===w)return;el.parentNode.insertBefore(w,el)}
+  else{var hd=$('.step-h',el)||el.firstChild;if(w.parentNode===el&&w.previousSibling===hd)return;if(hd&&hd.nextSibling)el.insertBefore(w,hd.nextSibling);else el.appendChild(w)}
+  w.classList.add('inline');var d=anchor.getBoundingClientRect().top-t0;if(d&&document.body.contains(anchor))window.scrollBy(0,d)};
+ w.say=function(t){b.textContent=t;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')};w.L=L;w.say(L.greet);return w}
 
 /* ---------- 送出佇列（webhook）---------- */
 var OB='roby-outbox';
-function enqueue(kind,payload,dedupe){var q=LS.get(OB,[]);if(dedupe)q=q.filter(function(x){return x.dedupe!==dedupe});
+function enqueue(kind,payload,dedupe){var q=LS.get(OB,[]);if(dedupe)q=q.filter(function(x){return x.dedupe!==dedupe||x.status==='unconfirmed'});
  q.push({id:Date.now()+'-'+Math.random().toString(36).slice(2,6),kind:kind,payload:payload,dedupe:dedupe||null,queued_at:nowIso(),tries:0});LS.set(OB,q);obStatus();flush();}
 var flushing=false;
-function post(url,key,payload){var body=JSON.stringify(Object.assign({},payload,{key:key}));
- return fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Roby-Key':key},body:body}).then(function(r){return r.ok}).catch(function(){
-  if(navigator.onLine===false)return false;
-  /* 對方不支援 CORS 時：以簡單請求再送一次（key 在 body 裡），回應不可讀，視為已送出 */
-  return fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body}).then(function(){return true}).catch(function(){return false});});}
-function flush(){if(flushing)return Promise.resolve();var q=LS.get(OB,[]);if(!q.length){obStatus();return Promise.resolve()}
+function hdrs(w){var h={'Content-Type':'application/json'},src=w.headers||{};for(var k in src)if(src[k]!=null&&String(src[k])!==''){var val=String(src[k]).trim();if(k.toLowerCase()==='authorization')val=val.replace(/^authorization\s*:\s*/i,'');h[k]=val}
+ if(w.key&&!Object.keys(h).some(function(k){return k.toLowerCase()==='x-roby-key'}))h['X-Roby-Key']=w.key;return h}
+function authOf(h){for(var k in h)if(k.toLowerCase()==='authorization')return h[k];return ''}
+/* 回傳 'ok' | 'fail' | 'unconfirmed' */
+function post(w,payload){var h=hdrs(w),body=Object.assign({},payload);if(w.key)body.key=w.key;
+ return fetch(w.url,{method:'POST',headers:h,body:JSON.stringify(body)}).then(function(r){return r.ok?'ok':'fail'}).catch(function(){
+  if(navigator.onLine===false)return 'fail';
+  /* CORS／網路錯誤：no-cors 無法帶 Authorization，改把它放進 body 的 authorization 欄位只送一次；回應不可讀 → 標記「已送出未確認」，不再重送 */
+  var fb=Object.assign({},body,{authorization:authOf(h)});
+  return fetch(w.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(fb)}).then(function(){return 'unconfirmed'}).catch(function(){return 'fail'});});}
+function flush(){if(flushing)return Promise.resolve();var q=LS.get(OB,[]).filter(function(x){return x.status!=='unconfirmed'});if(!q.length){obStatus();return Promise.resolve()}
  flushing=true;return getJSON(SRC.config+'?t='+Date.now()).then(function(t){var cfg={};try{cfg=JSON.parse(t||'{}')}catch(e){}
   var wh=(cfg&&cfg.webhooks)||{};
   return q.reduce(function(p,it){return p.then(function(){var w=wh[it.kind]||{};if(!w.url)return;
-   return post(w.url,w.key||'',it.payload).then(function(ok){var cur=LS.get(OB,[]);
-    cur=ok?cur.filter(function(x){return x.id!==it.id}):cur.map(function(x){if(x.id===it.id){x.tries++;x.last_try=nowIso()}return x});LS.set(OB,cur);});});},Promise.resolve());
+   return post(w,it.payload).then(function(res){var cur=LS.get(OB,[]);
+    cur=res==='ok'?cur.filter(function(x){return x.id!==it.id}):cur.map(function(x){if(x.id===it.id){x.tries++;x.last_try=nowIso();if(res==='unconfirmed'){x.status='unconfirmed';x.sent_at=nowIso()}}return x});
+    var un=cur.filter(function(x){return x.status==='unconfirmed'});if(un.length>30){var drop=un.slice(0,un.length-30).map(function(x){return x.id});cur=cur.filter(function(x){return drop.indexOf(x.id)<0})}
+    LS.set(OB,cur);});});},Promise.resolve());
  }).then(function(){flushing=false;obStatus()},function(){flushing=false;obStatus()});}
-function obStatus(){var n=LS.get(OB,[]).length,e=$('#outbox');if(!e)return;e.hidden=!n;e.textContent='📮 待送出 '+n+' 筆（連線後自動補送）';}
+function obStatus(){var n=LS.get(OB,[]).filter(function(x){return x.status!=='unconfirmed'}).length,e=$('#outbox');if(!e)return;e.hidden=!n;e.textContent='📮 待送出 '+n+' 筆（連線後自動補送）';}
 window.addEventListener('online',flush);
 
 /* ---------- 答案比對 ---------- */
@@ -101,15 +113,20 @@ function quizBlock(o){/* o:{el,items,st(物件),save(),bud,subj,date,title,onDon
    if(sub&&(ok||st.first&&!isRight(it,st.first[it.id]))&&ok)h+=(it.exp?'<div class="exp">💡 '+esc(it.exp)+'</div>':'');
    else if(sub)h+='<div class="exp">🔎 提示：'+esc(it.hint||L.hint)+(it.exp&&st.rounds&&st.rounds.length>1?'<br>💡 '+esc(it.exp):'')+'</div>';
    q.innerHTML=h;box.appendChild(q);
-   $$('.opt',q).forEach(function(b){b.onclick=function(){st.cur[it.id]=+b.dataset.i;o.save();draw();if(sub)o.bud.say('改好了就按「再檢查」！');}});
-   var f=$('.fill',q);if(f)f.oninput=function(){st.cur[it.id]=f.value;o.save()};});
+   $$('.opt',q).forEach(function(b){b.onclick=function(){st.cur[it.id]=+b.dataset.i;o.save();last=it.id;draw();react(it,k)}});
+   var f=$('.fill',q);if(f){f.oninput=function(){st.cur[it.id]=f.value;o.save()};f.onfocus=function(){last=it.id;o.bud.attach(q,f);o.bud.say(sub?'改好了就按「再檢查訂正」！':'第 '+(k+1)+' 題：想一想再寫～')};f.onchange=function(){if(sub)react(it,k)}}});
   var wrong=items.filter(function(it){return !isRight(it,st.cur[it.id])});
   if(st.submitted){var fc=items.filter(function(it){return isRight(it,st.first[it.id])}).length;
    var t=document.createElement('div');t.className='tally';t.innerHTML='第一次：<span class="ok">對 <b>'+fc+'</b></span>・<span class="no">錯 <b>'+(items.length-fc)+'</b></span>'+(st.done?'・<span class="ok-tag">✓ 已全部訂正</span>':'・待訂正 '+wrong.length);box.appendChild(t);}
   if(!st.done){var b=document.createElement('button');b.className='go';b.textContent=st.submitted?'再檢查訂正':'送出答案';b.onclick=submit;box.appendChild(b)}
+  if(last){var qe=$('.q[data-id="'+last+'"]',box);if(qe)o.bud.attach(qe)}
  }
+ var last=null,said={};
+ function react(it,k){var q=$('.q[data-id="'+it.id+'"]',box);if(!q)return;o.bud.attach(q);
+  if(st.submitted)o.bud.say(isRight(it,st.cur[it.id])?pick(L.correct)+' 按「再檢查訂正」確認。':'🔎 '+(it.hint||L.hint));
+  else{var n=items.filter(function(x){var v=st.cur[x.id];return v==null||v===''}).length;o.bud.say(n?(!said.p?L.present:'好，還剩 '+n+' 題～'):'全部寫完了，檢查一下再送出！');said.p=1}}
  function submit(){var miss=items.filter(function(it){var v=st.cur[it.id];return v==null||v===''});
-  if(miss.length){o.bud.say('還有 '+miss.length+' 題沒寫喔～');var e=$('.q[data-id="'+miss[0].id+'"]',box);if(e)e.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(miss.length){var e=$('.q[data-id="'+miss[0].id+'"]',box);last=miss[0].id;if(e){o.bud.attach(e);e.scrollIntoView({behavior:'smooth',block:'center'})}o.bud.say('還有 '+miss.length+' 題沒寫喔～');return}
   var wrong=items.filter(function(it){return !isRight(it,st.cur[it.id])});
   if(!st.submitted){st.submitted=true;st.first=JSON.parse(JSON.stringify(st.cur));st.submitted_at=nowIso();st.rounds=[];
    if(o.track!==false)wrong.forEach(function(it){wbAdd(o.subj,o.date,it,st.cur[it.id],o.title)});
@@ -119,11 +136,14 @@ function quizBlock(o){/* o:{el,items,st(物件),save(),bud,subj,date,title,onDon
    o.bud.say(wrong.length?pick(L.wrong)+' 還有 '+wrong.length+' 題。':pick(L.correct));}
   st.rounds.push({at:nowIso(),wrong:wrong.map(function(it){return it.id}),answers:JSON.parse(JSON.stringify(st.cur))});
   if(!wrong.length){st.done=true;st.done_at=nowIso();if(o.track!==false)items.forEach(function(it){if(!isRight(it,st.first[it.id]))wbFix(o.subj,o.date,it.id)})}
-  o.save();draw();if(st.done&&o.onDone)o.onDone();}
+  last=wrong.length?wrong[0].id:null;o.save();draw();
+  if(wrong.length){var we=$('.q[data-id="'+wrong[0].id+'"]',box);if(we){we.scrollIntoView({behavior:'smooth',block:'center'});o.bud.say((st.rounds.length>1?pick(L.wrong):L.submit)+' 🔎 '+(wrong[0].hint||L.hint))}}
+  else o.bud.attach(box.closest('.card'));
+  if(st.done&&o.onDone)o.onDone();}
  draw();return {items:items,firstCorrect:function(){return items.filter(function(it){return isRight(it,st.first&&st.first[it.id])}).length}};}
 
 /* ---------- 科目頁 ---------- */
-function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,true);root.appendChild(bud);
+function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,false);root.appendChild(bud);
  if(!D){root.appendChild(empty(subj==='english'?'今天沒有英文功課喔，休息一下':'今天沒有國文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
  var KEY='roby-quiz-'+subj+'-'+(D.date||DATE),st=LS.get(KEY,{});st.started_at=st.started_at||nowIso();st.blocks=st.blocks||{};st.steps=st.steps||{};
  var save=function(){LS.set(KEY,st)};save();
@@ -131,7 +151,11 @@ function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,true);root.append
  if(D.title||D.topic){var s=document.createElement('div');s.className='sub';s.textContent=D.title||D.topic;root.appendChild(s)}
  if(bud.L.full)root.insertAdjacentHTML('beforeend','<img src="'+bud.L.full+'" alt="" style="display:block;width:46%;max-width:300px;margin:0 auto;border-radius:16px;mix-blend-mode:multiply">');
  var isEN=subj==='english'&&(D.shadow||D.uoe||D.vocab||D.grammar);
- (isEN?englishFlow:genericFlow)(subj,D,root,bud,st,save);}
+ (isEN?englishFlow:genericFlow)(subj,D,root,bud,st,save);
+ var cards=$$('.card',root),first=cards.find(function(c){var t=$('.ok-tag',c);return !c.classList.contains('locked')&&!(t&&t.textContent)})||cards[cards.length-1];
+ if(first){var sayNow=bud.L.greet;bud.attach(first);if(first!==cards[0]){var h2=$('h2',first);sayNow=st.completed_at?bud.L.done:'接下來：'+(h2?h2.textContent.replace(/^\S+\s*/,''):'')+'，加油！'}bud.say(sayNow)}
+ root.addEventListener('focusin',function(e){if(e.target.tagName==='TEXTAREA'&&!e.target.closest('.q')){var c=e.target.closest('.card');if(c)bud.attach(c,e.target)}});
+ root.addEventListener('click',function(e){if(e.target.closest('.buddy,.q,button,a,input,textarea'))return;var c=e.target.closest('.card');if(c&&!c.classList.contains('locked'))bud.attach(c,e.target)});}
 function card(root,title,cls){var c=document.createElement('div');c.className='card'+(cls?' '+cls:'');if(title)c.innerHTML='<div class="step-h"><h2>'+title+'</h2><span class="ok-tag"></span></div>';root.appendChild(c);return c}
 function lockCard(root,title,msg){var c=card(root,title,'locked');c.insertAdjacentHTML('beforeend','<div>🔒 '+esc(msg)+'</div>');return c}
 function finish(subj,D,st,save,bud,payload){if(st.completed_at)return;st.completed_at=nowIso();st.score=payload.score;save();

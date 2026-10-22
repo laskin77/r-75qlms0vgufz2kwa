@@ -63,12 +63,22 @@ git push                                # 被拒絕就再 git pull --rebase 後 
 第一次答錯的題目進「錯題本」。完成後自動 POST 到該科 webhook，並自動勾選今日檢查中 `subject` 相同的每日必做項目、填上分數（≥90 綠、70–89 棕、<70 紅）。
 
 ## Webhook
-`data/config.json`：`{"webhooks":{"chinese":{"url":"","key":""},"english":{...},"checklist":{...}},"characters":{...}}`
-- POST JSON，header `X-Roby-Key: <key>`，body 也含 `"key"`。對方不支援 CORS 時會改用 text/plain 簡單請求再送（看不到回應，當作已送出）。
-- 網址未填、離線或失敗 → 存在 `roby-outbox`，下次開啟／切回前景／恢復連線時補送（左下角顯示「待送出 N 筆」）。
-- 英文：`{"subject":"english","date":"…","quiz":{"correct":5,"total":6},"uoe":{"correct":3,"total":4},"score":80,"wrong":["q2","u1"],"shadow_response":"…","completed_at":"ISO", …另附 first_correct, first_wrong, after_correction, answers, started_at, steps, topic, key}`
-- 國文：`{"subject":"chinese","date","title","score","first_correct","first_wrong","total","wrong":[ids],"after_correction":{"correct","total","rounds"},"answers":{"first","final","rounds"},"started_at","submitted_at","completed_at","key"}`
-- 今日檢查（Roby 勾「確認」或家長簽名時送出，同一天只留最新一筆在佇列）：`{"subject":"checklist","date","by":"confirm|sign","items":[{"section","text","checked","score","focus":{"start","end","minutes"}}],"done","total","contact_book":"signed|missing|none","note","confirmed","signed","signed_at","sent_at","key"}`
+`data/config.json`：
+```json
+{"webhooks":{
+  "chinese":  {"url":"","headers":{"Authorization":""}},
+  "english":  {"url":"","headers":{"Authorization":""}},
+  "checklist":{"url":"","headers":{"Authorization":""}}},
+ "characters":{…}}
+```
+- `url`＝Grok Bot routine 面板的「POST to」；`headers.Authorization`＝面板的「header」值原樣貼上（`Bearer …`；若連「Authorization: 」一起貼，App 會自動去掉）。`headers` 可放任意其他 header，App 原樣送出（另加 `Content-Type: application/json`）。
+- 舊版選用 `key`：有填才會加 `X-Roby-Key` header 與 body `key`。
+- 送法：先用一般 fetch（帶 headers）。HTTP 2xx → 從佇列移除；非 2xx 或離線 → 留在佇列，下次開啟／切回前景／恢復連線再送。
+- 若 fetch 直接丟出 CORS／網路錯誤：改用 no-cors `text/plain` 送**一次**，body 加 `"authorization":"<Authorization 值>"`（瀏覽器這種送法不能帶 Authorization header）。因為看不到回應，該筆標成 `status:"unconfirmed"` 留在 `roby-outbox`（不再重送、不計入「待送出」，最多保留 30 筆）。
+- ⚠️ `data/config.json` 在公開的 GitHub Pages 上，任何知道網址的人都看得到金鑰。
+- 英文：`{"subject":"english","date":"…","quiz":{"correct":5,"total":6},"uoe":{"correct":3,"total":4},"score":80,"wrong":["q2","u1"],"shadow_response":"…","completed_at":"ISO", …另附 first_correct, first_wrong, after_correction, answers, started_at, steps, topic}`
+- 國文：`{"subject":"chinese","date","title","score","first_correct","first_wrong","total","wrong":[ids],"after_correction":{"correct","total","rounds"},"answers":{"first","final","rounds"},"started_at","submitted_at","completed_at"}`
+- 今日檢查（Roby 勾「確認」或家長簽名時送出，同一天只留最新一筆在佇列）：`{"subject":"checklist","date","by":"confirm|sign","items":[{"section","text","checked","score","focus":{"start","end","minutes"}}],"done","total","contact_book":"signed|missing|none","note","confirmed","signed","signed_at","sent_at"}`
 
 ## 角色與頭像（換圖不用改程式）
 `data/config.json` 的 `characters.chinese / english / monkey / cat`：`{"name":"李清照","avatar":"assets/chinese-teacher-face.webp","full":"（可選）全身圖，顯示在該科頁首"}`。英文老師已用正式圖 `assets/english-teacher-face.webp`（對話頭像）與 `english-teacher-full.webp`（頁首）；國文老師已用 `assets/chinese-teacher-face.webp`／`chinese-teacher-full.webp`。

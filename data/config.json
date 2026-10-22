@@ -2,15 +2,21 @@
  "webhooks": {
   "chinese": {
    "url": "",
-   "key": ""
+   "headers": {
+    "Authorization": ""
+   }
   },
   "english": {
    "url": "",
-   "key": ""
+   "headers": {
+    "Authorization": ""
+   }
   },
   "checklist": {
    "url": "",
-   "key": ""
+   "headers": {
+    "Authorization": ""
+   }
   }
  },
  "characters": {

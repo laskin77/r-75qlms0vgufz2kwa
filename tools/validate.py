@@ -137,9 +137,17 @@ def v_config(f,o,name):
     if not isinstance(w,dict):E(f,'需要 webhooks 物件');return
     for k in ('chinese','english','checklist'):
         x=w.get(k)
-        if not isinstance(x,dict) or 'url' not in x or 'key' not in x:E(f,f'webhooks.{k} 需要 url 與 key')
-        elif not x['url']:W(f,f'webhooks.{k}.url 尚未填（結果會先排隊，等填好後自動補送）')
+        if not isinstance(x,dict) or 'url' not in x:E(f,f'webhooks.{k} 需要 url');continue
+        h=x.get('headers',{})
+        if not isinstance(h,dict) or any(not isinstance(a,str) or not isinstance(c,str) for a,c in h.items()):E(f,f'webhooks.{k}.headers 必須是 {{"名稱":"字串值"}}');h={}
+        elif any(re.search(r'[\r\n]',c) for c in h.values()):E(f,f'webhooks.{k}.headers 的值不可含換行')
+        for a2,c in h.items():
+            if a2.lower()=='authorization' and c.lower().startswith('authorization:'):W(f,f'webhooks.{k}.headers.Authorization 含「Authorization:」前綴，App 會自動去掉（也可只貼 Bearer …）')
+        if 'key' in x and not isinstance(x['key'],str):E(f,f'webhooks.{k}.key（舊版選用）必須是字串')
+        for bad in set(x)-{'url','headers','key'}:W(f,f'webhooks.{k} 有不認得的欄位 {bad}')
+        if not x['url']:W(f,f'webhooks.{k}.url 尚未填（結果會先排隊，等填好後自動補送）')
         elif not str(x['url']).startswith('https://'):E(f,f'webhooks.{k}.url 必須是 https://')
+        elif not any(a2.lower()=='authorization' and c for a2,c in h.items()) and not x.get('key'):W(f,f'webhooks.{k} 沒有 Authorization header')
 def v_chars(f,o):
     c=o.get('characters')
     if c is None:return
