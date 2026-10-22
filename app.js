@@ -33,8 +33,8 @@ function load(){var ks=Object.keys(SRC);return Promise.all(ks.map(function(k){re
 var CH={
  check:{img:'monkey-head.png',name:'小猴子',greet:'嗨 Roby！我陪你一起把今天的事做完 🐒',done:'全部完成了！你超棒 🎉',left:'還有 {n} 項，加油～'},
  chinese:{img:'assets/t-zh.webp',name:'李清照',greet:'Roby 好，今天李老師陪你讀國文。先讀完再作答喔！',present:'慢慢讀題，想好再選。',correct:['答對了！好細心 ✨','真棒，一點就通！','對！這題你懂了。'],wrong:['差一點點，再想想看～','沒關係，回去看看文章。'],hint:'回到文章找關鍵句，答案常常就在附近。',submit:'送出囉！錯的題目要訂正喔，訂正完才算完成。',done:'全部訂正完成！老師幫你記下來了 🌸'},
- english:{img:'assets/t-en.webp',name:'蔡英文',greet:'Hi Roby! 蔡老師在這裡，先跟讀、學單字和文法，再做小測驗！',present:'Take your time. 看清楚再選喔！',correct:['Great job! 答對了！','Excellent! 太棒了！','You got it! 對！'],wrong:['Almost! 再試一次～','Not quite. 想想文法規則。'],hint:'注意主詞和時態，再看一次例句。',submit:'Submitted! 錯的地方記得訂正喔。',done:'All done! 全部訂正完成 🎉'}};
-function lines(k,d){var b=CH[k]||{},o={};for(var x in b)o[x]=b[x];var cc=((DATA.config||{}).characters||{})[k==='check'?'monkey':k];if(cc){if(cc.name)o.name=cc.name;if(cc.avatar)o.img=cc.avatar}var g=(d&&d.dialog)||{};for(var y in g)if(g[y]!=null&&g[y]!=='')o[y]=g[y];return o}
+ english:{img:'assets/english-teacher-face.webp',name:'蔡英文',greet:'Hi Roby! 蔡老師在這裡，先跟讀、學單字和文法，再做小測驗！',present:'Take your time. 看清楚再選喔！',correct:['Great job! 答對了！','Excellent! 太棒了！','You got it! 對！'],wrong:['Almost! 再試一次～','Not quite. 想想文法規則。'],hint:'注意主詞和時態，再看一次例句。',submit:'Submitted! 錯的地方記得訂正喔。',done:'All done! 全部訂正完成 🎉'}};
+function lines(k,d){var b=CH[k]||{},o={};for(var x in b)o[x]=b[x];var cc=((DATA.config||{}).characters||{})[k==='check'?'monkey':k];if(cc){if(cc.name)o.name=cc.name;if(cc.avatar)o.img=cc.avatar;if(cc.full)o.full=cc.full}var g=(d&&d.dialog)||{};for(var y in g)if(g[y]!=null&&g[y]!=='')o[y]=g[y];return o}
 function pick(v){return Array.isArray(v)?v[Math.floor(Math.random()*v.length)]:v}
 function buddy(k,d,sticky){var L=lines(k,d),w=document.createElement('div');w.className='buddy'+(sticky?' sticky':'');
  w.innerHTML='<div class="av"><img src="'+L.img+'" alt=""><br><b>'+esc(L.name)+'</b></div><div class="bubble"></div>';
@@ -129,6 +129,7 @@ function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,true);root.append
  var save=function(){LS.set(KEY,st)};save();
  var h=document.createElement('h1');h.textContent=(subj==='english'?'英文 ':'國文 ')+mdw(D.date||DATE);root.appendChild(h);
  if(D.title||D.topic){var s=document.createElement('div');s.className='sub';s.textContent=D.title||D.topic;root.appendChild(s)}
+ if(bud.L.full)root.insertAdjacentHTML('beforeend','<img src="'+bud.L.full+'" alt="" style="display:block;width:46%;max-width:300px;margin:0 auto;border-radius:16px;mix-blend-mode:multiply">');
  var isEN=subj==='english'&&(D.shadow||D.uoe||D.vocab||D.grammar);
  (isEN?englishFlow:genericFlow)(subj,D,root,bud,st,save);}
 function card(root,title,cls){var c=document.createElement('div');c.className='card'+(cls?' '+cls:'');if(title)c.innerHTML='<div class="step-h"><h2>'+title+'</h2><span class="ok-tag"></span></div>';root.appendChild(c);return c}

@@ -71,7 +71,7 @@ git push                                # 被拒絕就再 git pull --rebase 後 
 - 今日檢查（Roby 勾「確認」或家長簽名時送出，同一天只留最新一筆在佇列）：`{"subject":"checklist","date","by":"confirm|sign","items":[{"section","text","checked","score","focus":{"start","end","minutes"}}],"done","total","contact_book":"signed|missing|none","note","confirmed","signed","signed_at","sent_at","key"}`
 
 ## 角色與頭像（換圖不用改程式）
-`data/config.json` 的 `characters.chinese / english / monkey / cat`：`{"name":"李清照","avatar":"assets/t-zh.webp"}`。
+`data/config.json` 的 `characters.chinese / english / monkey / cat`：`{"name":"李清照","avatar":"assets/t-zh.webp","full":"（可選）全身圖，顯示在該科頁首"}`。英文老師已用正式圖 `assets/english-teacher-face.webp`（對話頭像）與 `english-teacher-full.webp`（頁首）；國文老師仍為暫用圖。
 換圖：把圖片放進 `assets/`，改 config 的 `avatar` 路徑（與 `name`）即可。目前老師頭像是暫用圖，Doc 之後會換正式圖。
 台詞：各科 JSON 的 `dialog`（greet、present、correct[]、wrong[]、hint、submit、done），沒填用內建預設。
 

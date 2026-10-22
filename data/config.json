@@ -20,7 +20,8 @@
   },
   "english": {
    "name": "蔡英文",
-   "avatar": "assets/t-en.webp"
+   "avatar": "assets/english-teacher-face.webp",
+   "full": "assets/english-teacher-full.webp"
   },
   "monkey": {
    "name": "小猴子",
