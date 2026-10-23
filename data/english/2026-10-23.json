@@ -1,225 +1,251 @@
 {
  "date": "2026-10-23",
- "topic": "The Instant Gratification Monkey",
- "dialog": {
-  "greet": "Hi Roby! 我是蔡老師，今天的主題是 The Instant Gratification Monkey。先從跟讀開始吧！"
- },
+ "topic": "Things we value & pronoun traps（珍惜的事物＋代名詞陷阱 it / one / them）",
  "shadow": {
-  "speaker": "Tim Urban (TED)",
-  "source_url": "https://www.youtube.com/watch?v=arj7oStGLkU",
-  "youtubeId": "arj7oStGLkU",
-  "start": 60,
-  "end": 70,
+  "speaker": "Tsai Ing-wen 蔡英文（2020 NDI Celebration of Democracy Gala 視訊致詞, 2020-12-08 US EST）",
+  "source_url": "https://www.youtube.com/watch?v=WqlZwrpnpg8&t=35s",
+  "youtubeId": "WqlZwrpnpg8",
+  "start": 35.6,
+  "end": 62.0,
   "chunks": [
    {
-    "start": 60,
-    "end": 65,
-    "text": "I want to tell you about the instant gratification monkey."
+    "start": 35.6,
+    "end": 39.6,
+    "text": "I know that these exercises are always precious."
    },
    {
-    "start": 65,
-    "end": 70,
-    "text": "It lives in the brain of every procrastinator."
+    "start": 39.6,
+    "end": 48.9,
+    "text": "They remind us about the lengths to which we must go to protect our democracies, freedoms and way of life."
+   },
+   {
+    "start": 48.9,
+    "end": 54.8,
+    "text": "This is not the least because throughout so much of history,"
+   },
+   {
+    "start": 54.8,
+    "end": 62.0,
+    "text": "the right of people to choose their own leaders has been the exception rather than the norm."
    }
   ],
   "phrases": [
    {
-    "en": "put off",
-    "zh": "拖延"
+    "en": "the exception rather than the norm",
+    "zh": "是例外，而不是常態"
    },
    {
-    "en": "at the last minute",
-    "zh": "在最後一刻"
+    "en": "way of life",
+    "zh": "生活方式"
    }
   ],
   "respond": {
-   "prompt_en": "What do you usually put off? Write one sentence.",
-   "prompt_zh": "你通常會拖延什麼事？用一句英文回答。"
+   "prompt_en": "What is something precious to you that you never want to take for granted? Answer in one sentence.",
+   "prompt_zh": "有什麼東西對你很珍貴、你不想把它視為理所當然？用一句英文回答。（可以用 It reminds me of… 或 …is precious to me because…）"
   }
  },
  "vocab": [
   {
-   "word": "procrastinate",
+   "word": "precious",
+   "pos": "adj.",
+   "zh": "珍貴的、寶貴的",
+   "example": "Time with my grandparents is precious to me.",
+   "note": "be precious to sb。別和 previous（先前的）、precise（精確的）搞混！蔡總統原句：these exercises are always precious."
+  },
+  {
+   "word": "remind",
    "pos": "v.",
-   "zh": "拖延",
-   "example": "I often procrastinate on my homework.",
-   "note": "名詞 procrastination"
+   "zh": "提醒；使想起",
+   "example": "This photo reminds me of our trip to Kenting.",
+   "note": "會考陷阱：remind sb of + N（使想起）／remind sb to + V（提醒去做）／remind sb about + N（提醒某事）。"
   },
   {
-   "word": "deadline",
+   "word": "exception",
    "pos": "n.",
-   "zh": "截止期限",
-   "example": "The deadline is Friday.",
-   "note": ""
+   "zh": "例外",
+   "example": "Everyone passed the test, with the exception of Ken.",
+   "note": "with the exception of = except（除了…）；the exception rather than the norm（例外而非常態）；形容詞 exceptional＝傑出的。"
   },
   {
-   "word": "panic",
-   "pos": "n./v.",
-   "zh": "恐慌",
-   "example": "He started to panic.",
-   "note": "過去式 panicked"
+   "word": "protect",
+   "pos": "v.",
+   "zh": "保護",
+   "example": "Wear a hat to protect your face from the sun.",
+   "note": "protect A from B（保護 A 免於 B）；名詞 protection。"
   },
   {
-   "word": "instant",
-   "pos": "adj.",
-   "zh": "立即的",
-   "example": "instant gratification 立即的滿足",
-   "note": ""
-  },
-  {
-   "word": "rational",
-   "pos": "adj.",
-   "zh": "理性的",
-   "example": "Make a rational decision.",
-   "note": "反義 irrational"
+   "word": "take ... for granted",
+   "pos": "phr.",
+   "zh": "把…視為理所當然（而不珍惜）",
+   "example": "We often take clean water for granted until the tap stops working.",
+   "note": "B2 必會片語；for 不能省。也可說 take it for granted that + 子句。"
   }
  ],
  "grammar": {
-  "title": "現在完成式 have/has + p.p.",
-  "explain": "表示從過去持續到現在，或已經完成、對現在有影響的事。常和 already、yet、since、for 一起用。",
+  "title": "代名詞陷阱：it / one / they・them / ones",
+  "explain": "會考最愛考「指的是哪一個」：\n① it＝前面提過的「同一個」東西，或一整件事。\n② one＝同一類裡「隨便一個」，等於 a/an + 單數名詞。\n③ they / them＝前面提過的「那些」（特定的複數）。\n④ ones＝同一類裡的「一些」（不特定的複數），常說 the red ones。\n🔑 判斷法：問自己「是同一個嗎？」是 → it / them；只是同一種 → one / ones。\n⚠️ 陷阱：「喜歡／討厭做某件事」的那件事，要用 it，不是 one 或 them（113 會考就考過）。",
   "examples": [
-   "I have finished my homework.",
-   "She has lived here for three years."
+   "I know that these exercises are always precious. They remind us… —— 蔡總統原句：They＝these exercises（特定的複數）",
+   "I lost my umbrella, so I bought a new one. —— 不是同一把，只是同一種 → one",
+   "I lost my umbrella, but Dad found it in the car. —— 找回來的是同一把 → it",
+   "These shoes are too small. Do you have bigger ones? —— 同一種、不特定的複數 → ones"
   ],
   "practice": {
-   "question": "They ___ never ___ a whale.",
+   "question": "My phone is really old and slow. I want to get a new ___ for my birthday.",
    "options": [
-    "have / seen",
-    "has / saw",
-    "have / saw",
-    "are / seen"
+    "it",
+    "one",
+    "them",
+    "ones"
    ],
-   "answer": "have / seen",
-   "explanation": "They + have + p.p.（seen）。"
+   "answer": 1,
+   "explanation": "想要的是「一支新的」手機，不是原本那支 → one（= a phone）。如果是 'I dropped my phone and broke ___.' 就要用 it。"
   }
  },
  "uoe": {
-  "passage": "Tim ___1___ procrastinated all his life. He always waits until the ___2___ is close. Then the Panic Monster ___3___ up, and he works very ___4___.",
+  "passage": "My grandma gave me an old watch on my tenth birthday. It isn't expensive, but it is very ___1___ to me. Every time I look at ___2___, it reminds me ___3___ the summers we spent together. Last week my friend laughed and said, \"Your watch is so old! Why don't you buy a new ___4___?\" I just smiled. Some things can't be replaced.",
   "gaps": [
    {
     "id": "u1",
     "options": [
-     "has",
-     "have",
-     "is",
-     "was"
+     "previous",
+     "precise",
+     "precious",
+     "prepared"
     ],
-    "answer": 0,
-    "explanation": "Tim 第三人稱單數 has + p.p."
+    "answer": 2,
+    "explanation": "precious to me＝對我很珍貴。previous＝先前的、precise＝精確的，都是長得像的陷阱字。"
    },
    {
     "id": "u2",
     "options": [
-     "deadline",
-     "breakfast",
-     "weekend",
-     "holiday"
+     "them",
+     "one",
+     "it",
+     "its"
     ],
-    "answer": "deadline",
-    "explanation": "截止日 deadline。"
+    "answer": 2,
+    "explanation": "看的是「同一支」奶奶給的錶 → it。"
    },
    {
     "id": "u3",
     "options": [
-     "wake",
-     "wakes",
-     "waking",
-     "woken"
+     "of",
+     "to",
+     "with",
+     "for"
     ],
-    "answer": 1,
-    "explanation": "主詞第三人稱單數現在式 wakes。"
+    "answer": 0,
+    "explanation": "remind sb of + N＝讓某人想起…。remind sb to 後面要接原形動詞。"
    },
    {
     "id": "u4",
     "options": [
-     "hard",
-     "hardly",
-     "harder",
-     "hardest"
+     "it",
+     "them",
+     "ones",
+     "one"
     ],
-    "answer": 0,
-    "explanation": "work hard 努力；hardly 是幾乎不。"
+    "answer": 3,
+    "explanation": "朋友說買「一支新的」錶，不是原本那支 → one（= a watch）。"
    }
   ]
  },
  "quiz": [
   {
    "id": "q1",
-   "question": "What does 'procrastinate' mean?",
+   "question": "Buses to the airport only come once every hour, and we just missed ___. Why don't we take a taxi?",
    "options": [
-    "to delay doing something",
-    "to finish early",
-    "to forget",
-    "to plan carefully"
+    "another",
+    "it",
+    "one",
+    "them"
    ],
-   "answer": 0,
-   "explanation": "procrastinate＝拖延。",
-   "source": "vocab"
+   "answer": 2,
+   "explanation": "錯過的是「一班」公車（不特定的一班）→ one。這題 111 會考答對率只有約 31%！it 要指特定那一班，them 是複數。",
+   "source": "111會考#18"
   },
   {
    "id": "q2",
-   "question": "I ___ already eaten lunch.",
+   "question": "Chris loves walking with Anna on snowy days, but Anna hates ___ very much.",
    "options": [
-    "has",
-    "have",
-    "am",
-    "did"
+    "them",
+    "so",
+    "one",
+    "it"
    ],
-   "answer": "have",
-   "explanation": "I 搭配 have + p.p.",
-   "source": "grammar"
+   "answer": 3,
+   "explanation": "Anna 討厭的是「在下雪天散步」這件事 → it 指一整件事。",
+   "source": "113會考#6"
   },
   {
    "id": "q3",
-   "question": "The ___ for the project is next Monday.",
+   "question": "It almost killed Kevin to take care of his baby sister for one afternoon. He wondered how his mom could do ___ every day.",
    "options": [
-    "deadline",
-    "panic",
-    "instant",
-    "rational"
+    "her",
+    "it",
+    "one",
+    "them"
    ],
-   "answer": "A",
-   "explanation": "deadline 截止期限。",
-   "source": "vocab"
+   "answer": 1,
+   "explanation": "媽媽每天做的是「照顧妹妹」這件事 → it。不是 her（do her 不合理）。",
+   "source": "108會考#8"
   },
   {
    "id": "q4",
-   "question": "She ___ here since 2020.",
+   "question": "Before I went to bed, Mom reminded me ___ the lights in the living room.",
    "options": [
-    "lives",
-    "lived",
-    "has lived",
-    "is living"
+    "to turn off",
+    "turning off",
+    "of turning off",
+    "turn off"
    ],
-   "answer": 2,
-   "explanation": "since 搭配現在完成式。",
-   "source": "grammar"
+   "answer": 0,
+   "explanation": "remind sb to + V＝提醒某人去做某事。remind sb of 是「使想起」，意思不同。",
+   "source": "vocab: remind"
   },
   {
    "id": "q5",
-   "question": "Which word is the opposite of 'rational'?",
+   "question": "Many people take their health ___ until they get sick; then they realize how precious it is.",
    "options": [
-    "irrational",
-    "national",
-    "natural",
-    "rationally"
+    "granted",
+    "for granted",
+    "as granted",
+    "to grant"
    ],
-   "answer": 0,
-   "explanation": "ir- 表相反。",
-   "source": "vocab"
+   "answer": 1,
+   "explanation": "take sth for granted＝把…視為理所當然，for 不能省。",
+   "source": "vocab: take for granted"
   },
   {
    "id": "q6",
-   "question": "According to the talk, the 'Panic Monster' wakes up when ___.",
+   "question": "In Tsai Ing-wen's speech: \"the right of people to choose their own leaders has been the ___ rather than the norm.\"",
    "options": [
-    "a deadline gets close",
-    "you eat candy",
-    "you sleep",
-    "you exercise"
+    "except",
+    "exceptional",
+    "expectation",
+    "exception"
    ],
-   "answer": 0,
-   "explanation": "截止日逼近時恐慌怪獸才會出現。",
-   "source": "shadow"
+   "answer": 3,
+   "explanation": "the + 名詞 → exception（例外）。the exception rather than the norm＝例外而非常態（原聲跟讀的句子）。",
+   "source": "shadow + vocab: exception"
   }
- ]
+ ],
+ "dialog": {
+  "greet": "Hi Roby! 我是蔡老師 😊 今天的主題是「珍惜的事物」，還有會考超愛考的 it / one / them。Ready?",
+  "present": "先跟著原聲唸一遍，再學 5 個單字和一個代名詞小陷阱。Let's go!",
+  "correct": [
+   "Excellent! 完全正確 👏",
+   "Nice job, Roby! 你抓到重點了！",
+   "Spot on! 這題很多人會錯，你沒有 😎"
+  ],
+  "wrong": [
+   "Not quite. 沒關係，再看一下提示 💪",
+   "Almost! 想想：是「同一個」還是「同一種」？",
+   "Oops! 錯了也是在學習，再試一次～"
+  ],
+  "hint": "小提示：同一個 → it / them；同一種 → one / ones。",
+  "submit": "Ready to check? 送出前再檢查一次喔！",
+  "done": "Well done, Roby! 今天的 it / one 陷阱你都會了 🎉 See you tomorrow!"
+ }
 }
