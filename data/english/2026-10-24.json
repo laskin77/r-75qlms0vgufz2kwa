@@ -1,0 +1,251 @@
+{
+ "date": "2026-10-24",
+ "topic": "Partners & teamwork + another / the other / others（夥伴與合作＋another / the other / others 陷阱）",
+ "shadow": {
+  "speaker": "Hsiao Bi-khim 蕭美琴（時任駐美代表；ALEC 第 48 屆年會演講，美國猶他州，2021 年 7 月）",
+  "source_url": "https://www.youtube.com/watch?v=351aBgtvmQY&t=331s",
+  "youtubeId": "351aBgtvmQY",
+  "start": 331.0,
+  "end": 356.8,
+  "chunks": [
+   {
+    "start": 331.0,
+    "end": 337.2,
+    "text": "So this is a bilateral partnership that reinforces our strengths, and we help each other."
+   },
+   {
+    "start": 337.2,
+    "end": 340.2,
+    "text": "Let me give you another concrete example."
+   },
+   {
+    "start": 340.2,
+    "end": 344.4,
+    "text": "We just heard from the Senate President from the state of Arizona."
+   },
+   {
+    "start": 344.4,
+    "end": 356.8,
+    "text": "Now Taiwan's semiconductor company, TSMC, is now working on a 12 billion dollar investment in Arizona to produce semiconductor chips."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "help each other",
+    "zh": "互相幫忙"
+   },
+   {
+    "en": "give you another concrete example",
+    "zh": "再給你一個具體的例子"
+   }
+  ],
+  "respond": {
+   "prompt_en": "Who is a good partner for you (a friend, a classmate, a family member), and how do you help each other? Answer in one sentence.",
+   "prompt_zh": "誰是你的好夥伴（朋友、同學或家人）？你們怎麼互相幫忙？用一句英文回答。（可以用 …and I help each other with… 或 One example is…）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "partnership",
+   "pos": "n.",
+   "zh": "合作關係；夥伴關係",
+   "example": "Our school has a partnership with a school in Japan.",
+   "note": "partner（夥伴）＋ -ship（關係）。同家族：friendship、relationship。蕭美琴原句：a bilateral partnership（雙邊合作關係）。"
+  },
+  {
+   "word": "reinforce",
+   "pos": "v.",
+   "zh": "加強；鞏固",
+   "example": "Doing a short quiz every day reinforces what you learn in class.",
+   "note": "re-（再）＋ inforce ≈ 再使變強。比 make…stronger 更正式，FCE 寫作很好用。蕭美琴原句：reinforces our strengths。"
+  },
+  {
+   "word": "concrete",
+   "pos": "adj.",
+   "zh": "具體的、實際的",
+   "example": "Can you give me a concrete example instead of just saying \"It's good\"?",
+   "note": "一字多義：當名詞是「混凝土」。反義 abstract（抽象的）。a concrete example＝具體的例子。"
+  },
+  {
+   "word": "investment",
+   "pos": "n.",
+   "zh": "投資",
+   "example": "Learning English is a great investment in your future.",
+   "note": "invest in + N（投資在…）；make an investment in。介系詞固定用 in！"
+  },
+  {
+   "word": "produce",
+   "pos": "v. / n.",
+   "zh": "生產、製造（v.）；農產品（n.）",
+   "example": "This factory produces chips for cars and phones.",
+   "note": "一字多義＋重音陷阱：動詞 pro-DUCE（生產）、名詞 PRO-duce（農產品，不可數）。同家族：product（產品）、production（生產）。"
+  }
+ ],
+ "grammar": {
+  "title": "another / the other / others / the others",
+  "explain": "會考最愛考「另一個／其他的」：先數一數總共有幾個、還剩幾個！\n① another＋單數：「（不特定的）另一個」，還有很多可以選。例：Show me another one.\n② the other：兩個裡的「另一個」，或一群裡「剩下的唯一一個」。one…, the other…\n③ others＝other＋複數名詞：「（不特定的）其他一些」，不是全部。some…, others…\n④ the others：「剩下的全部」。\n⑤ other 是形容詞，後面一定要接名詞：other kinds、other students；不能單獨當主詞。\n🔑 判斷法：剩下的是「全部」→ 加 the；只是「其中一些／隨便一個」→ 不加 the。\n⚠️ 陷阱：114 會考「三個女兒，兩個讀高中，___ 讀小學」→ 剩一個 → the other，不是 another！\n⭐ B2 加分：each other＝互相（蕭美琴原句 we help each other）；another two weeks＝再兩個星期（把兩週當一個整體）。",
+  "examples": [
+   "Let me give you another concrete example. —— 蕭美琴原句：例子還有很多，再舉「另一個」→ another",
+   "I have two cousins. One lives in Tainan, and the other lives in Taipei. —— 只有兩個，剩下一個 → the other",
+   "Some students like math; others prefer English. —— 不特定的「其他一些人」→ others",
+   "Five of my classmates walk to school. The others take the bus. —— 剩下的全部 → the others"
+  ],
+  "practice": {
+   "question": "I have three pens. One is red, one is blue, and ___ is black.",
+   "options": [
+    "another",
+    "the other",
+    "others",
+    "other"
+   ],
+   "answer": 1,
+   "explanation": "三支筆說了兩支，剩下「最後一支」→ the other。another 表示還有很多可以選，others 是複數，other 後面要接名詞。"
+  }
+ },
+ "uoe": {
+  "passage": "Last month our class started a project with a school in Japan. The two classes helped ___1___ a lot. One class collected data about rainfall, and ___2___ built a model of a small city. Our teacher said the project was a real ___3___ because both sides gave and got something. She also asked us to give one ___4___ example of what we learned, not just say \"It was fun!\"",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "one other",
+     "another",
+     "each other",
+     "the others"
+    ],
+    "answer": 2,
+    "explanation": "兩個班「互相」幫忙 → each other。another 是「另一個」，the others 是「剩下的全部」。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "the other",
+     "another",
+     "others",
+     "other"
+    ],
+    "answer": 0,
+    "explanation": "只有兩個班，說了 One class，剩下那一個 → the other（114 會考考點）。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "exception",
+     "habit",
+     "argument",
+     "partnership"
+    ],
+    "answer": 3,
+    "explanation": "雙方都有付出、也有收穫 → partnership（合作關係）。exception＝例外（10/23 學過的字）。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "previous",
+     "concrete",
+     "precious",
+     "crowded"
+    ],
+    "answer": 1,
+    "explanation": "老師要「具體的」例子，不要只說好玩 → concrete。previous＝先前的、precious＝珍貴的，長得像別選錯！"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "Mr. and Mrs. Wu have three daughters. Two are in high school, and ___ is in elementary school.",
+   "options": [
+    "the next",
+    "each",
+    "the other",
+    "the one"
+   ],
+   "answer": 2,
+   "explanation": "三個女兒說了兩個，剩下「最後一個」→ the other。the one 後面通常要接說明（the one who…），the next 是「下一個」。",
+   "source": "114會考#8"
+  },
+  {
+   "id": "q2",
+   "question": "I don't like any one of these three watches. Could you show me ___ one?",
+   "options": [
+    "the others",
+    "either",
+    "other",
+    "another"
+   ],
+   "answer": 3,
+   "explanation": "這三支都不喜歡 → 要看「不在這三支裡的另一支」→ another one。the others 是複數、指剩下的全部；either 用在「兩者之一」。",
+   "source": "104會考#7（題幹前半句依原題，問句補完整）"
+  },
+  {
+   "id": "q3",
+   "question": "There are 30 students in my class. Five of them walk to school, and ___ all take the bus.",
+   "options": [
+    "others",
+    "the others",
+    "another",
+    "the other"
+   ],
+   "answer": 1,
+   "explanation": "「剩下的 25 人全部」→ the others。others 只是「其他一些人」，不是全部；the other／another 是單數。",
+   "source": "grammar trap"
+  },
+  {
+   "id": "q4",
+   "question": "Don't just say your plan is good. Give me a ___ example so I can understand it.",
+   "options": [
+    "concrete",
+    "previous",
+    "crowded",
+    "polite"
+   ],
+   "answer": 0,
+   "explanation": "a concrete example＝一個具體的例子。",
+   "source": "vocab: concrete"
+  },
+  {
+   "id": "q5",
+   "question": "The two companies formed a ___ to build a new factory in Arizona.",
+   "options": [
+    "habit",
+    "hobby",
+    "partnership",
+    "exception"
+   ],
+   "answer": 2,
+   "explanation": "兩家公司「合作」→ form a partnership（建立合作關係）。",
+   "source": "vocab: partnership"
+  },
+  {
+   "id": "q6",
+   "question": "In the clip, Hsiao Bi-khim says, \"we help each other.\" What does she mean?",
+   "options": [
+    "Taiwan helps the US, but the US doesn't help Taiwan.",
+    "Taiwan and the US both help one another.",
+    "One company helps all the other companies.",
+    "Only Arizona helps Taiwan."
+   ],
+   "answer": 1,
+   "explanation": "each other＝互相 → 台灣和美國「彼此」幫忙。one another 和 each other 意思一樣。",
+   "source": "shadow"
+  }
+ ],
+ "dialog": {
+  "greet": "Hi Roby! 我是蔡老師 😊 今天的主題是「夥伴與合作」，還有會考很愛考的 another / the other / others。Ready?",
+  "present": "先跟著蕭美琴的原聲唸一遍，再學 5 個單字和一個小陷阱：先數數看「還剩幾個」！Let's go!",
+  "correct": [
+   "Excellent! 完全正確 👏",
+   "Nice job, Roby! 你有先數剩幾個 😎",
+   "Spot on! 這題很多人掉進陷阱，你沒有！"
+  ],
+  "wrong": [
+   "Not quite. 沒關係，再數一次總共有幾個 💪",
+   "Almost! 想想：剩下的是「全部」還是「其中一些」？",
+   "Oops! 錯了也是在學習，再試一次～"
+  ],
+  "hint": "小提示：剩一個 → the other；剩下全部 → the others；隨便再一個 → another。",
+  "submit": "Ready to check? 送出前再檢查一次喔！",
+  "done": "Well done, Roby! 今天的 another / the other 你都搞定了 🎉 See you tomorrow!"
+ }
+}
