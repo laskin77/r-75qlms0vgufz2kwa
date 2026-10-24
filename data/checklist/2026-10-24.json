@@ -13,6 +13,7 @@
  ],
  "daily": [
   {"pair": ["聯絡簿已簽", "聯絡簿未帶"]},
+  {"text": "英文大師", "subject": "english", "label": "小測驗"},
   {"text": "國文小測驗", "subject": "chinese", "label": "小測驗"}
  ],
  "weekTodo": [
