@@ -1,0 +1,251 @@
+{
+ "date": "2026-10-25",
+ "topic": "News, rumors & quantifiers all / most / few / a few（新聞與謠言＋數量詞 all / most / few 陷阱）",
+ "shadow": {
+  "speaker": "Puma Shen 沈伯洋（立法委員；SCSP podcast《Straightforward》訪談〈Puma Shen on Cognitive Warfare & Civilian Defense〉）",
+  "source_url": "https://www.youtube.com/watch?v=ajnoGnVAmB0&t=297s",
+  "youtubeId": "ajnoGnVAmB0",
+  "start": 297.3,
+  "end": 319.9,
+  "chunks": [
+   {
+    "start": 297.3,
+    "end": 300.9,
+    "text": "So it doesn't needs to be… it doesn't need to be fake news."
+   },
+   {
+    "start": 300.9,
+    "end": 309.7,
+    "text": "I mean, we usually think about cognitive warfare, we're thinking about, hey, tons of fake news, I mean, uh, distributed by fake accounts, but that's not the case."
+   },
+   {
+    "start": 309.7,
+    "end": 314.0,
+    "text": "Sometime, I mean, I won't say sometimes, but 80% of the cognitive warfare is"
+   },
+   {
+    "start": 314.0,
+    "end": 319.9,
+    "text": "about, I mean, real news, but they try to exaggerate or try to amplify it on the internet."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "that's not the case",
+    "zh": "事實並不是這樣"
+   },
+   {
+    "en": "exaggerate or amplify it on the internet",
+    "zh": "在網路上誇大或放大它"
+   }
+  ],
+  "respond": {
+   "prompt_en": "Most of the news we see online is not checked by anyone. How do you check whether a news story is true? Answer in one sentence.",
+   "prompt_zh": "網路上大部分的新聞都沒人查證過。你會怎麼確認一則新聞是不是真的？用一句英文回答。（可以用 Most of the time, I… 或 I check whether it comes from a reliable source.）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "exaggerate",
+   "pos": "v.",
+   "zh": "誇大、誇張",
+   "example": "Tom said he waited \"forever\" for the bus, but he was exaggerating. It was only five minutes.",
+   "note": "拼字陷阱：雙 g（exa-gg-erate）。名詞 exaggeration。沈伯洋原句：they try to exaggerate…"
+  },
+  {
+   "word": "amplify",
+   "pos": "v.",
+   "zh": "放大、擴大（聲音或影響）",
+   "example": "Social media can amplify a small mistake until everyone is talking about it.",
+   "note": "本義是把聲音放大：amplifier＝擴音器。B2 寫作常用：amplify a message / a problem。"
+  },
+  {
+   "word": "rumor",
+   "pos": "n.",
+   "zh": "謠言、傳聞",
+   "example": "There is a rumor that our school trip will be cancelled, but nobody knows if it's true.",
+   "note": "常見句型：There is a rumor that + 子句；spread a rumor（散播謠言）。英式拼法 rumour。"
+  },
+  {
+   "word": "reliable",
+   "pos": "adj.",
+   "zh": "可靠的、可信賴的",
+   "example": "Before you share a story, check whether it comes from a reliable source.",
+   "note": "rely on（依賴）→ reliable（可靠的）；反義 unreliable。a reliable source＝可靠的消息來源。"
+  },
+  {
+   "word": "distribute",
+   "pos": "v.",
+   "zh": "分發、散佈",
+   "example": "The teacher distributed the test papers to the whole class.",
+   "note": "distribute A to B（把 A 分給 B）；名詞 distribution。沈伯洋原句：fake news distributed by fake accounts（被假帳號散佈的假新聞）。"
+  }
+ ],
+ "grammar": {
+  "title": "數量詞 all / most / some / few / a few（＋ other）",
+  "explain": "會考低答對率的數量詞陷阱：先看「後面的句子」在說多還是少！\n① all＝全部；most＝大部分；some＝一些（肯定）。\n② few＋可數複數＝「很少、幾乎沒有」→ 帶否定意味；a few＝「有一些」→ 肯定。little / a little 同樣邏輯，但接不可數名詞。\n③ both 只能用在「兩個」；三個以上用 all。\n④ 要接特定的一群（the / my / these）時要加 of：most of the students、all of my friends；但 most students（泛指）不加 the。\n🔑 判斷法：找線索字！only、except、but 常常告訴你答案。「只有兩個人比他資深」→ 其他人「很少」→ Few other waiters。「除了廚房那一扇，窗戶都關了」→ All of the windows。\n⚠️ 103 會考 all（答對率 33%）、108 會考 Few（30%）都是全國最低答對率的題目之一。\n⭐ B2 加分：quite a few＝相當多（不是很少！）。",
+  "examples": [
+   "80% of the cognitive warfare is about real news. —— 沈伯洋原句：百分比＋of the＋名詞，就像 most of the news",
+   "Jogging is the only exercise I enjoy. I find all other kinds of exercise boring. —— 103 會考：只喜歡慢跑 → 其他「全部」都無聊 → all",
+   "Few people believed the rumor, so it didn't spread. —— few＝幾乎沒人（否定）",
+   "A few people believed the rumor, so it spread quickly. —— a few＝有一些人（肯定）"
+  ],
+  "practice": {
+   "question": "There are many good restaurants on this street, but ___ of them are open after 10 p.m., so it's hard to get a late dinner.",
+   "options": [
+    "all",
+    "most",
+    "a few",
+    "few"
+   ],
+   "answer": 3,
+   "explanation": "後面說「很難吃到宵夜」→ 晚上十點後開的店「很少」→ few（否定意味）。a few 是「有一些」，跟「很難」不搭；all / most 意思相反。"
+  }
+ },
+ "uoe": {
+  "passage": "Last week a ___1___ spread around our school: summer vacation would be two weeks shorter! ___2___ of my classmates believed it at first, and some even shared it online. But only a ___3___ students checked the school website, and it said nothing like that. Our teacher reminded us that social media is not always a ___4___ source of news.",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "habit",
+     "rumor",
+     "reward",
+     "recipe"
+    ],
+    "answer": 1,
+    "explanation": "在學校「傳開來」、後來證明不是真的 → rumor（謠言）。spread a rumor 是固定搭配。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "Each",
+     "Every",
+     "Few",
+     "Most"
+    ],
+    "answer": 3,
+    "explanation": "後面說 some even shared it，還有 But only a few checked → 一開始「大部分人」都信了 → Most。Each / Every 不能接 of my classmates；Few 跟後文的「謠言傳開」矛盾。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "few",
+     "little",
+     "lot",
+     "many"
+    ],
+    "answer": 0,
+    "explanation": "only a few students＝只有少數幾個學生（a few＋可數複數）。a little 接不可數名詞；a lot 後面要加 of；沒有 a many。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "relaxed",
+     "remote",
+     "reliable",
+     "regular"
+    ],
+    "answer": 2,
+    "explanation": "a reliable source of news＝可靠的新聞來源。其他三個都是 r 開頭的形容詞，別被長相騙了！"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "___ other waiters in the restaurant have worked here longer than Clark; only Lois and Lana started working here before him.",
+   "options": [
+    "Most",
+    "All",
+    "Few",
+    "Some"
+   ],
+   "answer": 2,
+   "explanation": "線索是 only Lois and Lana → 比 Clark 資深的服務生「很少」→ Few（否定意味）。這題全國答對率只有約 30%！",
+   "source": "108會考#15"
+  },
+  {
+   "id": "q2",
+   "question": "I guess the rainwater has come in from the kitchen. See? ___ of the windows are closed except the one in the kitchen.",
+   "options": [
+    "All",
+    "Most",
+    "Some",
+    "Both"
+   ],
+   "answer": 0,
+   "explanation": "except the one in the kitchen＝「除了廚房那一扇」→ 其他窗戶「全部」關著 → All。Both 只能用在兩個；Most / Some 不會搭配 except 這種「只有一個例外」的說法。",
+   "source": "114會考#14"
+  },
+  {
+   "id": "q3",
+   "question": "Don't worry. I still have ___ minutes before the bus comes, so I can buy a drink.",
+   "options": [
+    "little",
+    "few",
+    "a little",
+    "a few"
+   ],
+   "answer": 3,
+   "explanation": "後面說「還來得及買飲料」→ 還有「一些」時間（肯定）→ a few；minutes 是可數複數，所以不用 a little。few 是「幾乎沒有」，意思相反。",
+   "source": "grammar trap"
+  },
+  {
+   "id": "q4",
+   "question": "Mia said the line was \"a kilometer long,\" but it was really only about twenty people. She likes to ___.",
+   "options": [
+    "explain",
+    "exaggerate",
+    "expect",
+    "examine"
+   ],
+   "answer": 1,
+   "explanation": "把二十個人說成一公里長 → 誇大 → exaggerate。",
+   "source": "vocab: exaggerate"
+  },
+  {
+   "id": "q5",
+   "question": "Before you share a news story, check whether it comes from a ___ source.",
+   "options": [
+    "crowded",
+    "lonely",
+    "reliable",
+    "previous"
+   ],
+   "answer": 2,
+   "explanation": "a reliable source＝可靠的來源。",
+   "source": "vocab: reliable"
+  },
+  {
+   "id": "q6",
+   "question": "In the clip, what does Puma Shen say about 80% of cognitive warfare?",
+   "options": [
+    "It uses real news but exaggerates or amplifies it online.",
+    "It is all fake news written by fake accounts.",
+    "It only happens on TV, not on the internet.",
+    "It is about cute animal videos."
+   ],
+   "answer": 0,
+   "explanation": "他說大家以為都是假帳號散佈假新聞，but that's not the case → 80% 其實是「真的新聞」，只是被誇大、放大。",
+   "source": "shadow"
+  }
+ ],
+ "dialog": {
+  "greet": "Hi Roby! 我是蔡老師 😊 今天聊「新聞與謠言」，順便破解會考超低答對率的 all / most / few 陷阱。Ready?",
+  "present": "先跟著沈伯洋的原聲唸一遍，再學 5 個單字。記住今天的口訣：先看後面在說「多」還是「少」！Let's go!",
+  "correct": [
+   "Excellent! 完全正確 👏",
+   "Nice job, Roby! 你有抓到線索字 😎",
+   "Spot on! 全國只有三成的人答對這種題，你做到了！"
+  ],
+  "wrong": [
+   "Not quite. 沒關係，再看一次句子後半段在說多還是少 💪",
+   "Almost! 找找看有沒有 only、except、but 這種線索字？",
+   "Oops! 錯了也是在學習，再試一次～"
+  ],
+  "hint": "小提示：few＝幾乎沒有（否定）、a few＝有一些（肯定）；兩個用 both，三個以上用 all。",
+  "submit": "Ready to check? 送出前再檢查一次喔！",
+  "done": "Well done, Roby! 今天的數量詞陷阱你都搞定了 🎉 Don't believe every rumor online. See you tomorrow!"
+ }
+}
