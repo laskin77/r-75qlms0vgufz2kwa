@@ -1,0 +1,250 @@
+{
+ "date": "2026-10-26",
+ "topic": "Helping others & pronoun traps it / one / some / any / mine（互相幫助＋代名詞陷阱 it / one / some / any / mine）",
+ "shadow": {
+  "speaker": "Tsai Ing-wen 蔡英文（2021 年 5 月 10 日以視訊在丹麥「哥本哈根民主高峰會」發表的英文演說，Alliance of Democracies 官方 YouTube）",
+  "source_url": "https://www.youtube.com/watch?v=M6-KFxp7Nrk&t=289s",
+  "youtubeId": "M6-KFxp7Nrk",
+  "start": 289.8,
+  "end": 314.3,
+  "chunks": [
+   {
+    "start": 289.8,
+    "end": 295.3,
+    "text": "Taiwan's response to COVID-19 shows how pandemics can be contained"
+   },
+   {
+    "start": 295.3,
+    "end": 299.5,
+    "text": "without curtailing democratic freedoms."
+   },
+   {
+    "start": 299.5,
+    "end": 307.0,
+    "text": "We are fortunate to have many friends in government, the media, and organizations across the world"
+   },
+   {
+    "start": 307.0,
+    "end": 314.3,
+    "text": "who have highlighted our pandemic response, as well as what Taiwan can do for the world."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "We are fortunate to have …",
+    "zh": "我們很幸運能擁有……"
+   },
+   {
+    "en": "as well as …",
+    "zh": "以及……、還有……（比 and 正式）"
+   }
+  ],
+  "respond": {
+   "prompt_en": "Think of a time when someone helped you, or you helped someone in need. What happened? Answer in one sentence.",
+   "prompt_zh": "想一想：有人幫過你，或你幫助過需要幫忙的人嗎？發生了什麼事？用一句英文回答。（可以用 I was fortunate to have… 或 I once helped… who was in need.）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "contain",
+   "pos": "v.",
+   "zh": "控制住、阻止擴散；包含",
+   "example": "The firefighters contained the fire before it reached the forest.",
+   "note": "蔡英文原句：pandemics can be contained（疫情可以被控制住）。另一個意思「包含」：This drink contains a lot of sugar. ⚠️ 名詞 container＝容器。"
+  },
+  {
+   "word": "fortunate",
+   "pos": "adj.",
+   "zh": "幸運的",
+   "example": "I was fortunate to get the last ticket for the concert.",
+   "note": "be fortunate to V / be fortunate enough to V。副詞 fortunately（幸好）＝luckily；反義 unfortunate / unfortunately。比 lucky 正式，寫作加分。"
+  },
+  {
+   "word": "highlight",
+   "pos": "v. / n.",
+   "zh": "強調、使受注目；精彩片段",
+   "example": "The report highlighted the importance of washing your hands.",
+   "note": "蔡英文原句：who have highlighted our pandemic response。名詞：the highlight of the trip＝旅程最精彩的部分；highlighter＝螢光筆。"
+  },
+  {
+   "word": "in need",
+   "pos": "phr.",
+   "zh": "有需要的、處境困難的",
+   "example": "Our class collected old clothes for families in need.",
+   "note": "放在名詞後面：people in need、countries in need（同一篇演講：helping countries in need）。諺語 A friend in need is a friend indeed.（患難見真情）"
+  },
+  {
+   "word": "grateful",
+   "pos": "adj.",
+   "zh": "感激的",
+   "example": "I'm grateful to my sister for helping me with my science project.",
+   "note": "⚠️ 介系詞陷阱：be grateful to＋人＋for＋事。不要和 great 搞混；也不要寫成 greatful（拼字錯）！同義 thankful。"
+  }
+ ],
+ "grammar": {
+  "title": "代名詞陷阱：it / one / some / any / mine（指「同一個」還是「同類的」？）",
+  "explain": "會考低答對率題型（110 會考 find any 答對率只有 41%）。先問自己：空格指的是「哪一個」？\n① it＝前面說過的「那一個、同一個」東西。Can I use yours? — I'm not using it now.（就是那塊橡皮擦）\n② one＝同類的「任一個」（＝a/an＋名詞）；複數用 ones，或用 some。I lost my pen. Can I borrow one?（任何一支筆都好）\n③ some 用在肯定句、提供／請求（Would you like some…? / Can I check… for some tools?）；any 用在否定、疑問、if / whether 後面：See if you can find any.（不確定裡面有沒有 → any）\n④ mine / yours / hers＝「my＋名詞」，本身就是主詞或受詞，後面不能再接名詞。I want another dentist because mine (＝my dentist) pulled out a good tooth.\n🔑 判斷法：同一個 → it；同類任一個 → one；不確定有沒有 → any；「我的那個」→ mine。\n⭐ B2 加分：any 也可以用在肯定句，表示「隨便哪一個都行」：Any student can join the club.",
+  "examples": [
+   "Tom: I need an eraser. Can I use yours? Judy: Sure. I'm not using it now. —— 110 補考：yours＝Judy 的橡皮擦 → 同一塊 → it",
+   "My phone is broken, so I'm going to buy a new one. —— one＝同類的另一支手機（不是原本那支，所以不用 it）",
+   "Can I check your drawer for some tools? — Sure. See if you can find any in there. —— 110 會考：if（是否）後面不確定有沒有 → any；前面請求句用 some"
+  ],
+  "practice": {
+   "question": "I've lost my umbrella, and it's raining hard. Can you lend me ___?",
+   "options": [
+    "it",
+    "any",
+    "mine",
+    "one"
+   ],
+   "answer": 3,
+   "explanation": "umbrella 弄丟了，要借的是「同類的任一把傘」→ one。it 會變成「借我那把（已經弄丟的）傘」；mine 是「我的」，不能叫別人借你「我的」；any 單獨用在這裡不自然（要說 any umbrella）。"
+  }
+ },
+ "uoe": {
+  "passage": "When the typhoon hit the east coast, many families lost their homes. Our class wanted to help people ___1___ need, so we collected food and clothes. I couldn't find ___2___ old jackets in my closet, so I bought a new ___3___ instead. The organizer was very ___4___ for our help and later sent us a thank-you card.",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "on",
+     "with",
+     "in",
+     "of"
+    ],
+    "answer": 2,
+    "explanation": "people in need＝有需要的人（固定片語，放在名詞後面）。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "some",
+     "it",
+     "one",
+     "any"
+    ],
+    "answer": 3,
+    "explanation": "couldn't 是否定句 → any old jackets（一件都找不到）。some 用在肯定句；it / one 後面不能再接 old jackets。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "one",
+     "it",
+     "them",
+     "mine"
+    ],
+    "answer": 0,
+    "explanation": "a new one＝一件新的（同類的外套）。a new it / a new them / a new mine 都不合文法。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "fortunate",
+     "grateful",
+     "careful",
+     "hopeful"
+    ],
+    "answer": 1,
+    "explanation": "be grateful for＋事＝因為……而感激。fortunate 是「幸運的」，不接 for our help；careful、hopeful 意思不合。"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "Nora: Can I check your drawer for some tools we can use?\nMatt: Sure. Take a look. See if you can find ___ in there.",
+   "options": [
+    "it",
+    "others",
+    "any",
+    "those"
+   ],
+   "answer": 2,
+   "explanation": "See if＝看看是否 → 不確定抽屜裡有沒有工具 → any（任何可用的工具）。it 指特定一個；others / those 前面沒有對照或特定對象。全國答對率只有約 41%！",
+   "source": "110會考#14"
+  },
+  {
+   "id": "q2",
+   "question": "Tom: I need an eraser. Can I use yours?\nJudy: Sure. I'm not using ___ now.",
+   "options": [
+    "it",
+    "another",
+    "each",
+    "yours"
+   ],
+   "answer": 0,
+   "explanation": "Tom 要借的就是 Judy 的那塊橡皮擦 → 同一個東西 → it。another＝另一個；each＝每一個；yours＝你的（Judy 不會說「我沒在用你的」）。",
+   "source": "110補考#13"
+  },
+  {
+   "id": "q3",
+   "question": "I want to find another dentist because ___ pulled out a good tooth last time I went to him.",
+   "options": [
+    "I",
+    "me",
+    "myself",
+    "mine"
+   ],
+   "answer": 3,
+   "explanation": "拔錯好牙的是「我的牙醫」→ mine＝my dentist，當主詞。I 不會自己拔牙還去找 him；me 是受詞、myself 是反身代名詞，都不能當這裡的主詞。",
+   "source": "113會考#20"
+  },
+  {
+   "id": "q4",
+   "question": "The doctors worked day and night to ___ the disease, so it did not spread to other cities.",
+   "options": [
+    "contact",
+    "contain",
+    "continue",
+    "complain"
+   ],
+   "answer": 1,
+   "explanation": "so it did not spread＝沒有擴散 → 把疾病「控制住」→ contain。contact 聯絡、continue 繼續、complain 抱怨：長得像但意思完全不同（會考常考的形近字陷阱）。",
+   "source": "vocab: contain"
+  },
+  {
+   "id": "q5",
+   "question": "I was ___ to get the last ticket. The man behind me had to go home without one.",
+   "options": [
+    "careful",
+    "curious",
+    "fortunate",
+    "nervous"
+   ],
+   "answer": 2,
+   "explanation": "買到最後一張票、後面的人沒買到 → 我很「幸運」→ fortunate。順便注意 without one：one＝a ticket（同類的任一張）。",
+   "source": "vocab: fortunate"
+  },
+  {
+   "id": "q6",
+   "question": "In the clip, what does Tsai Ing-wen say Taiwan's response to COVID-19 shows?",
+   "options": [
+    "Pandemics can only be stopped by closing all schools.",
+    "Pandemics can be contained without curtailing democratic freedoms.",
+    "Taiwan does not need any friends to fight a pandemic.",
+    "Freedom is less important than health."
+   ],
+   "answer": 1,
+   "explanation": "原句：Taiwan's response to COVID-19 shows how pandemics can be contained without curtailing democratic freedoms.（疫情可以在不限縮民主自由的情況下被控制住。）",
+   "source": "shadow"
+  }
+ ],
+ "dialog": {
+  "greet": "Hi Roby! 我是蔡老師 😊 今天的主題是「互相幫助」，順便破解會考很愛考的 it / one / any / mine 代名詞陷阱。Ready?",
+  "present": "先聽原聲跟讀，再學 5 個單字。今天的口訣：同一個用 it、同類用 one、不確定有沒有用 any！Let's go!",
+  "correct": [
+   "Excellent! 完全正確 👏",
+   "Nice job, Roby! 你分得出「同一個」和「同類的」😎",
+   "Spot on! 這種題全國只有四成的人答對，你做到了！"
+  ],
+  "wrong": [
+   "Not quite. 沒關係，想想看空格指的是「同一個」還是「同類的任一個」💪",
+   "Almost! 句子是否定、疑問或 if 嗎？那可能要用 any 喔～",
+   "Oops! 錯了也是在學習，再試一次～"
+  ],
+  "hint": "小提示：同一個 → it；同類任一個 → one；不確定有沒有 → any；我的那個 → mine。",
+  "submit": "Ready to check? 送出前再檢查一次喔！",
+  "done": "Well done, Roby! 今天的代名詞陷阱你都搞定了 🎉 I'm grateful for your hard work. See you tomorrow!"
+ }
+}
