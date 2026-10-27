@@ -1,0 +1,250 @@
+{
+ "date": "2026-10-27",
+ "topic": "Doing good & present perfect vs past simple（做有意義的事＋現在完成式 vs 過去式時態陷阱）",
+ "shadow": {
+  "speaker": "Hsiao Bi-khim 蕭美琴（2025 年 11 月 7 日在比利時布魯塞爾歐洲議會 IPAC 年會的英文演講，中央社 Focus Taiwan 官方 YouTube）",
+  "source_url": "https://www.youtube.com/watch?v=IW5aGjkw8wA&t=148s",
+  "youtubeId": "IW5aGjkw8wA",
+  "start": 148.0,
+  "end": 175.8,
+  "chunks": [
+   {
+    "start": 148.0,
+    "end": 155.6,
+    "text": "When it comes to international participation, things have been so hard for us Taiwanese."
+   },
+   {
+    "start": 155.6,
+    "end": 163.8,
+    "text": "And yet, Taiwan has always sought to be a force for good in the world,"
+   },
+   {
+    "start": 163.8,
+    "end": 169.6,
+    "text": "and we are grateful to all of you for your continuing support."
+   },
+   {
+    "start": 169.6,
+    "end": 175.8,
+    "text": "We don't just want to survive — we want democracies to thrive."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "When it comes to + N / V-ing …",
+    "zh": "說到……、談到……（to 是介系詞，後面接名詞或 V-ing）"
+   },
+   {
+    "en": "a force for good",
+    "zh": "一股正面的力量；帶來好影響的人或事"
+   }
+  ],
+  "respond": {
+   "prompt_en": "What is one thing you have done (or want to do) to be a force for good in your school or community? Answer in one sentence.",
+   "prompt_zh": "你曾經做過（或想做）什麼事，讓學校或社區變得更好？用一句英文回答。（可以用 I have always tried to… 或 When it comes to helping others, I…）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "participate (in)",
+   "pos": "v.",
+   "zh": "參加、參與",
+   "example": "More than 200 students participated in the school sports day.",
+   "note": "蕭美琴原句名詞：international participation（國際參與）。⚠️ participate 一定要加 in：participate in a contest（不能說 participate a contest）。＝take part in。名詞 participant＝參加者。"
+  },
+  {
+   "word": "seek (sought, sought)",
+   "pos": "v.",
+   "zh": "尋求、試圖、努力爭取",
+   "example": "Many young people seek advice from their teachers before choosing a school.",
+   "note": "蕭美琴原句：Taiwan has always sought to be a force for good.（完成式 has＋p.p.）⚠️ 不規則動詞：seek → sought → sought，沒有 seeked！seek to V＝試圖做……（比 try 正式）。"
+  },
+  {
+   "word": "survive",
+   "pos": "v.",
+   "zh": "活下來、倖存、撐過",
+   "example": "Only three people survived the plane crash.",
+   "note": "可直接接受詞：survive the earthquake（撐過地震），不用加 from。名詞 survival、survivor（倖存者）。"
+  },
+  {
+   "word": "thrive",
+   "pos": "v.",
+   "zh": "茁壯成長、興旺、蓬勃發展",
+   "example": "These plants thrive in warm and wet weather.",
+   "note": "蕭美琴原句：We don't just want to survive — we want democracies to thrive. 對比記：survive＝只是「活下來」；thrive＝「活得很好、越來越好」。B2 寫作加分字。"
+  },
+  {
+   "word": "contribute (to)",
+   "pos": "v.",
+   "zh": "貢獻、捐助；促成",
+   "example": "Everyone in our group contributed to the science project.",
+   "note": "同一篇演講：We contribute to humanitarian aid, disaster relief… ⚠️ contribute to 的 to 是介系詞，後面接名詞或 V-ing：contribute to making the world better。名詞 contribution。"
+  }
+ ],
+ "grammar": {
+  "title": "現在完成式 vs 過去簡單式：in the last few days / over the past… / since / for",
+  "explain": "會考時態題每年必考，106 年「in the last few days」那題全國答對率只有 46%！\n① 一直延續到「現在」的時間 → 現在完成式 have/has＋p.p.：in the last few days、over the past two months、so far、since＋過去時間、for＋一段時間（到現在還在）。\n② since 的陷阱：since 後面的子句用「過去式」（since he came to Taiwan），主要子句才用完成式（He hasn't seen them）。\n③ 已經結束的時間 → 過去簡單式：yesterday、last week、in 2023、… ago、when I was little。⚠️ 有 ago 就不能用完成式（✗ I have seen it two days ago）。\n④ 還沒做、等一下才要做 → haven't＋p.p.：I haven't seen it. I'll watch it this Saturday.\n🔑 判斷法：找「時間線索」——這段時間到現在還沒結束 → 完成式；已經結束 → 過去式。\n⭐ B2 加分：have been＋adj. 很常見：Things have been so hard for us.（蕭美琴原句）",
+  "examples": [
+   "The weather has been rainy and cloudy in the last few days. I hope the sun will come out soon. —— 106 會考：in the last few days 到現在 → has been（答對率 46%）",
+   "Tom has lost ten pounds over the past two months. He looks much thinner now. —— 104 會考：over the past two months＋looks thinner now → has lost",
+   "Taiwan has always sought to be a force for good in the world. —— 蕭美琴原句：always＋完成式＝「一直以來都……」"
+  ],
+  "practice": {
+   "question": "My cousin moved to Canada in 2023. Since then, she ___ English every day.",
+   "options": [
+    "speaks",
+    "spoke",
+    "has spoken",
+    "is going to speak"
+   ],
+   "answer": 2,
+   "explanation": "Since then＝從 2023 年那時起到現在 → 現在完成式 has spoken。spoke 是已結束的過去；speaks 只說習慣、沒有「從那時到現在」；is going to speak 是未來。"
+  }
+ },
+ "uoe": {
+  "passage": "Our school's volunteer club ___1___ a lot since it started three years ago. When it comes to ___2___ people in our community, the members never say no. Last month, more than fifty students ___3___ in a beach clean-up in Keelung. They also planted trees and flowers behind the gym, and thanks to their care, the little garden is now ___4___, full of flowers and butterflies.",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "has grown",
+     "grew",
+     "grows",
+     "was growing"
+    ],
+    "answer": 0,
+    "explanation": "since it started three years ago＝從三年前到現在 → 現在完成式 has grown。⚠️ since 後面的子句用過去式 started，主要子句才用完成式。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "help",
+     "to help",
+     "helped",
+     "helping"
+    ],
+    "answer": 3,
+    "explanation": "When it comes to＋V-ing：這裡的 to 是介系詞，後面接動名詞 helping，不能接原形 help。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "have participated",
+     "participated",
+     "participate",
+     "are participating"
+    ],
+    "answer": 1,
+    "explanation": "Last month＝已經結束的時間 → 過去簡單式 participated。有 last month、ago、yesterday 就不能用完成式！"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "surviving",
+     "sinking",
+     "seeking",
+     "thriving"
+    ],
+    "answer": 3,
+    "explanation": "full of flowers and butterflies＝長得非常好 → thriving（茁壯、興旺）。surviving 只是「勉強活著」；sinking 下沉；seeking 尋求。"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "The weather ___ rainy and cloudy in the last few days. I hope the sun will come out soon.",
+   "options": [
+    "had been",
+    "will be",
+    "has been",
+    "would be"
+   ],
+   "answer": 2,
+   "explanation": "in the last few days＝最近幾天「到現在」→ 現在完成式 has been。had been 是過去完成式（要有另一個過去時間點）；will be / would be 意思不合。全國答對率只有 46%！",
+   "source": "106會考#12"
+  },
+  {
+   "id": "q2",
+   "question": "Paul misses his parents a lot. He ___ them since he came to work in Taiwan a year ago.",
+   "options": [
+    "didn't see",
+    "doesn't see",
+    "won't see",
+    "hasn't seen"
+   ],
+   "answer": 3,
+   "explanation": "since＋過去式子句（he came…）→ 主要子句用現在完成式 hasn't seen（從那時到現在都沒見到）。⚠️ 別被 a year ago 騙去選過去式：ago 屬於 since 子句，不是主要子句。",
+   "source": "110會考#5"
+  },
+  {
+   "id": "q3",
+   "question": "I can't tell you what I think of the movie because I ___ it. I'll probably watch it this Saturday.",
+   "options": [
+    "haven't seen",
+    "am not seeing",
+    "don't see",
+    "won't see"
+   ],
+   "answer": 0,
+   "explanation": "到現在還沒看過、星期六才要看 → haven't seen（現在完成式表示「到目前為止還沒」）。won't see 和後面「星期六會看」矛盾；don't see / am not seeing 不表示經驗。",
+   "source": "113會考#15"
+  },
+  {
+   "id": "q4",
+   "question": "Over the years, Taiwan has always ___ to be a force for good in the world.",
+   "options": [
+    "seeked",
+    "sought",
+    "seeking",
+    "saught"
+   ],
+   "answer": 1,
+   "explanation": "has always＋過去分詞 → seek 的三態是 seek–sought–sought，所以是 sought。seeked、saught 都不是真的字（拼字陷阱）；seeking 不能接在 has 後面。",
+   "source": "vocab: seek / 蕭美琴原句"
+  },
+  {
+   "id": "q5",
+   "question": "The little cat was lost in the mountains for five days without food, but luckily it ___.",
+   "options": [
+    "thrived",
+    "contributed",
+    "participated",
+    "survived"
+   ],
+   "answer": 3,
+   "explanation": "五天沒食物、幸好「活下來了」→ survived。thrived 是「長得很好、興旺」，餓了五天不會 thrive；contributed 貢獻、participated 參加，意思不合。",
+   "source": "vocab: survive / thrive"
+  },
+  {
+   "id": "q6",
+   "question": "When it comes to ___ money for the school trip, Amy always has great ideas.",
+   "options": [
+    "raise",
+    "to raise",
+    "raising",
+    "raised"
+   ],
+   "answer": 2,
+   "explanation": "When it comes to 的 to 是介系詞 → 後面接 V-ing：raising。⚠️ 看到 to 就選原形是會考常見陷阱（look forward to / be used to / contribute to 也一樣）。",
+   "source": "phrase: when it comes to (會考 to+V-ing 陷阱)"
+  }
+ ],
+ "dialog": {
+  "greet": "Good morning, Roby! Ready for today's lesson? 早安，Roby！今天也一起加油吧！",
+  "present": "Today: 'have done' or 'did'? Look for the time clue! 今天的重點：找時間線索，決定用完成式還是過去式。",
+  "correct": [
+   "Excellent! You found the time clue. 太棒了，你抓到時間線索了！",
+   "Well done — that's exactly right! 完全正確，好厲害！",
+   "Great job! You've really got it. 很好，你真的懂了！"
+  ],
+  "wrong": [
+   "Almost! Check the time words again. 差一點！再看一次時間詞。",
+   "No worries — mistakes help us learn. 沒關係，錯誤會讓我們進步。",
+   "Look for 'since', 'ago' or 'last…'. 找找看有沒有 since、ago 或 last…。"
+  ],
+  "hint": "Is the time finished, or does it continue until now? 這段時間已經結束了，還是一直到現在？",
+  "submit": "Let's check your answers together. 我們一起來對答案吧！",
+  "done": "You have worked hard today — I'm proud of you! 你今天很認真，我以你為榮！"
+ }
+}
