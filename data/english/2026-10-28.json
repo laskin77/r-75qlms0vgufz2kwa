@@ -1,0 +1,250 @@
+{
+ "date": "2026-10-28",
+ "topic": "Trips & experiences + past simple for a finished period（旅行經驗＋for 一段已結束時間用過去式）",
+ "shadow": {
+  "speaker": "Puma Shen 沈伯洋（2026 年 9 月接受美國 Talking Taiwan 節目主持人 Felicia Lynn 的英文專訪，談 7 月的訪美行程；Talking Taiwan 官方 YouTube）",
+  "source_url": "https://www.youtube.com/watch?v=D0CSPTdkIYc&t=855s",
+  "youtubeId": "D0CSPTdkIYc",
+  "start": 855.2,
+  "end": 876.0,
+  "chunks": [
+   {
+    "start": 855.2,
+    "end": 858.7,
+    "text": "So we visited Los Angeles and DC and New York, right?"
+   },
+   {
+    "start": 858.7,
+    "end": 861.4,
+    "text": "So there are several places that we visited."
+   },
+   {
+    "start": 861.4,
+    "end": 866.9,
+    "text": "So one of the reason that why we paid this visit is that because I'm currently, I'm still a legislator,"
+   },
+   {
+    "start": 866.9,
+    "end": 876.0,
+    "text": "and it's kind of important that we exchange with other legislator talking about national defense, national security issue. So that's what we did in DC."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "pay a visit (to + place / person)",
+    "zh": "去拜訪、去一趟（比 visit 更口語；過去式 paid a visit）"
+   },
+   {
+    "en": "That's what we did (in …).",
+    "zh": "那就是我們（在……）做的事。用來總結一段已經結束的經驗，動詞用過去式 did"
+   }
+  ],
+  "respond": {
+   "prompt_en": "Tell me about a trip you took. Where did you go, and what did you do there? Answer in one sentence.",
+   "prompt_zh": "說說你去過的一趟旅行：去了哪裡、做了什麼？用一句英文回答（旅行已經結束，所以用過去式！例如 Last summer we visited…, and that's what we did in…）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "pay a visit (to)",
+   "pos": "phr.",
+   "zh": "拜訪、去一趟",
+   "example": "Last weekend we paid a visit to my grandparents in Tainan.",
+   "note": "沈伯洋原句：one of the reasons why we paid this visit…（pay → paid → paid，不是 payed！）。拜訪「地方或人」要加 to：pay a visit to Japan；但 visit 當動詞不加 to：visit Japan。"
+  },
+  {
+   "word": "legislator",
+   "pos": "n.",
+   "zh": "立法委員、立法者",
+   "example": "The legislators spent hours discussing the new law.",
+   "note": "沈伯洋原句：I'm still a legislator.（他是立委）。同字根：legislate（立法 v.）、legislation（法律、立法 n.）、the Legislative Yuan（立法院）。"
+  },
+  {
+   "word": "exchange (v. / n.)",
+   "pos": "v. / n.",
+   "zh": "交換；交流",
+   "example": "Our class exchanged ideas with students from a school in Japan.",
+   "note": "沈伯洋原句：we exchange with other legislators。常用搭配：exchange A for B（用 A 換 B）、exchange ideas with sb（和某人交流想法）、an exchange student（交換學生）。"
+  },
+  {
+   "word": "currently",
+   "pos": "adv.",
+   "zh": "目前、現在",
+   "example": "My sister is currently studying in Canada.",
+   "note": "沈伯洋原句：I'm currently, I'm still a legislator. ⚠️ currently＝「現在」，常配現在式/現在進行式；不要和 actually（其實）搞混。形容詞 current（目前的）：the current mayor。"
+  },
+  {
+   "word": "accomplish",
+   "pos": "v.",
+   "zh": "完成、達成（目標）",
+   "example": "We accomplished our goal of reading ten books in a month.",
+   "note": "同一段訪問：the last thing that we accomplished there…。accomplish a goal / a task＝達成目標/任務（比 finish 更強調「成功做到」）。名詞 accomplishment（成就）。"
+  }
+ ],
+ "grammar": {
+  "title": "過去簡單式 vs 現在完成式：for a week / for 111 days 不一定是完成式！",
+  "explain": "111 年會考「Ariel ___ every night for a week before her Chinese test」全國答對率只有 35%！很多人一看到 for 就選完成式。\n① for＋一段時間只告訴你「多久」，不告訴你時態。要問：這段時間「結束了沒」？\n② 已經結束的一段時間 → 過去簡單式：Ariel studied for a week before the test（考試已經考完、還拿了好成績 got）。Kevin ran for 111 days and finally finished in 2007。\n③ 一直延續到現在 → 現在完成式：I have lived here for ten years.（現在還住這裡）\n④ 句子裡的其他動詞也是線索：and got a very good grade、finally finished 都是過去式 → 整件事已經結束，前面也用過去式。\n⑤ 今天的一部分也可能已結束：this afternoon（現在已經晚上了）→ I did most of it this afternoon。\n🔑 判斷法：找「結束的證據」——過去的日期、已發生的結果、故事裡其他過去式動詞。\n⭐ 沈伯洋原句：We visited Los Angeles and DC and New York… That's what we did in DC.（7 月的行程已經結束 → 過去式）",
+  "examples": [
+   "Ariel studied every night for a week before her Chinese test and got a very good grade. —— 111 會考：考試已結束＋got → studied（答對率 35%）",
+   "Kevin Lin started to run across the Sahara Desert in November, 2006. He ran for 111 days, and finally finished his run on February 21, 2007. —— 111 補考：2006–2007 已結束 → ran",
+   "So we visited Los Angeles and DC and New York, right? —— 沈伯洋原句：7 月訪美已結束 → visited"
+  ],
+  "practice": {
+   "question": "My grandfather ___ in Japan for five years when he was young. Now he lives in Taichung.",
+   "options": [
+    "has worked",
+    "works",
+    "worked",
+    "is working"
+   ],
+   "answer": 2,
+   "explanation": "when he was young＋Now he lives in Taichung＝在日本工作那五年已經結束 → 過去式 worked。has worked 表示「到現在還在」，但他現在住台中，所以不對。"
+  }
+ },
+ "uoe": {
+  "passage": "Last summer, my family ___1___ a visit to my uncle in Tokyo. We stayed there ___2___ ten days, and every day felt like an adventure. We ___3___ several museums and even took a cooking class. On the last night, my uncle asked me what I had ___4___ during the trip. I told him I had finally learned to order food in Japanese all by myself!",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "paid",
+     "have paid",
+     "payed",
+     "pay"
+    ],
+    "answer": 0,
+    "explanation": "Last summer＝已結束的時間 → 過去式。pay 的過去式是 paid（不是 payed，拼字陷阱！）；have paid 是完成式，不能和 last summer 一起用。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "since",
+     "for",
+     "during",
+     "ago"
+    ],
+    "answer": 1,
+    "explanation": "ten days 是「一段時間」→ for ten days。since 後面接時間「點」；during 接名詞（during the trip）；ago 要放在時間後面（ten days ago）而且意思不合。⚠️ 這裡有 for，但旅行已結束，所以動詞用過去式 stayed，不是完成式！"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "have visited",
+     "visit",
+     "were visiting",
+     "visited"
+    ],
+    "answer": 3,
+    "explanation": "整段在講去年夏天已經結束的旅行，後面也是 took → 過去式 visited。have visited 不能用在已結束的時間。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "exchanged",
+     "accomplished",
+     "currently",
+     "survived"
+    ],
+    "answer": 1,
+    "explanation": "what I had accomplished＝我在旅行中「達成了什麼」，下一句回答「終於學會自己用日文點餐」→ accomplished。exchanged 交換；currently 是副詞，不能放在 had 後面；survived 活下來，意思不合。"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "Ariel ___ every night for a week before her Chinese test and got a very good grade.",
+   "options": [
+    "has studied",
+    "was going to study",
+    "studied",
+    "studies"
+   ],
+   "answer": 2,
+   "explanation": "考試已經結束（and got a very good grade 是過去式）→ 那一週的讀書也結束了 → studied。⚠️ 看到 for a week 就選 has studied 是最大陷阱，全國答對率只有 35%！",
+   "source": "111會考#19"
+  },
+  {
+   "id": "q2",
+   "question": "Kevin Lin started to run across the Sahara Desert in November, 2006. He ___ for 111 days, and finally finished his run on February 21, 2007.",
+   "options": [
+    "ran",
+    "has run",
+    "was running",
+    "would run"
+   ],
+   "answer": 0,
+   "explanation": "2006 年 11 月到 2007 年 2 月，早就結束了，還有 finally finished → 過去簡單式 ran。has run 表示到現在還在跑，不合理；was running 要有另一個過去時間點打斷。",
+   "source": "111補考#19"
+  },
+  {
+   "id": "q3",
+   "question": "Mom: Linda, you've been playing computer games all evening! Have you finished your report? Linda: Well, ___ most of it this afternoon, and I'll finish it by Friday.",
+   "options": [
+    "I would do",
+    "I was doing",
+    "I'll do",
+    "I did"
+   ],
+   "answer": 3,
+   "explanation": "現在是晚上（all evening），this afternoon 已經過去了 → 過去式 I did。I'll do 是未來，和「下午已做」矛盾；I was doing 只說「當時正在做」，不表示已完成大部分。",
+   "source": "113會考#21"
+  },
+  {
+   "id": "q4",
+   "question": "During the trip, the mayor ___ a visit to a small school in the mountains.",
+   "options": [
+    "payed",
+    "paid",
+    "pays",
+    "has paid"
+   ],
+   "answer": 1,
+   "explanation": "During the trip（已結束的旅行）→ 過去式。pay → paid → paid，payed 不是正確拼法（拼字陷阱）；has paid 不配已結束的旅行。",
+   "source": "vocab: pay a visit / 沈伯洋原句"
+  },
+  {
+   "id": "q5",
+   "question": "The two schools ___ ideas about recycling last month, and both of them learned a lot.",
+   "options": [
+    "accomplished",
+    "survived",
+    "exchanged",
+    "legislated"
+   ],
+   "answer": 2,
+   "explanation": "exchange ideas＝交流想法 → exchanged。accomplished 達成（目標），不能接 ideas；survived 活下來；legislated 立法，都不合。last month → 過去式。",
+   "source": "vocab: exchange"
+  },
+  {
+   "id": "q6",
+   "question": "My brother ___ in Kaohsiung for three years, but he moved back to Taipei last year.",
+   "options": [
+    "lived",
+    "has lived",
+    "lives",
+    "is living"
+   ],
+   "answer": 0,
+   "explanation": "he moved back to Taipei last year＝住高雄那三年已經結束 → 過去式 lived。has lived 表示「到現在還住高雄」，和搬回台北矛盾。會考最愛用 for 騙你選完成式！",
+   "source": "會考 trap: for + finished period (仿 111會考#19)"
+  }
+ ],
+ "dialog": {
+  "greet": "Good morning, Roby! Did you sleep well? 早安，Roby！今天也一起加油吧！",
+  "present": "Today: 'for a week' — finished or not? 今天的重點：for 一段時間，要先看它結束了沒！",
+  "correct": [
+   "Excellent! You spotted the finished time. 太棒了，你看出時間已經結束了！",
+   "Well done — that's exactly right! 完全正確，好厲害！",
+   "Great job! The trap didn't catch you. 很好，陷阱沒騙到你！"
+  ],
+  "wrong": [
+   "Almost! Is that time over now? 差一點！那段時間現在結束了嗎？",
+   "No worries — mistakes help us learn. 沒關係，錯誤會讓我們進步。",
+   "Look at the other verbs in the sentence. 看看句子裡其他動詞是什麼時態。"
+  ],
+  "hint": "Don't stop at 'for'. Look for a finished result or a past date. 別只看到 for 就停，找找已經結束的結果或過去的日期。",
+  "submit": "Let's check your answers together. 我們一起來對答案吧！",
+  "done": "You worked hard today — I'm proud of you! 你今天很認真，我以你為榮！"
+ }
+}
