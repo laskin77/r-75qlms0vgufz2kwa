@@ -1,0 +1,250 @@
+{
+ "date": "2026-10-29",
+ "topic": "Plans & the future + be going to / be coming / will（未來計畫＋未來式三種說法陷阱）",
+ "shadow": {
+  "speaker": "Tsai Ing-wen 蔡英文（2025 年 11 月 10 日在德國柏林「Berlin Freedom Conference 柏林自由會議」的英文演講結尾；Berlin Freedom Conference 官方 YouTube）",
+  "source_url": "https://www.youtube.com/watch?v=QgLB2MRP9aE&t=764s",
+  "youtubeId": "QgLB2MRP9aE",
+  "start": 764.0,
+  "end": 784.6,
+  "chunks": [
+   {
+    "start": 764.0,
+    "end": 766.9,
+    "text": "Taiwan and all those that share our values"
+   },
+   {
+    "start": 766.9,
+    "end": 772.6,
+    "text": "have a key role to play in ensuring that democracy prevails."
+   },
+   {
+    "start": 772.6,
+    "end": 777.7,
+    "text": "While it may seem like we are faced with unprecedented challenges,"
+   },
+   {
+    "start": 777.7,
+    "end": 784.6,
+    "text": "I'm confident that by working together, we will create a bright future for free societies."
+   }
+  ],
+  "phrases": [
+   {
+    "en": "have a key role to play in + V-ing",
+    "zh": "在（做）某事上扮演關鍵角色"
+   },
+   {
+    "en": "I'm confident that + S + will …",
+    "zh": "我有信心……會……（用 will 說對未來的預測和信心）"
+   }
+  ],
+  "respond": {
+   "prompt_en": "What are you going to do this weekend, and what do you think will happen? Answer in one sentence.",
+   "prompt_zh": "這個週末你打算做什麼？你覺得結果會怎樣？用一句英文回答（已經計畫好的用 be going to，預測/信心用 will！例如 I'm going to…, and I'm confident it will…）"
+  }
+ },
+ "vocab": [
+  {
+   "word": "prevail",
+   "pos": "v.",
+   "zh": "獲勝、佔上風；盛行",
+   "example": "In the end, truth will prevail over rumors.",
+   "note": "蔡英文原句：ensuring that democracy prevails。prevail over / against sth＝勝過……。形容詞 prevalent（普遍的、盛行的）。B2 常見字。"
+  },
+  {
+   "word": "unprecedented",
+   "pos": "adj.",
+   "zh": "前所未有的、空前的",
+   "example": "The typhoon brought unprecedented rain to the city.",
+   "note": "蔡英文原句：unprecedented challenges。拆字：un（不）+ precedent（先例）+ ed＝沒有先例的。重音在 PRE：un-PRE-ce-den-ted。"
+  },
+  {
+   "word": "(be) confident (that / about / of)",
+   "pos": "adj.",
+   "zh": "有信心的、確信的",
+   "example": "I'm confident that our class will win the relay race.",
+   "note": "蔡英文原句：I'm confident that… we will create…。⚠️ confident（有信心的）≠ confidential（機密的）。名詞 confidence：have confidence in sb。"
+  },
+  {
+   "word": "ensure",
+   "pos": "v.",
+   "zh": "確保、保證",
+   "example": "Please double-check your answers to ensure there are no careless mistakes.",
+   "note": "蔡英文原句：in ensuring that democracy prevails。ensure (that) + 子句／ensure + N。⚠️ ensure 確保 vs insure 保險 vs assure sb 向某人保證（assure 後面接人）。"
+  },
+  {
+   "word": "upcoming",
+   "pos": "adj.",
+   "zh": "即將到來的",
+   "example": "Are you ready for the upcoming exam in December?",
+   "note": "只能放在名詞前：the upcoming test（✗ The test is upcoming 較少用）。說「快到了」用 be coming：Christmas is coming（114 會考考點）。"
+  }
+ ],
+ "grammar": {
+  "title": "未來的說法：be going to／be coming（現在進行式）／will，各用在哪？",
+  "explain": "108 年會考「___ that last piece of pie? If not, can I have it?」答對率只有 42%！會考很愛在「問句」和「已有的計畫」裡考未來式。\n① be going to＋原形 V：事先就有的打算／計畫。問別人打不打算做：Are you going to eat that last piece of pie?（108 會考）\n② be＋V-ing（現在進行式）表示「已安排好、快要發生」：Christmas is coming.（114 會考：聖誕節快到了）；Annie is going to meet us this weekend（111 補考：已經約好的事）。\n③ will＋原形 V：說話當下才決定、承諾、主動提議：Sure, honey. I'll wait for you at the school gate.（111 補考：爸爸當場答應）；也用在預測和信心：I'm confident that we will create a bright future.\n④ 陷阱：看到 this weekend／tomorrow 就要用未來；選 Do you eat / meets（現在簡單式）通常是習慣，不是這一次的計畫；I wait for / I'm waiting for 不能表示「答應明天做」。\n🔑 判斷法：之前就計畫好 → be going to；已安排、快到了 → be V-ing；現在才決定／答應／預測 → will。\n⭐ 蔡英文原句：I'm confident that by working together, we will create a bright future for free societies.（表達信心和預測 → will）",
+  "examples": [
+   "Are you going to eat that last piece of pie? If not, can I have it? —— 108 會考：問對方的打算 → be going to（答對率 42%）",
+   "Christmas is coming, and I want to visit my aunt abroad. —— 114 會考：快到了 → is coming",
+   "I'm confident that by working together, we will create a bright future for free societies. —— 蔡英文原句：信心／預測 → will"
+  ],
+  "practice": {
+   "question": "A: Oh, the phone is ringing, and my hands are wet. B: Don't worry. ___ it for you.",
+   "options": [
+    "I answered",
+    "I answer",
+    "I'll answer",
+    "I'm answering"
+   ],
+   "answer": 2,
+   "explanation": "B 是「聽到電話響、當下才決定幫忙」→ 用 will：I'll answer it for you. I answer 是習慣；I answered 是過去；I'm answering 是正在做／已安排，不是當場的主動提議。"
+  }
+ },
+ "uoe": {
+  "passage": "Our school's sports day ___1___ next Friday, and everyone in my class is excited. Last month we decided on a plan: we ___2___ a dance at the opening show, and we have practiced it every day since then. Yesterday our teacher smiled and said, \"I'm ___3___ that you will do a great job.\" Then my best friend Amy told me she had left her costume at her grandma's house. \"Don't worry,\" I said right away. \"I ___4___ you my spare one.\"",
+  "gaps": [
+   {
+    "id": "u1",
+    "options": [
+     "has come",
+     "is coming",
+     "came",
+     "was coming"
+    ],
+    "answer": 1,
+    "explanation": "next Friday＝還沒到、但已排定快要來 → 現在進行式表未來 is coming（114 會考考法：Christmas is coming）。came／was coming 是過去；has come 表示已經來了。"
+   },
+   {
+    "id": "u2",
+    "options": [
+     "are going to perform",
+     "performed",
+     "have performed",
+     "were performing"
+    ],
+    "answer": 0,
+    "explanation": "上個月就決定好的計畫，表演還沒發生（在 next Friday）→ be going to。performed／have performed 都表示已經表演過了。"
+   },
+   {
+    "id": "u3",
+    "options": [
+     "prevailed",
+     "upcoming",
+     "unprecedented",
+     "confident"
+    ],
+    "answer": 3,
+    "explanation": "I'm confident that…＝我有信心……（蔡英文原句同樣句型）。unprecedented 前所未有的、upcoming 即將到來的，意思不合；prevailed 是動詞，不能放在 I'm 後面。"
+   },
+   {
+    "id": "u4",
+    "options": [
+     "was lending",
+     "'ll lend",
+     "have lent",
+     "lent"
+    ],
+    "answer": 1,
+    "explanation": "right away＝當下才決定幫忙、主動提議 → will：I'll lend you my spare one。lent／have lent 表示已經借了；was lending 是過去進行式。"
+   }
+  ]
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "question": "___ that last piece of pie? If not, can I have it? I didn't eat much this morning.",
+   "options": [
+    "Had you eaten",
+    "Do you eat",
+    "Are you going to eat",
+    "Were you eating"
+   ],
+   "answer": 2,
+   "explanation": "問對方「打不打算吃最後那塊派」→ 未來的打算用 be going to：Are you going to eat…? Do you eat 是問習慣；Had you eaten／Were you eating 是過去。全國答對率只有 42%！",
+   "source": "108會考#11"
+  },
+  {
+   "id": "q2",
+   "question": "Christmas ___ and I want to visit my aunt abroad. Do you have any plans yet?",
+   "options": [
+    "comes",
+    "is coming",
+    "was coming",
+    "came"
+   ],
+   "answer": 1,
+   "explanation": "問 Do you have any plans yet? → 聖誕節還沒到、快要來了 → 現在進行式表未來 is coming。came／was coming 是過去；comes 是一般事實，不表示「快到了」。",
+   "source": "114會考#10"
+  },
+  {
+   "id": "q3",
+   "question": "Annie ___ us this weekend? Why didn't you tell me earlier? I really want to see her, but I've told Grandpa I'll help him on the farm.",
+   "options": [
+    "met",
+    "has met",
+    "is going to meet",
+    "meets"
+   ],
+   "answer": 2,
+   "explanation": "this weekend 還沒到，是已經安排好的見面 → is going to meet。met／has met 表示已經見過了，和 I really want to see her 矛盾；meets 是習慣。",
+   "source": "111補考#11"
+  },
+  {
+   "id": "q4",
+   "question": "Diana: Dad, could you pick me up around six tomorrow evening? I have classes until then. Charles: Sure, honey. ___ you at the school gate.",
+   "options": [
+    "I waited for",
+    "I'm waiting for",
+    "I'll wait for",
+    "I wait for"
+   ],
+   "answer": 2,
+   "explanation": "爸爸「當下答應」明天去接 → 承諾用 will：I'll wait for you。I wait for 是習慣；I'm waiting for 是現在正在等；I waited for 是過去。",
+   "source": "111補考#21"
+  },
+  {
+   "id": "q5",
+   "question": "The heavy rain last night caused ___ flooding. Nothing like it had ever happened in our town before.",
+   "options": [
+    "reliable",
+    "unprecedented",
+    "confident",
+    "upcoming"
+   ],
+   "answer": 1,
+   "explanation": "Nothing like it had ever happened before＝以前從沒發生過 → unprecedented（前所未有的）。confident 有信心的；upcoming 即將到來的（昨晚已發生，不合）；reliable 可靠的。",
+   "source": "vocab: unprecedented / 蔡英文原句"
+  },
+  {
+   "id": "q6",
+   "question": "Before you hand in the test, check your answers again to ___ that there are no careless mistakes.",
+   "options": [
+    "exaggerate",
+    "prevail",
+    "insure",
+    "ensure"
+   ],
+   "answer": 3,
+   "explanation": "ensure that…＝確保……。⚠️ insure 是「投保」，拼法很像是陷阱！prevail 獲勝；exaggerate 誇大，都不合。",
+   "source": "vocab: ensure (vs insure)"
+  }
+ ],
+ "dialog": {
+  "greet": "Good morning, Roby! Ready for a new day? 早安，Roby！今天也一起加油吧！",
+  "present": "Today: talking about the future — going to, will, or -ing? 今天的重點：說未來的三種方法！",
+  "correct": [
+   "Excellent! You picked the right future form. 太棒了，未來式選對了！",
+   "Well done — that's exactly right! 完全正確，好厲害！",
+   "Great job! The trap didn't catch you. 很好，陷阱沒騙到你！"
+  ],
+  "wrong": [
+   "Almost! Was it planned before, or decided just now? 差一點！是事先計畫好的，還是當下才決定的？",
+   "No worries — mistakes help us learn. 沒關係，錯誤會讓我們進步。",
+   "Look for the time words: this weekend, tomorrow, next Friday. 找找時間線索喔！"
+  ],
+  "hint": "Plan → be going to. Arranged and coming soon → be + V-ing. Deciding or promising now → will. 計畫用 going to，已安排用進行式，當下決定用 will。",
+  "submit": "Let's check your answers together. 我們一起來對答案吧！",
+  "done": "You worked hard today — I'm confident you'll do great on your exam! 你今天很認真，段考一定沒問題！"
+ }
+}
