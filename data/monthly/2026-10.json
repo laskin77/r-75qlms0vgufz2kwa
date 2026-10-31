@@ -1,108 +1,35 @@
 {
- "sample": true,
+ "sample": false,
  "year": 2026,
  "month": 10,
- "plan": {
-  "done": 68,
-  "total": 85
- },
+ "plan": {"done": 3, "total": 3},
  "weeks": [
-  {
-   "label": "第 1 週（10/1–10/4）",
-   "done": 9,
-   "total": 12
-  },
-  {
-   "label": "第 2 週（10/5–10/11）",
-   "done": 17,
-   "total": 21
-  },
-  {
-   "label": "第 3 週（10/12–10/18）",
-   "done": 19,
-   "total": 21
-  },
-  {
-   "label": "第 4 週（10/19–10/25）",
-   "done": 15,
-   "total": 21
-  },
-  {
-   "label": "第 5 週（10/26–10/31）",
-   "done": 8,
-   "total": 10
-  }
+  {"label": "第 4 週（10/19–10/25）", "done": 3, "total": 3}
  ],
- "daily": {
-  "days": 31,
-  "contact": 28,
-  "english": 24
- },
+ "daily": {"days": 1, "contact": 0, "contactMissing": 1, "english": 1},
  "homework": [
-  {
-   "name": "寰宇數學回家功課",
-   "ontime": 4,
-   "late": 0
-  },
-  {
-   "name": "廖柏坤理化每週功課",
-   "ontime": 3,
-   "late": 1
-  },
-  {
-   "name": "國文家教功課",
-   "ontime": 4,
-   "late": 0
-  },
-  {
-   "name": "ADA 英文家教功課",
-   "ontime": 2,
-   "late": 2
-  }
- ],
- "focusMinutes": {
-  "數學": 540,
-  "理化": 610,
-  "國文": 300,
-  "英文": 420,
-  "社會": 180
- },
- "notes": [
-  {
-   "subject": "國文",
-   "count": 2,
-   "points": 6
-  },
-  {
-   "subject": "理化",
-   "count": 3,
-   "points": 9
-  },
-  {
-   "subject": "社會",
-   "count": 1,
-   "points": 1
-  }
- ],
- "pointsTotal": 42,
- "highlights": [
-  "（範例）理化連續三週準時完成",
-  "（範例）第 3 週讀書計畫完成率 90%"
- ],
- "advice": [
-  "（範例）ADA 英文功課提早一天開始",
-  "（範例）英文大師每天固定睡前做"
+  {"name": "寰宇數學回家功課", "ontime": 1, "late": 0}
  ],
  "scores": [
-  {
-   "subject": "國文",
-   "count": 0,
-   "avg": "—"
-  },
-  {
-   "subject": "英文",
-   "count": 0,
-   "avg": "—"
-  }
+  {"subject": "國文", "count": 0, "avg": "—"},
+  {"subject": "英文", "count": 0, "avg": "—"}
+ ],
+ "notes": [
+  {"subject": "國文", "count": 0, "points": 0},
+  {"subject": "理化", "count": 0, "points": 0},
+  {"subject": "社會", "count": 0, "points": 0}
+ ],
+ "pointsTotal": 0,
+ "highlights": [
+  "10/21 讀書計畫 3 項（ADA、理化、理化自學檔案）全部完成，Roby 自己確認、爸爸也簽名了",
+  "寰宇數學回家功課 10/21 就做完，比 10/22（四）截止還早",
+  "10 月下旬開始用每日檢查表 App，國文、英文小測驗也都放進同一個 App 了"
+ ],
+ "advice": [
+  "這個月只找到 10/21 一張已簽檢查表（10/22–10/31 都沒有存到 OneDrive），所以完成率、聯絡簿和英文大師天數只算 10/21 這一天；11 月請每晚簽完就存 PNG 到 OneDrive 桌面「Roby每日檢查」",
+  "專注計時要按「開始」並專心到結束（10/21 理化 19:25–21:39 但專注 0 分），11 月才有各科專注時數",
+  "英文大師、國文小測驗請在 App 裡做完訂正，分數才會自動記錄（10 月沒有成績紀錄）",
+  "廖柏坤理化、國文家教、ADA 功課 10 月沒有完成紀錄，無法算準時率；週報存成 PNG 放到「Roby週報」才能累計筆記加點",
+  "聯絡簿每天記得帶回來給爸爸簽"
  ]
 }
