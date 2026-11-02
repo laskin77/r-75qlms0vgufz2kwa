@@ -144,6 +144,7 @@ function quizBlock(o){/* o:{el,items,st(物件),save(),bud,subj,date,title,onDon
 
 /* ---------- 科目頁 ---------- */
 function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,false);root.appendChild(bud);
+ if(subj==='chinese')root.insertAdjacentHTML('beforeend','<a class="card review-entry noprint" href="review/index.html"><img src="review/assets/monkey.png" alt=""><span><b>📚 八上二段國文複習</b><small>愛蓮說・鳥・生命中的碎珠　每天 8 題形音義＋3 段改錯＋12 題閱讀</small></span><i>›</i></a>');
  if(!D){root.appendChild(empty(subj==='english'?'今天沒有英文功課喔，休息一下':'今天沒有國文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
  var KEY='roby-quiz-'+subj+'-'+(D.date||DATE),st=LS.get(KEY,{});st.started_at=st.started_at||nowIso();st.blocks=st.blocks||{};st.steps=st.steps||{};
  var save=function(){LS.set(KEY,st)};save();
@@ -316,19 +317,23 @@ $('#tov .tx').onclick=function(){if(confirm('結束這次計時？')){var T=getT
 setInterval(tTick,1000);
 
 /* ---------- 錯題本頁 ---------- */
-var wbFilter='all';
+var wbFilter='all',wbTopic='all';
 function wrongPage(root){var bud=buddy('check',null);bud.L.name='小猴子';root.appendChild(bud);
  var h=document.createElement('h1');h.textContent='錯題本';root.appendChild(h);
  var a=LS.get(WBK,[]),f=document.createElement('div');f.className='filt noprint';
  [['all','全部'],['chinese','國文'],['english','英文'],['todo','還沒訂正']].forEach(function(x){var b=document.createElement('button');b.textContent=x[1];if(wbFilter===x[0])b.className='on';b.onclick=function(){wbFilter=x[0];render()};f.appendChild(b)});root.appendChild(f);
- var list=a.filter(function(x){return wbFilter==='all'||(wbFilter==='todo'?!x.fixed:x.subject===wbFilter)});
+ var f2=document.createElement('div');f2.className='filt noprint topic-filt';[['all','全部'],['形音義','形音義'],['注音','注音'],['改錯','改錯'],['閱讀','閱讀']].forEach(function(x){var n=x[0]==='all'?'':' '+a.filter(function(y){return y.topic===x[0]}).length;var b=document.createElement('button');b.dataset.topic=x[0];b.textContent=x[1]+n;if(wbTopic===x[0])b.className='on';b.onclick=function(){wbTopic=x[0];render()};f2.appendChild(b)});root.appendChild(f2);
+ var list=a.filter(function(x){return (wbFilter==='all'||(wbFilter==='todo'?!x.fixed:x.subject===wbFilter))&&(wbTopic==='all'||x.topic===wbTopic)});
  bud.say(a.length?'這裡有 '+a.length+' 題錯過的題目，考前拿出來複習最有用！':'錯題本是空的，太厲害了！');
  if(!list.length){root.appendChild(empty('這裡還沒有錯題 ✨','monkey-head.png'));return}
  var c=card(root,'');list.forEach(function(x){var e=document.createElement('div');e.className='wb';
-  e.innerHTML='<div class="meta">'+(x.subject==='english'?'英文':x.subject==='chinese'?'國文':esc(x.subject))+'・'+md(x.date)+'・'+esc(x.id)+(x.fixed?'・<span class="ok-tag">已訂正</span>':'・<span class="no">未訂正</span>')+'</div><div>'+esc(x.question)+'</div>'+
+  e.innerHTML='<div class="meta">'+(x.subject==='english'?'英文':x.subject==='chinese'?'國文':esc(x.subject))+'・'+md(x.date)+'・'+esc(x.id)+(x.topic?'・<span class="tp">'+esc(x.topic)+'</span>':'')+(x.fixed?'・<span class="ok-tag">已訂正</span>':'・<span class="no">未訂正</span>')+'</div><div'+(x.words?' class="wbp"':'')+'>'+esc(x.question)+'</div>'+(x.words?wbPairs(x):'')+
   '<div>你的答案：<span class="yours">'+esc(x.yours)+'</span>　正解：<span class="ans">'+esc(x.answer)+'</span></div>'+(x.explanation?'<div class="exp">💡 '+esc(x.explanation)+'</div>':'')+'<button class="noprint del" style="float:right">我會了，移除</button><div style="clear:both"></div>';
   $('.del',e).onclick=function(){LS.set(WBK,LS.get(WBK,[]).filter(function(y){return y.key!==x.key}));render()};c.appendChild(e)});}
 
+function wbPairs(x){var bad={};(x.words||[]).forEach(function(w){bad[w.wrong+w.right]=w.status});var lab={half:'寫錯',missed:'沒找到',self:'自評對'};
+ return '<div class="pairs">'+String(x.answer||'').split('、').map(function(p){var m=p.match(/^(.)→(.)（(.*)）$/);if(!m)return '';var st=bad[m[1]+m[2]];
+  return '<span class="pair'+(st&&st!=='self'?' bad':'')+'"><s>'+esc(m[1])+'</s>→<b>'+esc(m[2])+'</b> <small>'+esc(m[3])+(st?'・'+lab[st]:'')+'</small></span>'}).join('')+((x.false_clicks||[]).length?'<span class="pair bad">點錯：'+esc(x.false_clicks.join('、'))+'</span>':'')+'</div>'}
 /* ---------- 週報 ---------- */
 function weeklyPage(root){var D=DATA.weekly||DATA.weeklyPrev;root.insertAdjacentHTML('beforeend','<img class="hero" src="monkey-hero.webp" alt="">');
  if(!D){root.appendChild(empty('這週還沒有週報喔（週日更新）','cat-foot.webp'));return}
