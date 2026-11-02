@@ -62,12 +62,13 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 .okbtn{margin-left:10px;padding:0 20px;height:40px;border-radius:18px;border:none;background:#2f5f4f;color:#fff;font-size:16px;font-weight:bold;box-shadow:0 3px 0 #1d3f33}.okbtn:disabled{background:#cfc6b4;box-shadow:none;color:#fff}.prog-note{text-align:center;color:#8a7560;margin:12px 0 70px;font-size:15px}.pconf{display:block;width:auto;margin:10px auto 0;padding:8px 28px}
 .reset-row{text-align:center;margin:18px 0 70px}.reset{font-size:13px;padding:4px 14px;min-height:30px;border-radius:14px;border:1px solid #d9b8a8;background:#fff7f2;color:#a0523d}
 .emb,.emb body{background:transparent}.emb .back,.emb h1,.emb .lead,.emb .monkey{display:none}.emb .top{position:static;border-radius:14px;margin:0 0 6px}.emb .wrap{padding:0 0 20px}.emb .reset-row{margin:12px 0 10px}.emb .prog-note{margin:10px 0 12px}.emb .toast{position:fixed;top:12px;bottom:auto}
+.daybar{background:#fff6e3;border:1px solid #e0c99a;border-radius:14px;padding:6px 12px;margin:0 0 10px;font-size:15px;color:#6b4f2a}.pies2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}.pc b{font-size:24px}.dt td,.dt th{font-size:14px;padding:5px 4px}.dt .bar{height:6px;margin-top:3px}.dt tr.today{background:#fff6e3}
 </style></head>
 <body>
 <div class="top"><div><span>題庫總數</span><b id="sTotal">0</b><span>題</span></div><div><span>已寫過</span><b id="sSeen">0</b><span>題</span></div><div><span>今天已寫</span><b id="sToday">0</b><span>題</span></div></div>
 <div class="wrap">
  <div class="back"><a href="../index.html#check">← 回今日檢查</a><a href="../index.html#chinese">← 回國文</a></div><h1>八上二段國文複習</h1>
- <p class="lead">翰林版　愛蓮說、鳥、生命中的碎珠　每天 8 題形音義＋3 段改錯＋12 題閱讀，答錯的題目自動收進「錯題本」</p>
+ <p class="lead">翰林版　愛蓮說、鳥、生命中的碎珠　30 天計畫：每天約 27 題（形音義＋3 段改錯＋閱讀），答錯的題目自動收進「錯題本」</p>
  <div class="tabs"><button data-t="today" class="on">今日題目</button><button data-t="wrong" id="toWb">錯題本（App）<span class="badge" id="wbBadge">0</span></button><button data-t="log">紀錄／總表</button></div>
  <div id="view"></div>
  <div class="reset-row"><button id="resetAll" class="reset">↺ 全部重來</button></div>
@@ -78,7 +79,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 <script>
 (function(){
 var EMB=/[?&]embed=1/.test(location.search);if(EMB)document.documentElement.classList.add('emb');
-var K={prog:'roby-cr-progress',days:'roby-cr-days',wrong:'roby-wrongbook',weak:'roby-cr-weak'};
+var K={prog:'roby-cr-progress',days:'roby-cr-days',wrong:'roby-wrongbook',weak:'roby-cr-weak',plan:'roby-cr-plan'};
 var LS={get:function(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:function(k,v){localStorage.setItem(k,JSON.stringify(v))}};
 var DATA=window.CR_DATA||{questions:[]},QS=DATA.questions,BY={};QS.forEach(function(q){BY[q.id]=q});
 var PLAN=[['形音義選擇題',['形音義','注音'],8],['改錯（整段）',['改錯'],3],['閱讀理解與課文深究',['閱讀'],12]];
@@ -93,7 +94,8 @@ var PUN=/[\s，。、；：！？「」『』（）《》〈〉…—．,.;:!?()
 function grade(q,v){v=v||{};var s=v.s||{},self=v.self||{},pos={},sum=0,res=q.errors.map(function(e){pos[e.i]=1;var f=(e.i in s),r=f&&norm(s[e.i])===norm(e.right),sa=f&&!r&&!!self[e.i];var c=r||sa?1:f?0.5:0;sum+=c;return {e:e,found:f,right:r,self:sa,credit:c,yours:f?s[e.i]:''}});
  var fal=Object.keys(s).filter(function(k){return !pos[k]});var frac=Math.max(0,(sum-0.5*fal.length)/q.errors.length);return {res:res,fal:fal,frac:frac,full:frac===1&&!fal.length}}
 function answeredQ(q,v){return q.type==='passage'?!!(v&&v.s&&Object.keys(v.s).length):(v!==''&&v!=null)}
-function dayScore(st){var np=st.ids.filter(function(id){return BY[id].type==='passage'}).length,no=st.ids.length-np,t=0;
+function dayScore(st){if(st.sections&&st.sections[0]&&st.sections[0].w){var T=0;st.sections.forEach(function(s){var n=s.ids.length;if(!n)return;s.ids.forEach(function(id){var q=BY[id];T+=(q.type==='passage'?grade(q,st.first[id]).frac:isRight(q,st.first[id])?1:0)*s.w/n})});return Math.round(T)}
+ var np=st.ids.filter(function(id){return BY[id].type==='passage'}).length,no=st.ids.length-np,t=0;
  st.ids.forEach(function(id){var q=BY[id];if(q.type==='passage')t+=grade(q,st.first[id]).frac*40/np;else if(isRight(q,st.first[id]))t+=60/no});return Math.round(t)}
 function weakAdd(q,v){var w=LS.get(K.weak,{}),cs='';if(q.type==='passage'){grade(q,v).res.forEach(function(r){if(r.credit<1)cs+=r.e.right+r.e.wrong})}
  else if(q.type==='fill')cs=q.answer.join('');else{var m=(q.question+(q.options[q.answer]||'')).match(/「[^」]+」/g);cs=(m||[]).join('')}
@@ -106,16 +108,25 @@ function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i)
 function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
 
 /* ---- 今日 30 題：優先沒做過，其次最少做過 ---- */
+var DAYS=30,MINS=[8,3,5],WTS=[24,40,36];
+function drawable(p,q){return p[1].indexOf(q.topic)>=0&&(p[1][0]==='改錯')===(q.type==='passage')}
+var POOL=QS.filter(function(q){return PLAN.some(function(p){return drawable(p,q)})});
+function dnum(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)}
+function addD(a,n){var d=new Date(a+'T12:00:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function planStart(){var pl=LS.get(K.plan,null);if(pl&&pl.startDate)return pl.startDate;var days=LS.get(K.days,{}),ks=Object.keys(days).filter(function(k){return days[k].started}).sort();return ks[0]||null}
+function ensureStart(d){if(!LS.get(K.plan,null)){var s=planStart()||d;LS.set(K.plan,{startDate:s<d?s:d,days:DAYS,created_at:nowIso()})}}
+function dayN(d){var s=planStart()||today();return dnum(s,d)+1}
 function pickDay(date){var prog=LS.get(K.prog,{}),r=rng(hash(date)),used={},ids=[],sections=[];
- var weak=LS.get(K.weak,{});
- PLAN.forEach(function(p){var pool=QS.filter(function(q){return p[1].indexOf(q.topic)>=0&&(p[1][0]==='改錯')===(q.type==='passage')});
+ var weak=LS.get(K.weak,{}),left=Math.max(1,DAYS-dayN(date)+1);
+ PLAN.forEach(function(p,pi){var pool=QS.filter(function(q){return drawable(p,q)});
+  var unseen=pool.filter(function(q){return !(prog[q.id]||{}).seen}).length,need=Math.max(MINS[pi],Math.ceil(unseen/left));if(pi===1)need=MINS[1];
+  var wrongs=pool.filter(function(q){var g=prog[q.id];return g&&g.seen&&g.lastOk===false&&g.last!==date}).map(function(q){return q.id}).slice(0,pi===1?1:3);
   pool.forEach(function(q){q._r=r();q._w=q.type==='passage'?q.errors.filter(function(e){return weak[e.right]||weak[e.wrong]}).length:0});
   pool.sort(function(a,b){var sa=(prog[a.id]||{}).seen||0,sb=(prog[b.id]||{}).seen||0;return sa-sb||b._w-a._w||a._r-b._r});
-  var take=[];for(var i=0;i<pool.length&&take.length<p[2];i++){var q=pool[i];if(used[q.id])continue;
-   if(p[1].length>1&&q.topic==='注音'&&take.filter(function(id){return BY[id].topic==='注音'}).length>=3)continue;take.push(q.id);used[q.id]=1}
-  for(i=0;i<pool.length&&take.length<p[2];i++){if(!used[pool[i].id]){take.push(pool[i].id);used[pool[i].id]=1}}
-  sections.push({name:p[0],ids:take});ids=ids.concat(take)});
- return {date:date,sections:sections,ids:ids,cur:{},first:null,rounds:[],submitted:false,done:false,started:false,created_at:nowIso()}}
+  var take=[];wrongs.forEach(function(id){take.push(id);used[id]=1});for(var i=0;i<pool.length&&take.length<need+wrongs.length;i++){var q=pool[i];if(used[q.id])continue;take.push(q.id);used[q.id]=1}
+  for(i=0;i<pool.length&&take.length<need;i++){if(!used[pool[i].id]){take.push(pool[i].id);used[pool[i].id]=1}}
+  sections.push({name:p[0],ids:take,w:WTS[pi]});ids=ids.concat(take)});
+ return {date:date,day:dayN(date),sections:sections,ids:ids,cur:{},first:null,rounds:[],submitted:false,done:false,started:false,created_at:nowIso()}}
 function getDay(){var days=LS.get(K.days,{}),d=today();if(!days[d]){days[d]=pickDay(d);LS.set(K.days,days)}return days[d]}
 function saveDay(st){var days=LS.get(K.days,{});days[st.date]=st;LS.set(K.days,days)}
 
@@ -138,12 +149,13 @@ var tab='today';
 function render(){$$('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});var v=$('#view');if(EMB)v.style.minHeight=v.offsetHeight+'px';v.innerHTML='';({today:todayView,wrong:wrongView,log:logView})[tab](v);stats();if(EMB)setTimeout(function(){v.style.minHeight=''},60)}
 $$('.tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='wrong'){(EMB?window.top:window).location.href=new URL('../index.html#wrong',location.href).href;return}tab=b.dataset.t;render();window.scrollTo(0,0)}});
 
-function todayView(v){var st=getDay();if(EMB&&!st.started){st.started=true;saveDay(st)}
+function todayView(v){var st=getDay();if(EMB&&!st.started){st.started=true;saveDay(st)}if(st.started)ensureStart(st.date);
+ v.insertAdjacentHTML('beforeend','<div class="daybar"><b>第 '+Math.min(dayN(st.date),99)+' / '+DAYS+' 天</b>　'+md(st.date)+'　今天 '+st.ids.length+' 題'+(st.f1||st.first?'・已完成 '+Object.keys(st.first||st.f1).length+' 題':'')+'<span class="small">　30 天把 '+POOL.length+' 題輪完一次</span></div>');
  if(!st.started){var cnt={};TOPICS.forEach(function(t){cnt[t]=QS.filter(function(q){return q.topic===t}).length});
-  v.innerHTML='<div class="card"><h2 class="serif">今天的題目還沒開始</h2><div class="small" style="font-size:19px">每組題目會優先出還沒做過的題，答錯的題目會自動收進錯題本。</div><div class="grid3">'+
-  st.sections.map(function(s){return '<div class="stat"><div class="big">'+s.ids.length+'</div>'+s.name+'</div>'}).join('')+'</div><div class="small">每天 8 題形音義（24 分）＋3 段改錯（40 分）＋12 題閱讀（36 分）＝100 分。題庫共 '+QS.length+' 題：形音義 '+cnt['形音義']+' 題、注音 '+cnt['注音']+' 題、改錯 '+cnt['改錯']+' 題（整段 '+QS.filter(function(q){return q.type==='passage'}).length+' 段）、閱讀 '+cnt['閱讀']+' 題，取自翰林八上第二次段考題庫解析卷與各校段考答案卷。</div><button class="btn" id="go">開始今天的題目</button></div>';
-  $('#go').onclick=function(){st.started=true;saveDay(st);render()};return}
- if(st.done){var sc=st.score;v.innerHTML='<div class="card" style="text-align:center"><h2 class="serif">今天的題目完成了！</h2><div class="score '+cls(sc)+'">'+sc+' 分</div><div>第一次答對 '+st.first_correct+' 題・答錯 '+(st.ids.length-st.first_correct)+' 題（已全部訂正）</div><div class="small">錯題已寫入錯題本（topic 分類：形音義／注音／改錯／閱讀）</div><button class="btn ghost" id="rev">回顧今天的題目</button></div>';
+  v.innerHTML+='<div class="card"><h2 class="serif">今天的題目還沒開始</h2><div class="small" style="font-size:19px">每組題目會優先出還沒做過的題，答錯的題目會自動收進錯題本。</div><div class="grid3">'+
+  st.sections.map(function(s){return '<div class="stat"><div class="big">'+s.ids.length+'</div>'+s.name+'</div>'}).join('')+'</div><div class="small">形音義 24 分＋改錯 40 分＋閱讀 36 分＝100 分（題數依 30 天計畫自動分配，錯題優先複習）。題庫共 '+QS.length+' 題：形音義 '+cnt['形音義']+' 題、注音 '+cnt['注音']+' 題、改錯 '+cnt['改錯']+' 題（整段 '+QS.filter(function(q){return q.type==='passage'}).length+' 段）、閱讀 '+cnt['閱讀']+' 題，取自翰林八上第二次段考題庫解析卷與各校段考答案卷。</div><button class="btn" id="go">開始今天的題目</button></div>';
+  $('#go').onclick=function(){st.started=true;saveDay(st);ensureStart(st.date);render()};return}
+ if(st.done){var sc=st.score;v.innerHTML+='<div class="card" style="text-align:center"><h2 class="serif">今天的題目完成了！</h2><div class="score '+cls(sc)+'">'+sc+' 分</div><div>第一次答對 '+st.first_correct+' 題・答錯 '+(st.ids.length-st.first_correct)+' 題（已全部訂正）</div><div class="small">錯題已寫入錯題本（topic 分類：形音義／注音／改錯／閱讀）</div><button class="btn ghost" id="rev">回顧今天的題目</button></div>';
   $('#rev').onclick=function(){st._review=!st._review;drawQs(v,st,true)};return}
  drawQs(v,st,false)}
 
@@ -223,19 +235,26 @@ function pieSVG(parts,size){var tot=parts.reduce(function(s,p){return s+p.v},0),
   h+='<path d="M'+cx+','+cy+' L'+(cx+r*Math.cos(a0)).toFixed(2)+','+(cy+r*Math.sin(a0)).toFixed(2)+' A'+r+','+r+' 0 '+la+' 1 '+(cx+r*Math.cos(a1)).toFixed(2)+','+(cy+r*Math.sin(a1)).toFixed(2)+' Z" fill="'+p.c+'" stroke="#fffdf7" stroke-width="2"/>'}a0=a1});
  return h+'<circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.55)+'" fill="#fffdf7"/></svg>'}
 var logBy='topic';
-function logView(v){var prog=LS.get(K.prog,{}),done=QS.filter(function(q){return prog[q.id]}),pct=QS.length?Math.round(done.length/QS.length*100):0;
- var h='<div class="card"><h2 class="serif">總表</h2><div class="pie"><div style="position:relative">'+pieSVG([{v:done.length,c:'#2f5f4f'},{v:QS.length-done.length,c:'#e3d8c3'}],210)+'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column"><b class="serif" style="font-size:36px">'+pct+'%</b><span class="small">完成度</span></div></div>'+
- '<div class="legend"><div><span class="dot" style="background:#2f5f4f"></span>已完成 '+done.length+' 題</div><div><span class="dot" style="background:#e3d8c3"></span>未完成 '+(QS.length-done.length)+' 題</div><div class="small">一天 30 題，約再 '+Math.ceil((QS.length-done.length)/30)+' 天可全部寫過一輪</div></div></div>'+
- '<div class="seg" style="margin-top:20px"><button data-b="topic"'+(logBy==='topic'?' class="on"':'')+'>依題型</button><button data-b="lesson"'+(logBy==='lesson'?' class="on"':'')+'>依課文</button></div><div class="pies">';
+function md(d){var a=d.split('-');return (+a[1])+'/'+(+a[2])}
+function dayRec(d){var n=d.ids.length,a=d.first?n:Object.keys(d.f1||{}).length;return {n:n,a:a,p:n?Math.round(a/n*100):0}}
+function logView(v){var prog=LS.get(K.prog,{}),done=POOL.filter(function(q){return prog[q.id]}),pct=POOL.length?Math.round(done.length/POOL.length*100):0;
+ var s=planStart(),N=s?Math.min(dayN(today()),DAYS):0,days=LS.get(K.days,{}),did=Object.keys(days).filter(function(k){return days[k].started&&dayRec(days[k]).a>0}).length;
+ var h='<div class="card"><h2 class="serif">30 天計畫</h2><div class="pies2"><div class="pie"><div style="position:relative">'+pieSVG([{v:N,c:'#c9a24d'},{v:DAYS-N,c:'#efe6d2'}],150)+'<div class="pc"><b class="serif">'+N+' / '+DAYS+'</b><span class="small">天</span></div></div><div class="legend"><div>'+(s?'起點 '+md(s)+'・終點 '+md(addD(s,DAYS-1)):'還沒開始')+'</div><div class="small">有作答的天數 '+did+' 天</div></div></div>'+
+ '<div class="pie"><div style="position:relative">'+pieSVG([{v:done.length,c:'#2f5f4f'},{v:POOL.length-done.length,c:'#e3d8c3'}],150)+'<div class="pc"><b class="serif">'+pct+'%</b><span class="small">題庫</span></div></div><div class="legend"><div>已寫過 '+done.length+' / '+POOL.length+' 題</div><div class="small">每天約 '+Math.ceil((POOL.length-done.length)/Math.max(1,DAYS-N+1))+' 題新題可如期輪完</div></div></div></div>'+
+ '<div class="seg" style="margin-top:14px"><button data-b="topic"'+(logBy==='topic'?' class="on"':'')+'>依題型</button><button data-b="lesson"'+(logBy==='lesson'?' class="on"':'')+'>依課文</button></div><div class="pies">';
  var keys=logBy==='topic'?TOPICS:LESSONS,col=logBy==='topic'?TCOL:LCOL;
- keys.forEach(function(k){var all=QS.filter(function(q){return q[logBy]===k}),d=all.filter(function(q){return prog[q.id]}).length;
-  h+='<div class="pie">'+pieSVG([{v:d,c:col[k]},{v:all.length-d,c:'#ece4d4'}],96)+'<div class="legend"><div><b>'+k+'</b></div><div class="small">'+d+' / '+all.length+' 題</div></div></div>'});
- h+='</div></div>';
- var days=LS.get(K.days,{}),ks=Object.keys(days).sort().reverse();
- h+='<div class="card"><h2 class="serif">每日紀錄</h2>'+(ks.length?'<table><tr><th>日期</th><th>狀態</th><th>第一次答對</th><th>分數</th></tr>'+ks.map(function(k){var d=days[k];return '<tr><td>'+k+'</td><td>'+(d.done?'✓ 已訂正完成':d.first?'訂正中':d.started?'作答中':'未開始')+'</td><td>'+(d.first?d.first_correct+' / '+d.ids.length:'—')+'</td><td class="'+(d.first?cls(d.score):'')+'"><b>'+(d.first?d.score:'—')+'</b></td></tr>'}).join('')+'</table>':'<p class="small">還沒有紀錄</p>')+'</div>';
- v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
+ keys.forEach(function(k){var all=POOL.filter(function(q){return q[logBy]===k}),d=all.filter(function(q){return prog[q.id]}).length;
+  h+='<div class="pie">'+pieSVG([{v:d,c:col[k]},{v:all.length-d,c:'#ece4d4'}],80)+'<div class="legend"><div><b>'+k+'</b></div><div class="small">'+d+' / '+all.length+' 題</div></div></div>'});
+ h+='</div></div><div class="card"><h2 class="serif">每日紀錄（30 天）</h2>';
+ if(!s)h+='<p class="small">還沒有紀錄</p>';else{h+='<table class="dt"><tr><th>月/日</th><th>天</th><th>當日完成度</th><th>得分</th></tr>';var T=today();
+  for(var i=0;i<DAYS;i++){var k=addD(s,i),d=days[k],fut=k>T,row;
+   if(d&&d.started){var c=dayRec(d);row='<td>'+c.a+' / '+c.n+'（'+c.p+'%）<div class="bar"><i style="width:'+c.p+'%"></i></div></td><td class="'+(d.first?cls(d.score):'')+'"><b>'+(d.first?d.score:c.a?'作答中':'—')+'</b></td>'}
+   else row='<td colspan="2" class="'+(fut?'small':'s-r')+'">'+(fut?'—':'未做')+'</td>';
+   h+='<tr'+(k===T?' class="today"':'')+(fut?' style="opacity:.5"':'')+'><td>'+md(k)+'</td><td>'+(i+1)+'</td>'+row+'</tr>'}
+  var extra=Object.keys(days).filter(function(k){return k<s||k>addD(s,DAYS-1)});if(extra.length)h+='<tr><td colspan="4" class="small">另有 '+extra.length+' 天在 30 天外</td></tr>';h+='</table>'}
+ h+='</div>';v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
 
-$('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
+$('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,K.plan,'roby-cr-wrong'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
 render();
 })();
 </script>
