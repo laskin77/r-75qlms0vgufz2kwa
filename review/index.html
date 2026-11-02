@@ -6,41 +6,41 @@
 :root{--ink:#4a3b2e;--mut:#8a7560;--green:#2f5f4f;--green2:#6b7f4e;--brown:#b5835a;--red:#b5483a;--paper:#f3eee2;--card:#fffdf7;--chip:#efe8da}
 *{box-sizing:border-box}
 html{background:var(--paper) url(assets/paper.jpg) repeat}
-body{margin:0;color:var(--ink);font-family:"Noto Sans TC","PingFang TC",-apple-system,sans-serif;font-size:20px;line-height:1.65;letter-spacing:.03em;-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font-family:"Noto Sans TC","PingFang TC",-apple-system,sans-serif;font-size:16px;line-height:1.6;letter-spacing:.02em;-webkit-text-size-adjust:100%}
 .serif,h1,h2,.big{font-family:"Noto Serif TC","Songti TC","PMingLiU",serif}
-.top{position:sticky;top:0;z-index:5;display:flex;gap:34px;padding:14px 26px;background:rgba(243,238,226,.92);backdrop-filter:blur(4px);border-bottom:1px solid #e3d9c6}
-.top span{color:var(--mut)} .top b{font-family:"Noto Serif TC",serif;font-size:30px;color:var(--ink);margin:0 4px;font-weight:600}
-.wrap{max-width:780px;margin:0 auto;padding:18px 22px 160px}
-h1{font-size:44px;margin:26px 0 4px;letter-spacing:.06em}
-.lead{color:var(--mut);margin:0 0 22px}
-.tabs{display:flex;background:#ece5d6;border-radius:22px;padding:7px;gap:6px;margin-bottom:26px}
-.tabs button{flex:1;border:0;background:transparent;font:inherit;font-size:21px;padding:13px 6px;border-radius:17px;color:var(--ink);cursor:pointer}
+.top{position:sticky;top:0;z-index:5;display:flex;gap:22px;padding:8px 18px;background:rgba(243,238,226,.92);backdrop-filter:blur(4px);border-bottom:1px solid #e3d9c6}
+.top span{color:var(--mut)} .top b{font-family:"Noto Serif TC",serif;font-size:21px;color:var(--ink);margin:0 3px;font-weight:600}
+.wrap{max-width:780px;margin:0 auto;padding:10px 16px 120px}
+h1{font-size:28px;margin:12px 0 2px;letter-spacing:.06em}
+.lead{color:var(--mut);margin:0 0 12px;font-size:14px}
+.tabs{display:flex;background:#ece5d6;border-radius:18px;padding:5px;gap:4px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:transparent;font:inherit;font-size:16px;padding:8px 6px;min-height:38px;border-radius:14px;color:var(--ink);cursor:pointer}
 .tabs button.on{background:var(--card);box-shadow:0 1px 3px rgba(90,70,50,.18);font-weight:700}
 .badge{display:inline-block;min-width:28px;padding:0 8px;margin-left:6px;border-radius:14px;background:#f6dfe3;color:#b0466a;font-size:16px;font-weight:700}
-.card{background:var(--card);border:1.6px solid #d9ccb5;border-radius:26px 20px 28px 18px/20px 26px 18px 28px;padding:26px 26px;margin:0 0 24px;box-shadow:0 2px 0 rgba(140,110,80,.08)}
-.card h2{font-size:30px;margin:0 0 10px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0 12px}
-.stat{background:var(--chip);border-radius:20px 16px 22px 14px;padding:16px 20px}
-.stat .big{font-size:40px;color:var(--green);font-weight:700;line-height:1.2}
-.small{font-size:16px;color:var(--mut)}
-.btn{display:block;width:100%;border:0;border-radius:22px 18px 24px 16px;background:var(--green);color:#fff;font:inherit;font-size:23px;font-weight:700;padding:18px;margin-top:18px;cursor:pointer;text-align:center;text-decoration:none}
+.card{background:var(--card);border:1.6px solid #d9ccb5;border-radius:26px 20px 28px 18px/20px 26px 18px 28px;padding:16px 18px;margin:0 0 14px;box-shadow:0 2px 0 rgba(140,110,80,.08)}
+.card h2{font-size:21px;margin:0 0 10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 8px}
+.stat{background:var(--chip);border-radius:16px 12px 18px 10px;padding:8px 12px}
+.stat .big{font-size:26px;color:var(--green);font-weight:700;line-height:1.2}
+.small{font-size:13px;color:var(--mut)}
+.btn{display:block;width:100%;border:0;border-radius:22px 18px 24px 16px;background:var(--green);color:#fff;font:inherit;font-size:17px;font-weight:700;padding:10px;min-height:42px;margin-top:12px;cursor:pointer;text-align:center;text-decoration:none}
 .btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
 .btn:disabled{opacity:.45}
-.sec{font-family:"Noto Serif TC",serif;font-size:24px;color:var(--green2);margin:30px 4px 12px;font-weight:700}
-.q{background:var(--card);border:1.5px solid #e0d4bf;border-radius:22px 16px 20px 18px/18px 22px 16px 20px;padding:20px 22px;margin:0 0 18px}
+.sec{font-family:"Noto Serif TC",serif;font-size:18px;color:var(--green2);margin:18px 4px 8px;font-weight:700}
+.q{background:var(--card);border:1.5px solid #e0d4bf;border-radius:22px 16px 20px 18px/18px 22px 16px 20px;padding:12px 14px;margin:0 0 10px}
 .q.ok{border-color:#8fb08a} .q.ng{border-color:#d49a8e}
-.meta{font-size:15px;color:var(--mut);margin-bottom:6px}
+.meta{font-size:12px;color:var(--mut);margin-bottom:6px}
 .tag{display:inline-block;padding:1px 10px;border-radius:10px;background:var(--chip);margin-right:6px}
-.passage{white-space:pre-wrap;background:#f8f3e8;border-left:4px solid #d8c7a6;padding:12px 16px;border-radius:8px;margin:6px 0 12px;font-size:19px;max-height:340px;overflow:auto}
-.qt{white-space:pre-wrap;font-size:21px}
-.opts{display:grid;gap:10px;margin-top:12px}
-.opt{text-align:left;border:1.6px solid #d9ccb5;background:#fffefb;border-radius:16px;padding:13px 16px;font:inherit;font-size:20px;color:var(--ink);cursor:pointer}
+.passage{white-space:pre-wrap;background:#f8f3e8;border-left:4px solid #d8c7a6;padding:12px 16px;border-radius:8px;margin:4px 0 8px;font-size:16px;max-height:300px;overflow:auto}
+.qt{white-space:pre-wrap;font-size:17px}
+.opts{display:grid;gap:6px;margin-top:8px}
+.opt{text-align:left;border:1.6px solid #d9ccb5;background:#fffefb;border-radius:12px;padding:8px 12px;min-height:40px;font:inherit;font-size:16px;color:var(--ink);cursor:pointer}
 .opt.sel{border-color:var(--green);background:#e8f0ea}
 .opt.right{border-color:#5d9a62;background:#e4f2e3} .opt.bad{border-color:var(--red);background:#f8e4e0}
-input.fill{width:100%;font:inherit;font-size:24px;padding:12px 16px;margin-top:12px;border:1.6px solid #d9ccb5;border-radius:14px;background:#fffefb}
+input.fill{width:100%;font:inherit;font-size:18px;padding:6px 12px;height:42px;margin-top:8px;border:1.6px solid #d9ccb5;border-radius:12px;background:#fffefb}
 .mark{float:right;font-weight:700} .mark.ok{color:#3f8a4c} .mark.ng{color:var(--red)}
-.exp{margin-top:12px;background:#fbf6e9;border-radius:12px;padding:10px 14px;font-size:18px}
-.score{font-size:64px;font-weight:700;font-family:"Noto Serif TC",serif}
+.exp{margin-top:8px;background:#fbf6e9;border-radius:10px;padding:8px 12px;font-size:15px}
+.score{font-size:44px;font-weight:700;font-family:"Noto Serif TC",serif}
 .s-g{color:#3f8a4c}.s-b{color:#9a6a3a}.s-r{color:var(--red)}
 .pies{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .pie{display:flex;align-items:center;gap:16px}
@@ -48,17 +48,18 @@ input.fill{width:100%;font:inherit;font-size:24px;padding:12px 16px;margin-top:1
 .dot{width:14px;height:14px;border-radius:50%;display:inline-block}
 .seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}.seg button{font:inherit;font-size:17px;border:1.5px solid #cdbf a6;border:1.5px solid #cdbfa6;background:#fffdf7;border-radius:14px;padding:6px 14px;color:var(--ink)}.seg button.on{background:var(--green);color:#fff;border-color:var(--green)}
 table{width:100%;border-collapse:collapse;font-size:18px}td,th{padding:8px 6px;border-bottom:1px solid #e6dcc9;text-align:left}
-.monkey{position:fixed;right:10px;bottom:6px;width:130px;pointer-events:none;z-index:3}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#4a3b2e;color:#fff;padding:10px 20px;border-radius:16px;font-size:18px;opacity:0;transition:.3s;z-index:9}.toast.on{opacity:.95}
+.monkey{position:fixed;right:8px;bottom:4px;width:84px;pointer-events:none;z-index:3}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#4a3b2e;color:#fff;padding:8px 16px;border-radius:14px;font-size:15px;opacity:0;transition:.3s;z-index:9}.toast.on{opacity:.95}
 .bar{height:10px;background:#e8dfcf;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--green2)}
-.ptext{font-size:26px;line-height:2.3;letter-spacing:2px;margin:10px 0;font-family:serif}
-.ch{cursor:pointer;padding:2px 1px;border-radius:6px;position:relative;-webkit-user-select:none;user-select:none}
+.ptext{font-size:21px;line-height:2.4;letter-spacing:3px;margin:10px 0;font-family:serif}
+.ch{cursor:pointer;padding:4px 2px;border-radius:6px;position:relative;-webkit-user-select:none;user-select:none}
 .ch.sel{background:#f3c9a8;color:#8a2f1f;font-weight:bold}
 .ch.g-ok{background:#bfe0c6;color:#1d5a32}.ch.g-half{background:#f6e2a0;color:#7a5a00}.ch.g-miss{outline:2px dashed #c0392b;color:#c0392b}.ch.g-false{background:#e6c3c3;text-decoration:line-through}
-.cor{color:#c0392b;font-size:15px;position:absolute;top:-14px;left:2px}
-input.fix{width:54px;height:44px;font-size:26px;text-align:center;margin:0 4px;border:2px solid #c0675a;border-radius:8px;vertical-align:middle;background:#fffaf0}
-.glist{margin:6px 0 0 0;padding-left:20px;line-height:1.9}.selfok{margin-left:8px;padding:4px 12px;border-radius:14px;border:1px solid #2f5f4f;background:#fff;color:#2f5f4f;font-size:16px}
-.back{display:flex;gap:10px;margin:4px 0 8px}.back a{color:#2f5f4f;background:#fffdf7;border:1px solid #d9ccb5;border-radius:16px;padding:6px 14px;text-decoration:none;font-size:17px}
+.cor{color:#c0392b;font-size:12px;position:absolute;top:-12px;left:2px}
+input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;border:2px solid #c0675a;border-radius:8px;vertical-align:middle;background:#fffaf0}
+.glist{margin:4px 0 0 0;padding-left:18px;line-height:1.8;font-size:15px}.selfok{margin-left:8px;padding:4px 12px;min-height:32px;border-radius:14px;border:1px solid #2f5f4f;background:#fff;color:#2f5f4f;font-size:14px}
+.back{display:flex;gap:10px;margin:4px 0 8px}.back a{color:#2f5f4f;background:#fffdf7;border:1px solid #d9ccb5;border-radius:16px;padding:5px 12px;text-decoration:none;font-size:14px}
+.okbtn{margin-left:10px;padding:0 20px;height:40px;border-radius:18px;border:none;background:#2f5f4f;color:#fff;font-size:16px;font-weight:bold;box-shadow:0 3px 0 #1d3f33}.okbtn:disabled{background:#cfc6b4;box-shadow:none;color:#fff}.prog-note{text-align:center;color:#8a7560;margin:12px 0 70px;font-size:15px}.pconf{display:block;width:auto;margin:10px auto 0;padding:8px 28px}
 </style></head>
 <body>
 <div class="top"><div><span>題庫總數</span><b id="sTotal">0</b><span>題</span></div><div><span>已寫過</span><b id="sSeen">0</b><span>題</span></div><div><span>今天已寫</span><b id="sToday">0</b><span>題</span></div></div>
@@ -126,7 +127,7 @@ function wbFix(st,id){var a=LS.get(K.wrong,[]);a.forEach(function(x){if(x.key===
 function wbFixLater(qid){var a=LS.get(K.wrong,[]),ch=0;a.forEach(function(x){if(x.qid===qid&&!x.fixed){x.fixed=true;x.fixed_at=nowIso();ch=1}});if(ch)LS.set(K.wrong,a)}
 
 function stats(){var prog=LS.get(K.prog,{}),st=getDay();$('#sTotal').textContent=QS.length;$('#sSeen').textContent=Object.keys(prog).filter(function(k){return BY[k]}).length;
- $('#sToday').textContent=st.first?st.ids.length:Object.keys(st.cur).filter(function(k){return BY[k]&&answeredQ(BY[k],st.cur[k])}).length;
+ $('#sToday').textContent=st.first?st.ids.length:Object.keys(st.f1||{}).length;
  $('#wbBadge').textContent=LS.get(K.wrong,[]).filter(function(x){return !x.fixed&&x.origin==='chinese-review'}).length}
 function cls(s){return s>=90?'s-g':s>=70?'s-b':'s-r'}
 var tab='today';
@@ -145,26 +146,36 @@ function todayView(v){var st=getDay();
 function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$('#qbox');if(old)old.remove()}box.id='qbox';v.appendChild(box);
  var sub=!!st.submitted,n=0,lastRound=st.rounds.length;
  st.sections.forEach(function(s){var h='<div class="sec">'+esc(s.name)+'（'+s.ids.length+' 題）</div>';box.insertAdjacentHTML('beforeend',h);
-  s.ids.forEach(function(id){var q=BY[id];if(!q)return;n++;var val=st.cur[id],ok=sub&&isRight(q,val),firstOk=st.first&&isRight(q,st.first[id]);
-   var e=document.createElement('div');e.className='q'+(sub?(ok?' ok':' ng'):'');e.dataset.id=id;
-   if(q.type==='passage'){e.classList.add('pq');box.appendChild(e);drawPass(e,st,q,n,sub,ok,ro);return}
+  s.ids.forEach(function(id){var q=BY[id];if(!q)return;n++;var L=!sub&&!!(st.f1&&(id in st.f1)),show=sub||L,val=st.cur[id],ok=show&&isRight(q,val),firstOk=st.first&&isRight(q,st.first[id]);
+   var e=document.createElement('div');e.className='q'+(show?(ok?' ok':' ng'):'');e.dataset.id=id;
+   if(q.type==='passage'){e.classList.add('pq');box.appendChild(e);drawPass(e,st,q,n,show,ok,ro,L);return}
    var html='<div class="meta"><span class="tag">'+esc(q.topic)+'</span><span class="tag">'+esc(q.lesson)+'</span>'+n+' / '+st.ids.length+'</div>';
    if(q.passage)html+='<div class="passage">'+esc(q.passage)+'</div>';
-   html+='<div class="qt">'+(sub?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓':'✗ 請訂正')+'</span>':'')+n+'. '+esc(q.question)+'</div>';
-   if(q.type==='choice')html+='<div class="opts">'+q.options.map(function(t,i){var c='opt';if(val!==''&&val!=null&&+val===i)c+=' sel';if(sub&&ok&&i===q.answer)c+=' right';if(sub&&!ok&&val!=null&&+val===i)c+=' bad';return '<button class="'+c+'" data-i="'+i+'"'+(ok||ro?' disabled':'')+'>'+String.fromCharCode(65+i)+'. '+esc(t)+'</button>'}).join('')+'</div>';
-   else html+='<input class="fill" value="'+esc(val||'')+'" placeholder="在這裡寫答案"'+(ok||ro?' disabled':'')+' autocomplete="off" autocapitalize="off">';
-   if(sub&&ok)html+='<div class="exp">💡 '+esc(q.explanation||'')+(firstOk?'':' <span class="small">（訂正完成）</span>')+'</div>';
-   else if(sub)html+='<div class="exp">🔎 提示：'+esc(q.hint||(q.topic==='閱讀'?'回到文章找關鍵句，答案常常就在附近。':'先想整個詞語的意思，再判斷字形、字音。'))+(lastRound>1?'<br>💡 '+esc(q.explanation||''):'')+'</div>';
+   html+='<div class="qt">'+(show?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓ 答對':sub?'✗ 請訂正':'✗ 答錯')+'</span>':'')+n+'. '+esc(q.question)+'</div>';
+   if(q.type==='choice')html+='<div class="opts">'+q.options.map(function(t,i){var c='opt';if(val!==''&&val!=null&&+val===i)c+=' sel';if(show&&(ok||L)&&i===q.answer)c+=' right';if(show&&!ok&&val!=null&&val!==''&&+val===i)c+=' bad';return '<button class="'+c+'" data-i="'+i+'"'+(ok||ro||L?' disabled':'')+'>'+String.fromCharCode(65+i)+'. '+esc(t)+'</button>'}).join('')+'</div>';
+   else html+='<input class="fill" value="'+esc(val||'')+'" placeholder="在這裡寫答案"'+(ok||ro||L?' disabled':'')+' autocomplete="off" autocapitalize="off">'+(!show&&!ro?'<button class="okbtn"'+(String(val||'').trim()?'':' disabled')+'>✔ 確認</button>':'');
+   if(show&&ok)html+='<div class="exp">💡 '+esc(q.explanation||'')+(sub&&!firstOk?' <span class="small">（訂正完成）</span>':'')+'</div>';
+   else if(show)html+='<div class="exp"><b>正確答案：'+esc(ansText(q))+'</b><br>💡 '+esc(q.explanation||'')+(sub?'<br><span class="small">全部寫完了，請把這題再做一次。</span>':'<br><span class="small">已收進錯題本，全部寫完後再訂正一次。</span>')+'</div>';
    e.innerHTML=html;box.appendChild(e);
-   $$('.opt',e).forEach(function(b){b.onclick=function(){st.cur[id]=+b.dataset.i;saveDay(st);$$('.opt',e).forEach(function(x){x.classList.toggle('sel',x===b);x.classList.remove('bad')});stats()}});
-   var inp=$('input.fill',e);if(inp)inp.oninput=function(){st.cur[id]=inp.value;saveDay(st);stats()}})});
+   $$('.opt',e).forEach(function(b){b.onclick=function(){st.cur[id]=+b.dataset.i;saveDay(st);if(!sub){lockQ(st,id);return}$$('.opt',e).forEach(function(x){x.classList.toggle('sel',x===b);x.classList.remove('bad')});stats()}});
+   var inp=$('input.fill',e);if(inp){var ob=$('.okbtn',e);inp.oninput=function(){st.cur[id]=inp.value;saveDay(st);if(ob)ob.disabled=!inp.value.trim()};if(!sub&&!L){var go=function(){if(inp.value.trim()&&!(st.f1&&id in st.f1)){st.cur[id]=inp.value;lockQ(st,id)}};$('.okbtn',e).onclick=go;inp.onkeydown=function(ev){if(ev.key==='Enter')go()}}}})});
  if(ro)return;
  var answered=st.ids.filter(function(id){return answeredQ(BY[id],st.cur[id])}).length;
- var b=document.createElement('button');b.className='btn';b.id='submit';b.textContent=sub?'訂正好了，再檢查':'送出（已作答 '+answered+' / '+st.ids.length+'）';box.appendChild(b);
+ if(!sub){var lk=Object.keys(st.f1||{}).length;box.insertAdjacentHTML('beforeend','<div class="prog-note" id="progNote">已完成 '+lk+' / '+st.ids.length+' 題（每題寫完會馬上對答案）</div>');return}
+ var b=document.createElement('button');b.className='btn';b.id='submit';b.textContent='訂正好了，再檢查';box.appendChild(b);
  b.onclick=function(){submit(st)}}
+function lockQ(st,id){var q=BY[id],v=st.cur[id],prog=LS.get(K.prog,{});st.f1=st.f1||{};if(id in st.f1)return;st.f1[id]=JSON.parse(JSON.stringify(v==null?'':v));
+ var ok=isRight(q,v),p=prog[id]||{seen:0,correct:0};p.seen++;if(ok)p.correct++;p.last=st.date;p.lastOk=ok;prog[id]=p;LS.set(K.prog,prog);
+ if(ok)wbFixLater(id);else{wbAdd(st,q,v);if(q.topic!=='閱讀')weakAdd(q,v)}
+ var y=window.scrollY;if(st.ids.every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);render();window.scrollTo(0,y)}}
+function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;var wrong=st.ids.filter(function(id){return !isRight(BY[id],st.first[id])});
+ st.first_correct=st.ids.length-wrong.length;st.score=dayScore(st);st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
+ if(!wrong.length){st.done=true;st.done_at=nowIso()}saveDay(st);render();
+ toast(wrong.length?'全部寫完！第一次 '+st.score+' 分，錯的 '+wrong.length+' 題再做一次':'全對！太厲害了 🎉');
+ if(wrong.length){var e=$('.q[data-id="'+wrong[0]+'"]');if(e)e.scrollIntoView({block:'center'})}}
 
-function drawPass(e,st,q,n,sub,ok,ro){var v=st.cur[q.id]||{s:{},self:{}},g=sub?grade(q,v):null,G={},lock=ok||ro;if(g)g.res.forEach(function(r){G[r.e.i]=r});
- var h='<div class="meta"><span class="tag">改錯</span><span class="tag">'+esc(q.lesson)+'</span>'+n+' / '+st.ids.length+'　'+esc(q.title)+'</div><div class="qt">'+(sub?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓':'✗ 請訂正')+'</span>':'')+n+'. '+esc(q.question)+'</div><div class="ptext">';
+function drawPass(e,st,q,n,sub,ok,ro,L){var v=st.cur[q.id]||{s:{},self:{}},g=sub?grade(q,v):null,G={},lock=ok||ro||L;if(g)g.res.forEach(function(r){G[r.e.i]=r});
+ var h='<div class="meta"><span class="tag">改錯</span><span class="tag">'+esc(q.lesson)+'</span>'+n+' / '+st.ids.length+'　'+esc(q.title)+'</div><div class="qt">'+(sub?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓ 全對':L?'批改完成':'✗ 請訂正')+'</span>':'')+n+'. '+esc(q.question)+'</div><div class="ptext">';
  for(var k=0;k<q.text.length;k++){var c=q.text[k];if(PUN.test(c)){h+=esc(c);continue}var sel=(k in v.s),cl='ch'+(sel?' sel':''),r=G[k],sup='';
   if(g){if(r){cl+=r.credit===1?' g-ok':r.found?' g-half':' g-miss';if(!r.right)sup='<sup class="cor">'+esc(r.e.right)+'</sup>'}else if(sel)cl+=' g-false'}
   h+='<span class="'+cl+'" data-k="'+k+'">'+esc(c)+sup+'</span>'+(sel?'<input class="fix" data-k="'+k+'" maxlength="2" value="'+esc(v.s[k]||'')+'" placeholder="正字"'+(lock||(g&&!r)?' disabled':'')+' autocomplete="off" autocapitalize="off">':'')}
@@ -172,12 +183,14 @@ function drawPass(e,st,q,n,sub,ok,ro){var v=st.cur[q.id]||{s:{},self:{}},g=sub?g
  if(g){h+='<div class="exp"><b>本段得分 '+Math.round(g.frac*100)+'%</b>'+(g.fal.length?'（點錯 '+g.fal.length+' 字，每字扣半個錯字）':'')+'<ul class="glist">'+g.res.map(function(r){var st2=r.credit===1?(r.self?'✓ 自評寫對':'✓ 找到且寫對'):r.found?'△ 找到但寫成「'+esc(r.yours||'空白')+'」':'✗ 沒找到';
    return '<li>「'+esc(r.e.wrong)+'」→「'+esc(r.e.right)+'」（'+esc(r.e.word)+'）　'+st2+(r.found&&!r.right&&!r.self&&!ro?' <button class="selfok" data-k="'+r.e.i+'">我寫對了</button>':'')+'</li>'}).join('')+
    g.fal.map(function(k){return '<li>✗ 點錯「'+esc(q.text[k])+'」：這個字沒有錯</li>'}).join('')+'</ul><div class="small">依據：'+esc(q.ref)+'</div></div>'}
+ if(!sub&&!ro)h+='<button class="btn pconf">確認這段</button>';
  e.innerHTML=h;
+ $$('.pconf',e).forEach(function(b){b.onclick=function(){var v2=st.cur[q.id];if(!v2||!Object.keys(v2.s).length){if(!confirm('這段一個字都還沒點，確定要送出嗎？'))return;st.cur[q.id]={s:{},self:{}}}lockQ(st,q.id)}});
  if(!lock)$$('.ch',e).forEach(function(b){b.onclick=function(){var k=b.dataset.k;var v2=st.cur[q.id]||{s:{},self:{}};if(k in v2.s)delete v2.s[k];else v2.s[k]='';st.cur[q.id]=v2;saveDay(st);drawPass(e,st,q,n,sub,ok,ro);var i=$('input.fix[data-k="'+k+'"]',e);if(i)i.focus();stats()}});
  $$('input.fix',e).forEach(function(i){i.oninput=function(){var v2=st.cur[q.id];v2.s[i.dataset.k]=i.value.trim();saveDay(st)}});
- $$('.selfok',e).forEach(function(b){b.onclick=function(){var k=b.dataset.k;[st.cur[q.id],st.first[q.id]].forEach(function(x){if(x){x.self=x.self||{};x.self[k]=true}});
+ $$('.selfok',e).forEach(function(b){b.onclick=function(){var k=b.dataset.k;[st.cur[q.id],st.first&&st.first[q.id],st.f1&&st.f1[q.id]].forEach(function(x){if(x){x.self=x.self||{};x.self[k]=true}});
   st.self_assessed=st.self_assessed||[];st.self_assessed.push({qid:q.id,pos:+k,right:q.text[k]&&BY[q.id].errors.filter(function(x){return x.i==k})[0].right,yours:st.cur[q.id].s[k],at:nowIso()});
-  st.score=dayScore(st);if(grade(q,st.first[q.id]).full)wbFixLater(q.id);else wbAdd(st,q,st.first[q.id]);saveDay(st);toast('已記為自評寫對');render()}})}
+  var F=st.first||st.f1;if(st.first)st.score=dayScore(st);if(grade(q,F[q.id]).full)wbFixLater(q.id);else wbAdd(st,q,F[q.id]);saveDay(st);toast('已記為自評寫對');render()}})}
 function submit(st){var prog=LS.get(K.prog,{});
  var wrong=st.ids.filter(function(id){return !isRight(BY[id],st.cur[id])});
  if(!st.first){if(wrong.length===st.ids.length&&!confirm('還有很多題沒寫，確定要送出嗎？'))return;
