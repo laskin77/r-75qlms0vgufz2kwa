@@ -144,11 +144,12 @@ function quizBlock(o){/* o:{el,items,st(物件),save(),bud,subj,date,title,onDon
 
 /* ---------- 科目頁 ---------- */
 function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,false);root.appendChild(bud);
- if(subj==='chinese')root.insertAdjacentHTML('beforeend','<a class="card review-entry noprint" href="review/index.html"><img src="review/assets/monkey.png" alt=""><span><b>📚 八上二段國文複習</b><small>愛蓮說・鳥・生命中的碎珠　每天 8 題形音義＋3 段改錯＋12 題閱讀</small></span><i>›</i></a>');
- if(!D){root.appendChild(empty(subj==='english'?'今天沒有英文功課喔，休息一下':'今天沒有國文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
+ if(subj==='chinese'){var fw=document.createElement('div');fw.className='review-embed';fw.innerHTML='<div class="re-h"><b>📚 八上二段國文複習・今日題目</b><a href="review/index.html" target="_blank">單獨開啟 ↗</a></div><iframe id="reviewFrame" src="review/index.html?embed=1" scrolling="no" title="八上二段國文複習"></iframe>';root.appendChild(fw);
+  var fr=$('iframe',fw);fr.onload=function(){try{var d=fr.contentDocument,fit=function(){var h=d.documentElement.scrollHeight;if(h&&Math.abs(h-fr.offsetHeight)>2)fr.style.height=h+'px'};fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(d.body);setInterval(fit,800)}catch(e){fr.style.height='1600px';fr.setAttribute('scrolling','yes')}}}
+ if(!D){if(subj==='chinese'){bud.say('今天的複習題目在下面，加油！');return}root.appendChild(empty('今天沒有英文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
  var KEY='roby-quiz-'+subj+'-'+(D.date||DATE),st=LS.get(KEY,{});st.started_at=st.started_at||nowIso();st.blocks=st.blocks||{};st.steps=st.steps||{};
  var save=function(){LS.set(KEY,st)};save();
- var h=document.createElement('h1');h.textContent=(subj==='english'?'英文 ':'國文 ')+mdw(D.date||DATE);root.appendChild(h);
+ if(subj==='chinese')root.insertAdjacentHTML('beforeend','<div class="sec-gap">⬇️ 李老師的今日國文功課</div>');var h=document.createElement('h1');h.textContent=(subj==='english'?'英文 ':'國文 ')+mdw(D.date||DATE);root.appendChild(h);
  if(D.title||D.topic){var s=document.createElement('div');s.className='sub';s.textContent=D.title||D.topic;root.appendChild(s)}
  if(bud.L.full)root.insertAdjacentHTML('beforeend','<img src="'+bud.L.full+'" alt="" style="display:block;width:46%;max-width:300px;margin:0 auto;border-radius:16px;mix-blend-mode:multiply">');
  var isEN=subj==='english'&&(D.shadow||D.uoe||D.vocab||D.grammar);

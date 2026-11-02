@@ -61,6 +61,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 .back{display:flex;gap:10px;margin:4px 0 8px}.back a{color:#2f5f4f;background:#fffdf7;border:1px solid #d9ccb5;border-radius:16px;padding:5px 12px;text-decoration:none;font-size:14px}
 .okbtn{margin-left:10px;padding:0 20px;height:40px;border-radius:18px;border:none;background:#2f5f4f;color:#fff;font-size:16px;font-weight:bold;box-shadow:0 3px 0 #1d3f33}.okbtn:disabled{background:#cfc6b4;box-shadow:none;color:#fff}.prog-note{text-align:center;color:#8a7560;margin:12px 0 70px;font-size:15px}.pconf{display:block;width:auto;margin:10px auto 0;padding:8px 28px}
 .reset-row{text-align:center;margin:18px 0 70px}.reset{font-size:13px;padding:4px 14px;min-height:30px;border-radius:14px;border:1px solid #d9b8a8;background:#fff7f2;color:#a0523d}
+.emb,.emb body{background:transparent}.emb .back,.emb h1,.emb .lead,.emb .monkey{display:none}.emb .top{position:static;border-radius:14px;margin:0 0 6px}.emb .wrap{padding:0 0 20px}.emb .reset-row{margin:12px 0 10px}.emb .prog-note{margin:10px 0 12px}.emb .toast{position:fixed;top:12px;bottom:auto}
 </style></head>
 <body>
 <div class="top"><div><span>題庫總數</span><b id="sTotal">0</b><span>題</span></div><div><span>已寫過</span><b id="sSeen">0</b><span>題</span></div><div><span>今天已寫</span><b id="sToday">0</b><span>題</span></div></div>
@@ -76,6 +77,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 <script src="questions.js?v=20261102c"></script>
 <script>
 (function(){
+var EMB=/[?&]embed=1/.test(location.search);if(EMB)document.documentElement.classList.add('emb');
 var K={prog:'roby-cr-progress',days:'roby-cr-days',wrong:'roby-wrongbook',weak:'roby-cr-weak'};
 var LS={get:function(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:function(k,v){localStorage.setItem(k,JSON.stringify(v))}};
 var DATA=window.CR_DATA||{questions:[]},QS=DATA.questions,BY={};QS.forEach(function(q){BY[q.id]=q});
@@ -133,10 +135,10 @@ function stats(){var prog=LS.get(K.prog,{}),st=getDay();$('#sTotal').textContent
  $('#wbBadge').textContent=LS.get(K.wrong,[]).filter(function(x){return !x.fixed&&x.origin==='chinese-review'}).length}
 function cls(s){return s>=90?'s-g':s>=70?'s-b':'s-r'}
 var tab='today';
-function render(){$$('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});var v=$('#view');v.innerHTML='';({today:todayView,wrong:wrongView,log:logView})[tab](v);stats()}
-$$('.tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='wrong'){location.href='../index.html#wrong';return}tab=b.dataset.t;render();window.scrollTo(0,0)}});
+function render(){$$('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});var v=$('#view');if(EMB)v.style.minHeight=v.offsetHeight+'px';v.innerHTML='';({today:todayView,wrong:wrongView,log:logView})[tab](v);stats();if(EMB)setTimeout(function(){v.style.minHeight=''},60)}
+$$('.tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='wrong'){(EMB?window.top:window).location.href=new URL('../index.html#wrong',location.href).href;return}tab=b.dataset.t;render();window.scrollTo(0,0)}});
 
-function todayView(v){var st=getDay();
+function todayView(v){var st=getDay();if(EMB&&!st.started){st.started=true;saveDay(st)}
  if(!st.started){var cnt={};TOPICS.forEach(function(t){cnt[t]=QS.filter(function(q){return q.topic===t}).length});
   v.innerHTML='<div class="card"><h2 class="serif">今天的題目還沒開始</h2><div class="small" style="font-size:19px">每組題目會優先出還沒做過的題，答錯的題目會自動收進錯題本。</div><div class="grid3">'+
   st.sections.map(function(s){return '<div class="stat"><div class="big">'+s.ids.length+'</div>'+s.name+'</div>'}).join('')+'</div><div class="small">每天 8 題形音義（24 分）＋3 段改錯（40 分）＋12 題閱讀（36 分）＝100 分。題庫共 '+QS.length+' 題：形音義 '+cnt['形音義']+' 題、注音 '+cnt['注音']+' 題、改錯 '+cnt['改錯']+' 題（整段 '+QS.filter(function(q){return q.type==='passage'}).length+' 段）、閱讀 '+cnt['閱讀']+' 題，取自翰林八上第二次段考題庫解析卷與各校段考答案卷。</div><button class="btn" id="go">開始今天的題目</button></div>';
