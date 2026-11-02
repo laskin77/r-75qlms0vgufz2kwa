@@ -71,7 +71,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 </div>
 <img class="monkey" src="assets/monkey.png" alt="" onerror="this.style.display='none'">
 <div class="toast" id="toast"></div>
-<script src="questions.js?v=20261102"></script>
+<script src="questions.js?v=20261102b"></script>
 <script>
 (function(){
 var K={prog:'roby-cr-progress',days:'roby-cr-days',wrong:'roby-wrongbook',weak:'roby-cr-weak'};
@@ -143,6 +143,7 @@ function todayView(v){var st=getDay();
   $('#rev').onclick=function(){st._review=!st._review;drawQs(v,st,true)};return}
  drawQs(v,st,false)}
 
+function expText(q){var e=String(q.explanation||'').trim(),a=ansText(q);return e.length>=6?e:'依解析卷：正確答案為 '+a+'。'+(e?' '+e:'')}
 function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$('#qbox');if(old)old.remove()}box.id='qbox';v.appendChild(box);
  var sub=!!st.submitted,n=0,lastRound=st.rounds.length;
  st.sections.forEach(function(s){var h='<div class="sec">'+esc(s.name)+'（'+s.ids.length+' 題）</div>';box.insertAdjacentHTML('beforeend',h);
@@ -154,8 +155,8 @@ function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$(
    html+='<div class="qt">'+(show?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓ 答對':sub?'✗ 請訂正':'✗ 答錯')+'</span>':'')+n+'. '+esc(q.question)+'</div>';
    if(q.type==='choice')html+='<div class="opts">'+q.options.map(function(t,i){var c='opt';if(val!==''&&val!=null&&+val===i)c+=' sel';if(show&&(ok||L)&&i===q.answer)c+=' right';if(show&&!ok&&val!=null&&val!==''&&+val===i)c+=' bad';return '<button class="'+c+'" data-i="'+i+'"'+(ok||ro||L?' disabled':'')+'>'+String.fromCharCode(65+i)+'. '+esc(t)+'</button>'}).join('')+'</div>';
    else html+='<input class="fill" value="'+esc(val||'')+'" placeholder="在這裡寫答案"'+(ok||ro||L?' disabled':'')+' autocomplete="off" autocapitalize="off">'+(!show&&!ro?'<button class="okbtn"'+(String(val||'').trim()?'':' disabled')+'>✔ 確認</button>':'');
-   if(show&&ok)html+='<div class="exp">💡 '+esc(q.explanation||'')+(sub&&!firstOk?' <span class="small">（訂正完成）</span>':'')+'</div>';
-   else if(show)html+='<div class="exp"><b>正確答案：'+esc(ansText(q))+'</b><br>💡 '+esc(q.explanation||'')+(sub?'<br><span class="small">全部寫完了，請把這題再做一次。</span>':'<br><span class="small">已收進錯題本，全部寫完後再訂正一次。</span>')+'</div>';
+   if(show&&ok)html+='<div class="exp"><b class="s-g">✓ 答對了！</b>　<b>正確答案：'+esc(ansText(q))+'</b><br><b>📖 詳解：</b>'+esc(expText(q))+(sub&&!firstOk?' <span class="small">（訂正完成）</span>':'')+'</div>';
+   else if(show)html+='<div class="exp"><b class="s-r">✗ 答錯了</b>　<b>正確答案：'+esc(ansText(q))+'</b><br><b>📖 詳解：</b>'+esc(expText(q))+(sub?'<br><span class="small">全部寫完了，請把這題再做一次。</span>':'<br><span class="small">已收進錯題本，全部寫完後再訂正一次。</span>')+'</div>';
    e.innerHTML=html;box.appendChild(e);
    $$('.opt',e).forEach(function(b){b.onclick=function(){st.cur[id]=+b.dataset.i;saveDay(st);if(!sub){lockQ(st,id);return}$$('.opt',e).forEach(function(x){x.classList.toggle('sel',x===b);x.classList.remove('bad')});stats()}});
    var inp=$('input.fill',e);if(inp){var ob=$('.okbtn',e);inp.oninput=function(){st.cur[id]=inp.value;saveDay(st);if(ob)ob.disabled=!inp.value.trim()};if(!sub&&!L){var go=function(){if(inp.value.trim()&&!(st.f1&&id in st.f1)){st.cur[id]=inp.value;lockQ(st,id)}};$('.okbtn',e).onclick=go;inp.onkeydown=function(ev){if(ev.key==='Enter')go()}}}})});
@@ -175,12 +176,12 @@ function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=tr
  if(wrong.length){var e=$('.q[data-id="'+wrong[0]+'"]');if(e)e.scrollIntoView({block:'center'})}}
 
 function drawPass(e,st,q,n,sub,ok,ro,L){var v=st.cur[q.id]||{s:{},self:{}},g=sub?grade(q,v):null,G={},lock=ok||ro||L;if(g)g.res.forEach(function(r){G[r.e.i]=r});
- var h='<div class="meta"><span class="tag">改錯</span><span class="tag">'+esc(q.lesson)+'</span>'+n+' / '+st.ids.length+'　'+esc(q.title)+'</div><div class="qt">'+(sub?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓ 全對':L?'批改完成':'✗ 請訂正')+'</span>':'')+n+'. '+esc(q.question)+'</div><div class="ptext">';
+ var h='<div class="meta"><span class="tag">改錯</span>'+(sub?'<span class="tag">'+esc(q.lesson)+'</span>':'')+n+' / '+st.ids.length+'　'+esc(q.title)+'</div><div class="qt">'+(sub?'<span class="mark '+(ok?'ok':'ng')+'">'+(ok?'✓ 全對':L?'批改完成':'✗ 請訂正')+'</span>':'')+n+'. '+esc(q.question)+'</div><div class="ptext">';
  for(var k=0;k<q.text.length;k++){var c=q.text[k];if(PUN.test(c)){h+=esc(c);continue}var sel=(k in v.s),cl='ch'+(sel?' sel':''),r=G[k],sup='';
   if(g){if(r){cl+=r.credit===1?' g-ok':r.found?' g-half':' g-miss';if(!r.right)sup='<sup class="cor">'+esc(r.e.right)+'</sup>'}else if(sel)cl+=' g-false'}
   h+='<span class="'+cl+'" data-k="'+k+'">'+esc(c)+sup+'</span>'+(sel?'<input class="fix" data-k="'+k+'" maxlength="2" value="'+esc(v.s[k]||'')+'" placeholder="正字"'+(lock||(g&&!r)?' disabled':'')+' autocomplete="off" autocapitalize="off">':'')}
  h+='</div><div class="small">點錯字（再點一次取消），在旁邊的框裡用手寫（Scribble）或鍵盤寫正確的字。</div>';
- if(g){h+='<div class="exp"><b>本段得分 '+Math.round(g.frac*100)+'%</b>'+(g.fal.length?'（點錯 '+g.fal.length+' 字，每字扣半個錯字）':'')+'<ul class="glist">'+g.res.map(function(r){var st2=r.credit===1?(r.self?'✓ 自評寫對':'✓ 找到且寫對'):r.found?'△ 找到但寫成「'+esc(r.yours||'空白')+'」':'✗ 沒找到';
+ if(g){h+='<div class="exp"><b>📖 詳解（正確答案）</b>　<b>本段得分 '+Math.round(g.frac*100)+'%</b>'+(g.fal.length?'（點錯 '+g.fal.length+' 字，每字扣半個錯字）':'')+'<ul class="glist">'+g.res.map(function(r){var st2=r.credit===1?(r.self?'✓ 自評寫對':'✓ 找到且寫對'):r.found?'△ 找到但寫成「'+esc(r.yours||'空白')+'」':'✗ 沒找到';
    return '<li>「'+esc(r.e.wrong)+'」→「'+esc(r.e.right)+'」（'+esc(r.e.word)+'）　'+st2+(r.found&&!r.right&&!r.self&&!ro?' <button class="selfok" data-k="'+r.e.i+'">我寫對了</button>':'')+'</li>'}).join('')+
    g.fal.map(function(k){return '<li>✗ 點錯「'+esc(q.text[k])+'」：這個字沒有錯</li>'}).join('')+'</ul><div class="small">依據：'+esc(q.ref)+'</div></div>'}
  if(!sub&&!ro)h+='<button class="btn pconf">確認這段</button>';
