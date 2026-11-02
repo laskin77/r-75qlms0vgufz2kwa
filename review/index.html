@@ -60,6 +60,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 .glist{margin:4px 0 0 0;padding-left:18px;line-height:1.8;font-size:15px}.selfok{margin-left:8px;padding:4px 12px;min-height:32px;border-radius:14px;border:1px solid #2f5f4f;background:#fff;color:#2f5f4f;font-size:14px}
 .back{display:flex;gap:10px;margin:4px 0 8px}.back a{color:#2f5f4f;background:#fffdf7;border:1px solid #d9ccb5;border-radius:16px;padding:5px 12px;text-decoration:none;font-size:14px}
 .okbtn{margin-left:10px;padding:0 20px;height:40px;border-radius:18px;border:none;background:#2f5f4f;color:#fff;font-size:16px;font-weight:bold;box-shadow:0 3px 0 #1d3f33}.okbtn:disabled{background:#cfc6b4;box-shadow:none;color:#fff}.prog-note{text-align:center;color:#8a7560;margin:12px 0 70px;font-size:15px}.pconf{display:block;width:auto;margin:10px auto 0;padding:8px 28px}
+.reset-row{text-align:center;margin:18px 0 70px}.reset{font-size:13px;padding:4px 14px;min-height:30px;border-radius:14px;border:1px solid #d9b8a8;background:#fff7f2;color:#a0523d}
 </style></head>
 <body>
 <div class="top"><div><span>題庫總數</span><b id="sTotal">0</b><span>題</span></div><div><span>已寫過</span><b id="sSeen">0</b><span>題</span></div><div><span>今天已寫</span><b id="sToday">0</b><span>題</span></div></div>
@@ -68,6 +69,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
  <p class="lead">翰林版　愛蓮說、鳥、生命中的碎珠　每天 8 題形音義＋3 段改錯＋12 題閱讀，答錯的題目自動收進「錯題本」</p>
  <div class="tabs"><button data-t="today" class="on">今日題目</button><button data-t="wrong" id="toWb">錯題本（App）<span class="badge" id="wbBadge">0</span></button><button data-t="log">紀錄／總表</button></div>
  <div id="view"></div>
+ <div class="reset-row"><button id="resetAll" class="reset">↺ 全部重來</button></div>
 </div>
 <img class="monkey" src="assets/monkey.png" alt="" onerror="this.style.display='none'">
 <div class="toast" id="toast"></div>
@@ -231,6 +233,7 @@ function logView(v){var prog=LS.get(K.prog,{}),done=QS.filter(function(q){return
  h+='<div class="card"><h2 class="serif">每日紀錄</h2>'+(ks.length?'<table><tr><th>日期</th><th>狀態</th><th>第一次答對</th><th>分數</th></tr>'+ks.map(function(k){var d=days[k];return '<tr><td>'+k+'</td><td>'+(d.done?'✓ 已訂正完成':d.first?'訂正中':d.started?'作答中':'未開始')+'</td><td>'+(d.first?d.first_correct+' / '+d.ids.length:'—')+'</td><td class="'+(d.first?cls(d.score):'')+'"><b>'+(d.first?d.score:'—')+'</b></td></tr>'}).join('')+'</table>':'<p class="small">還沒有紀錄</p>')+'</div>';
  v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
 
+$('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
 render();
 })();
 </script>

@@ -323,6 +323,10 @@ function wrongPage(root){var bud=buddy('check',null);bud.L.name='小猴子';root
  var a=LS.get(WBK,[]),f=document.createElement('div');f.className='filt noprint';
  [['all','全部'],['chinese','國文'],['english','英文'],['todo','還沒訂正']].forEach(function(x){var b=document.createElement('button');b.textContent=x[1];if(wbFilter===x[0])b.className='on';b.onclick=function(){wbFilter=x[0];render()};f.appendChild(b)});root.appendChild(f);
  var f2=document.createElement('div');f2.className='filt noprint topic-filt';[['all','全部'],['形音義','形音義'],['注音','注音'],['改錯','改錯'],['閱讀','閱讀']].forEach(function(x){var n=x[0]==='all'?'':' '+a.filter(function(y){return y.topic===x[0]}).length;var b=document.createElement('button');b.dataset.topic=x[0];b.textContent=x[1]+n;if(wbTopic===x[0])b.className='on';b.onclick=function(){wbTopic=x[0];render()};f2.appendChild(b)});root.appendChild(f2);
+ var SN={chinese:'國文',english:'英文'},subs=[];a.forEach(function(x){if(subs.indexOf(x.subject)<0)subs.push(x.subject)});
+ if(subs.length){var f3=document.createElement('div');f3.className='clr-row noprint';subs.forEach(function(sj){var nm=SN[sj]||sj,b=document.createElement('button');b.className='clr';b.dataset.subj=sj;b.textContent='🧹 清空'+nm+'錯題';
+  b.onclick=function(){var n=LS.get(WBK,[]).filter(function(y){return y.subject===sj}).length;if(!confirm('確定要清空「'+nm+'」的 '+n+' 題錯題嗎？清空後無法復原。'))return;
+   LS.set(WBK,LS.get(WBK,[]).filter(function(y){return y.subject!==sj}));if(sj==='chinese'){localStorage.removeItem('roby-cr-wrong');localStorage.removeItem('roby-cr-weak')}render()};f3.appendChild(b)});root.appendChild(f3)}
  var list=a.filter(function(x){return (wbFilter==='all'||(wbFilter==='todo'?!x.fixed:x.subject===wbFilter))&&(wbTopic==='all'||x.topic===wbTopic)});
  bud.say(a.length?'這裡有 '+a.length+' 題錯過的題目，考前拿出來複習最有用！':'錯題本是空的，太厲害了！');
  if(!list.length){root.appendChild(empty('這裡還沒有錯題 ✨','monkey-head.png'));return}
