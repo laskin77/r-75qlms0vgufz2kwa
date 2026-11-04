@@ -258,6 +258,52 @@ function englishFlow(subj,D,root,bud,st,save){var date=D.date||DATE,S=D.shadow,s
 
 /* ---------- 今日檢查 ---------- */
 var TK='roby-timer',FOCUS=25*60e3,REST=5*60e3,TM={K:null,S:null,els:[],logs:{}};
+/* ---------- 家長 PIN（SHA-256＋salt，存 localStorage roby-parent-pin；不存明文、不進 repo） ---------- */
+var PINK='roby-parent-pin';
+function pinHash(pin,salt){var d=new TextEncoder().encode(salt+':'+pin);return crypto.subtle.digest('SHA-256',d).then(function(b){return [].map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')})}
+function pinSalt(){var a=new Uint8Array(16);crypto.getRandomValues(a);return [].map.call(a,function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
+function pinHas(){var p=LS.get(PINK,null);return !!(p&&p.hash&&p.salt)}
+function pinSet(pin){var s=pinSalt();return pinHash(pin,s).then(function(h){LS.set(PINK,{v:1,algo:'SHA-256',salt:s,hash:h,fails:0,lockUntil:0,set_at:nowIso()})})}
+/* 回傳 Promise<'ok'|'bad'|'locked'> */
+function pinCheck(pin){var p=LS.get(PINK,null);if(!p)return Promise.resolve('bad');if(p.lockUntil&&Date.now()<p.lockUntil)return Promise.resolve('locked');
+ return pinHash(pin,p.salt).then(function(h){var q=LS.get(PINK,p);if(h===q.hash){q.fails=0;q.lockUntil=0;LS.set(PINK,q);return 'ok'}q.fails=(q.fails||0)+1;if(q.fails>=5){q.fails=0;q.lockUntil=Date.now()+60e3}LS.set(PINK,q);return q.lockUntil&&Date.now()<q.lockUntil?'locked':'bad'})}
+/* 小對話框：steps=[{label}]，回傳輸入值陣列；onSubmit(vals,setMsg) 回傳 Promise<bool 關閉> */
+function pinDialog(title,steps,onSubmit){var ov=document.createElement('div');ov.className='pin-ov';var i=0,vals=[];
+ ov.innerHTML='<div class="pin-box" role="dialog"><b class="pin-t">'+esc(title)+'</b><div class="pin-l"></div><input class="pin-in" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="PIN"><div class="pin-m"></div><div class="pin-b"><button class="pin-cancel">取消</button><button class="pin-ok">確定</button></div></div>';
+ document.body.appendChild(ov);var inp=$('.pin-in',ov),msg=$('.pin-m',ov),lb=$('.pin-l',ov);
+ function show(){lb.textContent=steps[i].label;inp.value='';setTimeout(function(){inp.focus()},30)}
+ function close(){ov.remove()}
+ function go(){var v=inp.value.trim();if(!/^\d{4}$/.test(v)){msg.textContent='請輸入 4 位數字';return}vals.push(v);if(i<steps.length-1){i++;msg.textContent='';show();return}
+  $('.pin-ok',ov).disabled=true;Promise.resolve(onSubmit(vals,function(t){msg.textContent=t})).then(function(ok){$('.pin-ok',ov).disabled=false;if(ok)close();else{vals=[];i=0;show()}})}
+ inp.addEventListener('input',function(){inp.value=inp.value.replace(/\D/g,'').slice(0,4)});inp.addEventListener('keydown',function(e){if(e.key==='Enter')go()});
+ $('.pin-ok',ov).onclick=go;$('.pin-cancel',ov).onclick=close;show();return ov}
+function pinMsg(r){if(r==='locked'){var p=LS.get(PINK,{});return '錯太多次，請 '+Math.max(1,Math.ceil(((p.lockUntil||0)-Date.now())/1000))+' 秒後再試'}return 'PIN 不對，再試一次'}
+/* 需要家長 PIN 才做 fn；第一次使用先設定 */
+function withPin(title,fn){if(!pinHas()){pinDialog('第一次使用：設定家長 PIN',[{label:'請設定 4 位數字 PIN'},{label:'再輸入一次確認'}],function(v,m){if(v[0]!==v[1]){m('兩次不一樣，請重新設定');return false}return pinSet(v[0]).then(function(){fn();return true})});return}
+ pinDialog(title,[{label:'請輸入家長 PIN'}],function(v,m){return pinCheck(v[0]).then(function(r){if(r==='ok'){fn();return true}m(pinMsg(r));return false})})}
+function pinChange(done){if(!pinHas())return withPin('',function(){toast2('PIN 已設定');done&&done()});
+ pinDialog('變更家長 PIN',[{label:'請輸入舊 PIN'},{label:'新 PIN（4 位數字）'},{label:'再輸入一次新 PIN'}],function(v,m){if(v[1]!==v[2]){m('兩次新 PIN 不一樣');return false}
+  return pinCheck(v[0]).then(function(r){if(r!=='ok'){m(pinMsg(r));return false}return pinSet(v[1]).then(function(){toast2('PIN 已變更');done&&done();return true})})})}
+function toast2(t){var d=document.createElement('div');d.className='pin-toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2200)}
+/* ---------- 每日紀錄 roby-daily-<DATE>（家長確認時寫入；週報／月報彙總來源） ---------- */
+function dailyRec(date){return LS.get('roby-daily-'+date,null)}
+function dailyRange(a,b){var out=[];for(var d=a;d<=b;d=addDays(d,1)){var r=dailyRec(d);if(r)out.push(r)}return out}
+function aggDaily(recs){var n=recs.length,avg=function(k){var v=recs.map(function(r){return r.scores&&r.scores[k]}).filter(function(x){return typeof x==='number'});return {days:v.length,avg:v.length?Math.round(v.reduce(function(a,b){return a+b},0)/v.length):null}};
+ return {days:n,rate:n?Math.round(recs.reduce(function(a,r){return a+(r.rate||0)},0)/n):null,done:recs.reduce(function(a,r){return a+(r.done||0)},0),total:recs.reduce(function(a,r){return a+(r.total||0)},0),
+  contact:recs.filter(function(r){return r.contact_book==='signed'}).length,contactMissing:recs.filter(function(r){return r.contact_book==='missing'}).length,
+  english:avg('english'),chinese_review:avg('chinese_review'),chinese_quiz:avg('chinese_quiz'),parent:recs.filter(function(r){return !!r.parent_confirmed_at}).length,
+  roby:recs.filter(function(r){return r.roby_confirmed}).length,focus:recs.reduce(function(a,r){return a+(r.focus_minutes||0)},0)}}
+function scB(v){return v==null?'—':'<b class="'+(v>=90?'sc-hi':v>=70?'sc-mid':'sc-low')+'">'+v+'</b>'}
+function aggCard(title,A,days,recs){var h='<div class="card agg"><h2>'+title+'</h2><p class="small">資料來源：這台 iPad 上家長確認時存的每日紀錄（共 '+A.days+' 天）。</p><table><tr><th>項目</th><th>結果</th></tr>'+
+  '<tr><td>完成率（平均）</td><td>'+(A.rate==null?'—':A.rate+'%')+'（'+A.done+' / '+A.total+' 項）</td></tr><tr><td>聯絡簿已簽</td><td>'+A.contact+' / '+days+' 天'+(A.contactMissing?'（未帶 '+A.contactMissing+' 天）':'')+'</td></tr>'+
+  '<tr><td>英文大師</td><td>'+A.english.days+' 天・平均 '+scB(A.english.avg)+'</td></tr><tr><td>國文複習</td><td>'+A.chinese_review.days+' 天・平均 '+scB(A.chinese_review.avg)+'</td></tr><tr><td>國文小測驗</td><td>'+A.chinese_quiz.days+' 天・平均 '+scB(A.chinese_quiz.avg)+'</td></tr>'+
+  '<tr><td>專注計時</td><td>'+A.focus+' 分鐘</td></tr><tr><td>家長確認天數</td><td>'+A.parent+' / '+days+' 天</td></tr></table>';
+ if(recs&&recs.length<=7&&recs.length)h+='<table class="aggd"><tr><th>日期</th><th>完成</th><th>英文</th><th>國文複習</th><th>國文小測</th><th>家長</th></tr>'+recs.map(function(r){var s=r.scores||{};return '<tr><td>'+md(r.date)+'</td><td>'+(r.rate==null?'—':r.rate+'%')+'</td><td>'+scB(s.english)+'</td><td>'+scB(s.chinese_review)+'</td><td>'+scB(s.chinese_quiz)+'</td><td>'+(r.parent_confirmed_at?'✓':'')+'</td></tr>'}).join('')+'</table>';
+ return h+'</div>'}
+function dlJSON(name,obj){var b=new Blob([JSON.stringify(obj,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+function syncRange(kind,label,a,b,extra,fname){var recs=dailyRange(a,b),p=Object.assign({subject:kind,from:a,to:b,days:recs,summary:aggDaily(recs),exported_at:nowIso()},extra||{});
+ enqueue('checklist',p,kind+'-'+a);dlJSON(fname,p);toast2(label+'已打包：'+recs.length+' 天（已下載 JSON 並放進送出佇列）');return p}
+
 function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('check',null,false);
  root.insertAdjacentHTML('beforeend','<img class="hero" src="monkey-hero.webp" alt="">');
  root.appendChild(bud);
@@ -278,8 +324,8 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
  if((D.weekTodo||[]).length)html+='<div class="card"><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>'+D.weekTodo.map(function(t){return (t.timer===false?'':'<div data-t>')+lab(dueTxt(t))+(t.timer===false?'':'</div>')}).join('')+'</div>';
  html+='<div class="card"><h2>備註</h2><textarea rows="3" placeholder="今天的狀況…"></textarea></div>';
  html+='<div class="card"><h2>Roby 確認</h2>'+lab('我已經自己檢查完今天的項目',' id="confirm"')+'</div>';
- html+='<div class="card"><h2>家長簽名</h2><div class="row"><b>家長簽名</b><button class="noprint" id="sigclr">清除</button></div><div class="small noprint">↓ 請用手指在框內簽名</div><canvas class="sig" id="sig"></canvas><div class="small" id="sigdate"></div></div>';
- html+='<button id="save" class="noprint" style="width:100%">完成並存成圖片</button><img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div>';
+ html+='<div class="card pcard"><h2>家長確認</h2><label class="pc-l"><input type="checkbox" id="pconfirm"><span>家長已確認今天的項目（需 PIN）</span></label><div class="small" id="pcst"></div><div class="pc-btns noprint"><button id="pcunlock">🔓 解鎖修改</button><button id="pcchg">變更 PIN</button><button id="pcexp">匯出今日紀錄（JSON）</button></div></div>';
+ html+='<img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div>';
  var wrap=document.createElement('div');wrap.innerHTML=html;while(wrap.firstChild)root.appendChild(wrap.firstChild);
  /* 八上二段國文複習：一律自動多一列（不佔原本勾選框索引，不影響已存的勾選狀態）*/
  (function(){var days=LS.get('roby-cr-days',{}),d=days[DATE],n=d?d.ids.length:0,a=d?(d.first?n:Object.keys(d.f1||{}).length):0,done=!!(d&&d.first),sc=done?d.score:null;
@@ -291,7 +337,7 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   var row='<label class="cr-row"><input type="checkbox" class="cr-auto" data-cr="1"'+(done?' checked':'')+'><span>八上二段國文複習'+info+'<span class="score" data-score="'+(sc==null?'':sc)+'" data-label="小測驗"></span></span></label>';
   var cards=$$('.card',root),dc=cards.find(function(c){var h=$('h2',c);return h&&h.textContent==='每日必做'});
   if(dc)dc.insertAdjacentHTML('beforeend',row);else{var note=cards.find(function(c){return $('textarea',c)});var nc=document.createElement('div');nc.className='card';nc.innerHTML='<h2>每日必做</h2>'+row;root.insertBefore(nc,note||null)}})();
- var els=$$('input[type=checkbox],textarea',root).filter(function(e){return !e.classList.contains('cr-auto')});
+ var els=$$('input[type=checkbox],textarea',root).filter(function(e){return !e.classList.contains('cr-auto')&&e.id!=='pconfirm'});
  $$('input.cr-auto',root).forEach(function(cb){cb.addEventListener('click',function(e){e.preventDefault()})});
  els.forEach(function(e,i){if(i in S){if(e.type==='checkbox')e.checked=!!S[i];else e.value=S[i]}});
  /* 科目測驗完成 → 自動打勾＋分數 */
@@ -308,25 +354,36 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   var d=document.createElement('div');d.className='tlog';w.after(d);TM.logs[i]=d;tRender(i)});
  els.forEach(function(e,i){e.addEventListener(e.type==='checkbox'?'change':'input',function(){if(e.type==='checkbox'&&TM.logs[i]&&e.checked){var T=getT();if(T&&T.i==i)setT(null);if(S.t[i]&&S.t[i].s)tFinish(i)}save();progress();
   if(e.id==='confirm'&&e.checked){bud.say('謝謝你自己檢查！小猴子幫你送出囉 📮');sendChecklist('confirm')}})});
- /* 簽名 */
- var c=$('#sig',root),r=window.devicePixelRatio||1;setTimeout(function(){var w=c.clientWidth||600,hh=c.clientHeight||150;c.width=w*r;c.height=hh*r;var x=c.getContext('2d');x.scale(r,r);x.lineWidth=2.5;x.lineCap='round';x.lineJoin='round';x.strokeStyle='#5b4636';
-  if(S.sig){var im=new Image();im.onload=function(){x.drawImage(im,0,0,w,hh)};im.src=S.sig}$('#sigdate',root).textContent=S.sigAt?'簽名日期：'+S.sigAt:'';
-  var dn=false,P=function(e){var b=c.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top]};
-  c.onpointerdown=function(e){dn=true;c.setPointerCapture&&c.setPointerCapture(e.pointerId);x.beginPath();var p=P(e);x.moveTo(p[0],p[1]);e.preventDefault()};
-  c.onpointermove=function(e){if(dn){var p=P(e);x.lineTo(p[0],p[1]);x.stroke()}};
-  c.onpointerup=c.onpointercancel=function(){if(!dn)return;dn=false;S.sig=c.toDataURL('image/png');S.sigAt=tpeNowText();LS.set(K,S);$('#sigdate',root).textContent='簽名日期：'+S.sigAt;clearTimeout(c._t);c._t=setTimeout(function(){sendChecklist('sign')},1500)};
-  $('#sigclr',root).onclick=function(){x.clearRect(0,0,c.width,c.height);delete S.sig;delete S.sigAt;LS.set(K,S);$('#sigdate',root).textContent=''};},0);
- $('#save',root).onclick=function(){savePNG(root,'Roby檢查_'+DATE.slice(5).replace('-','')+'.png')};
- function sendChecklist(by){var items=[];$$('.card',root).forEach(function(cd){var sec=($('h2',cd)||{}).textContent||'';$$('label',cd).forEach(function(l){var cb=$('input',l);if(!cb||cb.id==='confirm')return;var t=$('span',l).cloneNode(true),sc=$('.score',t);if(sc)sc.remove();
-  var i=els.indexOf(cb),tt=S.t[i];items.push({section:sec.replace(/（.*/,''),text:t.textContent.trim(),checked:cb.checked,score:sc&&sc.dataset.score!==''?+sc.dataset.score:null,focus:tt&&tt.s?{start:hm(tt.s),end:tt.e?hm(tt.e):null,minutes:Math.floor(tTot(tt)/60e3)}:null})})});
+ /* 家長確認（取代手指簽名＋存圖）：Roby 先確認 → 家長 PIN → 寫每日紀錄＋送出佇列 → 鎖定當天 */
+ var pc=$('#pconfirm',root),pst=$('#pcst',root);
+ function lockUI(){var L=!!S.locked;els.forEach(function(x){x.disabled=L});$$('.tbtn',root).forEach(function(x){x.disabled=L});pc.checked=!!(S.parent&&S.parent.at);root.classList.toggle('day-locked',L);
+  $('#pcunlock',root).style.display=L?'':'none';
+  pst.innerHTML=(S.parent&&S.parent.at?'✅ 家長已確認：'+esc(S.parent.text||'')+(L?'・今天的勾選已鎖定':''):(S.parent_prev?'已解鎖修改中，改好後請家長再確認一次':'Roby 勾「Roby 確認」後，家長再打勾並輸入 PIN'))+(S.sig||S.sigAt?'<br>（舊版手指簽名紀錄：'+esc(S.sigAt||'有')+'）':'')}
+ pc.addEventListener('click',function(e){e.preventDefault();if(S.parent&&S.parent.at){toast2('今天已確認；要修改請按「解鎖修改」');return}
+  if(!$('#confirm',root).checked){toast2('要先由 Roby 勾「Roby 確認」');bud.say('請 Roby 先勾「Roby 確認」，再請家長確認喔！');return}
+  withPin('家長確認',function(){save();S.parent={at:nowIso(),text:tpeNowText()+' '+hm(Date.now())};S.locked=true;delete S.parent_prev;LS.set(K,S);var rec=buildRec();LS.set('roby-daily-'+DATE,rec);sendChecklist('parent');lockUI();toast2('家長確認完成，已存今日紀錄');bud.say('家長確認完成！今天辛苦了 🎉')})});
+ $('#pcunlock',root).onclick=function(){withPin('解鎖今天的檢查',function(){S.locked=false;S.parent_prev=S.parent;S.parent=null;LS.set(K,S);lockUI();toast2('已解鎖，可以修改；改好請再確認一次')})};
+ $('#pcchg',root).onclick=function(){pinChange()};
+ $('#pcexp',root).onclick=function(){dlJSON('Roby檢查_'+DATE+'.json',dailyRec(DATE)||buildRec())};
+ function buildItems(){var items=[];$$('.card',root).forEach(function(cd){var sec=($('h2',cd)||{}).textContent||'';$$('label',cd).forEach(function(l){var cb=$('input',l);if(!cb||cb.id==='confirm'||cb.id==='pconfirm')return;var t=$('span',l).cloneNode(true),sc=$('.score',t);if(sc)sc.remove();
+  var i=els.indexOf(cb),tt=S.t[i];items.push({section:sec.replace(/（.*/,''),text:t.textContent.trim(),checked:cb.checked,score:sc&&sc.dataset.score!==''?+sc.dataset.score:null,focus:tt&&tt.s?{start:hm(tt.s),end:tt.e?hm(tt.e):null,minutes:Math.floor(tTot(tt)/60e3)}:null})})});return items}
+ function buildRec(){var items=buildItems(),cbs=$$('input[data-excl="cb"]',root),main=items.filter(function(x){return !/聯絡簿未帶/.test(x.text)}),dn=main.filter(function(x){return x.checked}).length;
+  var qs=function(k){var q=LS.get('roby-quiz-'+k+'-'+DATE,null);return q&&q.completed_at&&q.score!=null?+q.score:null},cr=(LS.get('roby-cr-days',{})[DATE])||null;
+  var fo=items.filter(function(x){return x.focus}).map(function(x){return {text:x.text,start:x.focus.start,end:x.focus.end,minutes:x.focus.minutes}});
+  return {schema:'roby-daily/1',date:DATE,items:items,done:dn,total:main.length,rate:main.length?Math.round(dn/main.length*100):0,
+   contact_book:cbs[0]&&cbs[0].checked?'signed':cbs[1]&&cbs[1].checked?'missing':'none',
+   scores:{english:qs('english'),chinese_review:cr&&cr.first&&cr.score!=null?+cr.score:null,chinese_quiz:qs('chinese')},
+   focus:fo,focus_minutes:fo.reduce(function(a,x){return a+(x.minutes||0)},0),note:($('textarea',root)||{}).value||'',
+   roby_confirmed:!!($('#confirm',root)||{}).checked,parent_confirmed_at:S.parent&&S.parent.at||null,legacy_signed_at:S.sigAt||null,saved_at:nowIso()}}
+ function sendChecklist(by){var items=buildItems(),rec=buildRec();
   var cbs=$$('input[data-excl="cb"]',root);
   enqueue('checklist',{subject:'checklist',date:DATE,by:by,items:items,done:items.filter(function(x){return x.checked}).length,total:items.length,
-   contact_book:cbs[0]&&cbs[0].checked?'signed':cbs[1]&&cbs[1].checked?'missing':'none',note:($('textarea',root)||{}).value||'',confirmed:!!($('#confirm',root)||{}).checked,signed:!!S.sig,signed_at:S.sigAt||null,sent_at:nowIso()},'checklist-'+DATE);}
+   contact_book:cbs[0]&&cbs[0].checked?'signed':cbs[1]&&cbs[1].checked?'missing':'none',note:($('textarea',root)||{}).value||'',confirmed:!!($('#confirm',root)||{}).checked,parent_confirmed:!!(S.parent&&S.parent.at),parent_confirmed_at:S.parent&&S.parent.at||null,signed:!!(S.parent&&S.parent.at),signed_at:S.parent&&S.parent.text||S.sigAt||null,daily:rec,sent_at:nowIso()},'checklist-'+DATE);}
  var shown=false;
  function progress(){var cbs=els.filter(function(e){return e.type==='checkbox'&&!e.closest('label.alt')}),left=cbs.filter(function(e){return !e.checked}).length;
   if(!left){bud.say(bud.L.done);if(!shown){shown=true;var im=$('img',bud);im.classList.remove('jump');void im.offsetWidth;im.classList.add('jump');celebrate(true)}}
   else{shown=false;bud.say(left===cbs.length?bud.L.greet:bud.L.left.replace('{n}',left))}}
- shown=els.filter(function(e){return e.type==='checkbox'&&!e.closest('label.alt')}).every(function(e){return e.checked});progress();tTick();}
+ shown=els.filter(function(e){return e.type==='checkbox'&&!e.closest('label.alt')}).every(function(e){return e.checked});progress();tTick();lockUI();}
 function dueFmt(d){if(/^\d{4}-\d{2}-\d{2}$/.test(d))return mdw(d)+'前';return d}
 function getT(){return LS.get(TK,null)}
 function setT(t){t?LS.set(TK,t):localStorage.removeItem(TK);tTick()}
@@ -335,7 +392,7 @@ function tRender(i){var t=TM.S.t[i]||{},d=TM.logs[i];if(!d)return;var s='開始 
 function tName(i){var e=TM.els[i];return e?$('span',e.closest('label')).textContent:''}
 function tPause(i,at){var t=TM.S.t[i];if(t&&t.run){t.acc=(t.acc||0)+Math.max(0,(at||Date.now())-t.run);t.run=null}}
 function tFinish(i){var t=TM.S.t[i];if(!t||!t.s)return;tPause(i);t.e=Date.now();t.on=false;tRender(i);TM.save()}
-function tStart(i){var T=getT();if(T&&T.i==i&&T.k===TM.K)return;if(T&&!confirm('已經有一個計時在進行（'+tName(T.i)+'），要結束它改計時這一項嗎？'))return;if(T)tFinish(T.i);
+function tStart(i){if(TM.S&&TM.S.locked){toast2('今天已家長確認並鎖定');return}var T=getT();if(T&&T.i==i&&T.k===TM.K)return;if(T&&!confirm('已經有一個計時在進行（'+tName(T.i)+'），要結束它改計時這一項嗎？'))return;if(T)tFinish(T.i);
  var t=TM.S.t[i]=TM.S.t[i]||{acc:0};if(!t.s)t.s=Date.now();t.run=Date.now();t.on=true;t.e=null;TM.save();tRender(i);setT({k:TM.K,i:i,ph:'f',end:Date.now()+FOCUS})}
 function beep(n){try{var ac=beep.ac=beep.ac||new (window.AudioContext||window.webkitAudioContext)();for(var k=0;k<n;k++){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);var t0=ac.currentTime+k*.5;g.gain.setValueAtTime(.4,t0);g.gain.exponentialRampToValueAtTime(.001,t0+.4);o.start(t0);o.stop(t0+.4)}}catch(e){}}
 function fmtc(ms){var s=Math.ceil(Math.max(0,ms)/1000);return p2(Math.floor(s/60))+':'+p2(s%60)}
@@ -374,23 +431,27 @@ function wbPairs(x){var bad={};(x.words||[]).forEach(function(w){bad[w.wrong+w.r
   return '<span class="pair'+(st&&st!=='self'?' bad':'')+'"><s>'+esc(m[1])+'</s>→<b>'+esc(m[2])+'</b> <small>'+esc(m[3])+(st?'・'+lab[st]:'')+'</small></span>'}).join('')+((x.false_clicks||[]).length?'<span class="pair bad">點錯：'+esc(x.false_clicks.join('、'))+'</span>':'')+'</div>'}
 /* ---------- 週報 ---------- */
 function weeklyPage(root){var D=DATA.weekly||DATA.weeklyPrev;root.insertAdjacentHTML('beforeend','<img class="hero" src="monkey-hero.webp" alt="">');
- if(!D){root.appendChild(empty('這週還沒有週報喔（週日更新）','cat-foot.webp'));return}
- var mon=D.week_start||(DATA.weekly?WK:PREVWK),sun=addDays(mon,6);
+ var LREC=dailyRange(WK,addDays(WK,6)),LOC=false;
+ if(D&&D.week_start&&D.week_start!==WK&&LREC.length){D={week_start:WK,days:[]};LOC=true}
+ if(!D){if(!LREC.length){root.appendChild(empty('這週還沒有週報喔（週日更新）','cat-foot.webp'));return}D={week_start:WK,days:[]};LOC=true}
+ var mon=D.week_start||(DATA.weekly?WK:PREVWK),sun=addDays(mon,6),WREC=dailyRange(mon,sun),WA=aggDaily(WREC);
  var html='<h1>Roby 週報</h1><div class="sub">'+md(mon)+'（一）～ '+md(sun)+'（日）</div>';if(D.sample)html+='<div class="sample">⚠️ 範例資料</div>';
- var O=D.overview||{},pct=function(a,b){return b?Math.round(a/b*100):0};
+ var O=D.overview||{},pct=function(a,b){return b?Math.round(a/b*100):0};if(LOC)O={planDone:WA.done,planTotal:WA.total,contact:WA.contact,contactMissing:WA.contactMissing,english:WA.english.days,chinese:WA.chinese_review.days};
  var isN=function(v){return typeof v==='number'||(typeof v==='string'&&/^\d+(\.\d+)?$/.test(v.trim()))},sc=function(v){return v>=90?'sc-hi':v>=70?'sc-mid':'sc-low'};
  var hasCh=(D.days||[]).some(function(d){return d.chinese!=null}),chN=(D.days||[]).filter(function(d){return isN(d.chinese)}).length;
  var chD=O.chinese!=null?O.chinese+'/7 天':hasCh?chN+'/7 天':'—';
  var avgOf=function(k){var a=(D.days||[]).filter(function(d){return isN(d[k])}).map(function(d){return +d[k]});return a.length?Math.round(a.reduce(function(x,y){return x+y},0)/a.length):null};
  var avgP=['english','chinese'].map(function(k){var a=avgOf(k);return a==null?'':'<span class="wavg">'+(k==='english'?'英文':'國文')+'大師平均 <b class="'+sc(a)+'">'+a+' 分</b></span>'}).filter(Boolean).join('　');if(avgP)avgP='<p>'+avgP+'</p>';
- html+='<div class="card"><h2>本週總覽</h2><p>讀書計畫完成率：'+pct(O.planDone,O.planTotal)+'%（'+(O.planDone||0)+' / '+(O.planTotal||0)+' 項）</p><div class="bar" style="height:10px;border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pct(O.planDone,O.planTotal)+'%"></div></div><p>每日必做：聯絡簿 '+(O.contact||0)+'/7 天'+(O.contactMissing?'（未帶 '+O.contactMissing+' 天）':'')+'、英文大師 '+(O.english||0)+'/7 天、國文大師 '+chD+'</p>'+avgP+'<p>家長簽名天數：'+(O.signed||0)+'/7</p></div>';
+ html+='<div class="card"><h2>本週總覽</h2><p>讀書計畫完成率：'+pct(O.planDone,O.planTotal)+'%（'+(O.planDone||0)+' / '+(O.planTotal||0)+' 項）</p><div class="bar" style="height:10px;border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pct(O.planDone,O.planTotal)+'%"></div></div><p>每日必做：聯絡簿 '+(O.contact||0)+'/7 天'+(O.contactMissing?'（未帶 '+O.contactMissing+' 天）':'')+'、英文大師 '+(O.english||0)+'/7 天、國文大師 '+chD+'</p>'+avgP+'<p>家長確認天數：'+(WREC.length?WA.parent:O.parentConfirmed!=null?O.parentConfirmed:(O.signed||0))+'/7</p>'+(LOC?'<p class="small">本週文字週報尚未產生，以下為本機每日紀錄彙總。</p>':'')+'</div>';
+ if(WREC.length)html+=aggCard('本週 App 紀錄彙總',WA,7,WREC);
+ html+='<div class="card noprint"><h2>同步本週紀錄</h2><p class="small">把本週每日紀錄＋筆記加點打包成 JSON：下載後存到 OneDrive「Roby週報」，同時放進送出佇列（webhook 設好後自動送）。</p><button id="wsync">📦 同步本週紀錄（'+WREC.length+' 天）</button></div>';
  if((D.days||[]).length){html+='<div class="card"><h2>每日完成狀況</h2><table><tr><th></th>'+D.days.map(function(d){return '<th>'+md(d.date)+'<br>'+WD[dobj(d.date).getDay()]+'</th>'}).join('')+'</tr>';
-  [['plan','讀書計畫'],['contact','聯絡簿'],['english','英文大師'],['chinese','國文大師'],['signed','家長簽名']].forEach(function(r){if(r[0]==='chinese'&&!hasCh&&O.chinese==null)return;html+='<tr><td>'+r[1]+'</td>'+D.days.map(function(d){var v=d[r[0]],g=(r[0]==='english'||r[0]==='chinese');return '<td>'+(v===true?'✓':v===false?'':v==null?(r[0]==='chinese'?'—':''):g&&isN(v)?'<b class="'+sc(+v)+'">'+esc(v)+'</b>':esc(v))+'</td>'}).join('')+'</tr>'});html+='</table></div>'}
+  [['plan','讀書計畫'],['contact','聯絡簿'],['english','英文大師'],['chinese','國文大師'],['signed','家長確認']].forEach(function(r){if(r[0]==='chinese'&&!hasCh&&O.chinese==null)return;html+='<tr><td>'+r[1]+'</td>'+D.days.map(function(d){var v=r[0]==='signed'&&d.parentConfirmed!=null?d.parentConfirmed:d[r[0]],g=(r[0]==='english'||r[0]==='chinese');return '<td>'+(v===true?'✓':v===false?'':v==null?(r[0]==='chinese'?'—':''):g&&isN(v)?'<b class="'+sc(+v)+'">'+esc(v)+'</b>':esc(v))+'</td>'}).join('')+'</tr>'});html+='</table></div>'}
  if((D.homework||[]).length)html+='<div class="card"><h2>家教／補習功課</h2><table><tr><th>項目</th><th>期限</th><th>狀態</th></tr>'+D.homework.map(function(h){return '<tr><td>'+esc(h.name)+'</td><td>'+esc(h.due||'')+'</td><td class="'+(h.ok?'ok':h.ok===false?'no':'')+'">'+esc(h.status||'')+'</td></tr>'}).join('')+'</table></div>';
  html+='<div class="card" id="notes"><h2>筆記與加點</h2><p class="small">筆記不定期才有，沒有就留空。一科可以新增好幾筆，選日期再點加點（再點一次取消）。</p><div id="subjs"></div><p>本週加點：<b id="wsum">0</b> 點・累計點數：<b id="tot">0</b> 點</p></div>';
  [['pending','未完成／延後項目'],['highlights','本週亮點'],['next','下週提醒與建議']].forEach(function(k){if((D[k[0]]||[]).length)html+='<div class="card"><h2>'+k[1]+'</h2><ul>'+D[k[0]].map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ul></div>'});
  if(D.parentNote)html+='<div class="card"><h2>家長備註</h2><p>'+esc(D.parentNote)+'</p></div>';
- html+='<div class="card"><h2>家長簽名</h2><div class="row"><span class="small noprint">↓ 請用手指在框內簽名</span><button class="noprint" id="wsigclr">清除</button></div><canvas class="sig" id="wsig"></canvas><p id="wsigdate" class="small">簽名日期：—</p></div><button id="save" class="noprint" style="width:100%">完成並存成圖片</button>';
+ html+='<div class="card pcard"><h2>家長確認</h2><label class="pc-l"><input type="checkbox" id="wpc"><span>家長已看過本週週報（需 PIN）</span></label><p id="wpcst" class="small"></p></div><button id="save" class="noprint" style="width:100%">完成並存成圖片</button>';
  var w=document.createElement('div');w.innerHTML=html;while(w.firstChild)root.appendChild(w.firstChild);
  /* 筆記加點：存 roby-weekly-notes-<週一> */
  var NK='roby-weekly-notes-'+mon,N=LS.get(NK,{}),base=+D.base||0,subs=D.noteSubjects||['國文','理化','社會'];
@@ -402,7 +463,9 @@ function weeklyPage(root){var D=DATA.weekly||DATA.weeklyPrev;root.insertAdjacent
    $('select',d).onchange=function(){r.d=this.value;sum()};$$('.pts button',d).forEach(function(b){b.onclick=function(){r.p=+r.p===+b.textContent?0:+b.textContent;rows();sum()}});
    $('.del',d).onclick=function(){N[s].splice(j,1);rows();sum()};rw.appendChild(d)})}
   $('.add',e).onclick=function(){N[s].push({d:DATE>=mon&&DATE<=sun?DATE:mon,p:0});rows();sum()};rows()});sum();
- sigPad($('#wsig'),'roby-weekly-sig-'+mon,$('#wsigdate'),$('#wsigclr'));
+ var WCK='roby-weekly-confirm-'+mon,wpc=$('#wpc'),wst=$('#wpcst');function wdraw(){var c=LS.get(WCK,null),old=LS.get('roby-weekly-sig-'+mon,null);wpc.checked=!!c;wst.innerHTML=(c?'✅ 家長確認：'+esc(c.text):'打勾並輸入家長 PIN')+(old&&old.date?'<br>（舊版簽名：'+esc(old.date)+'）':'')}wdraw();
+ wpc.addEventListener('click',function(e){e.preventDefault();if(LS.get(WCK,null)){toast2('本週已確認');return}withPin('家長確認週報',function(){LS.set(WCK,{at:nowIso(),text:tpeNowText()+' '+hm(Date.now())});wdraw();toast2('週報已確認')})});
+ $('#wsync').onclick=function(){syncRange('weekly-sync','本週紀錄',mon,sun,{week_start:mon,notes:N,base:base,points_week:+$('#wsum').textContent,points_total:+$('#tot').textContent,parent_confirm:LS.get(WCK,null)},'Roby週紀錄_'+mon+'.json')};
  $('#save').onclick=function(){savePNG(root,'Roby週報_'+mon.slice(5).replace('-','')+'.png')};}
 function sigPad(c,K,dl,clr){setTimeout(function(){var r=window.devicePixelRatio||1,w=c.clientWidth||600,h=c.clientHeight||150;c.width=w*r;c.height=h*r;var x=c.getContext('2d');x.scale(r,r);x.lineWidth=2.5;x.lineCap='round';x.lineJoin='round';x.strokeStyle='#5b4636';
  var S=LS.get(K,{});if(S.img){var im=new Image();im.onload=function(){x.drawImage(im,0,0,w,h)};im.src=S.img}if(S.date)dl.textContent='簽名日期：'+S.date;
@@ -414,12 +477,16 @@ function sigPad(c,K,dl,clr){setTimeout(function(){var r=window.devicePixelRatio|
 
 /* ---------- 月報 ---------- */
 function monthlyPage(root){var D=DATA.monthly||DATA.monthlyPrev;root.insertAdjacentHTML('beforeend','<img class="hero" src="cat-foot.webp" alt="">');
- if(!D){root.appendChild(empty('這個月還沒有月報喔（每月 1 日更新）','cat-foot.webp'));return}
+ if(!D){var cy=+DATE.slice(0,4),cm=+DATE.slice(5,7);if(dailyRange(DATE.slice(0,8)+'01',DATE).length)D={year:cy,month:cm};else{root.appendChild(empty('這個月還沒有月報喔（每月 1 日更新）','cat-foot.webp'));return}}
+ var cy0=+DATE.slice(0,4),cm0=+DATE.slice(5,7);if((D.year!==cy0||D.month!==cm0)&&!DATA.monthly&&dailyRange(DATE.slice(0,8)+'01',DATE).length)D={year:cy0,month:cm0};
  var Y=D.year,M=D.month,last=new Date(Y,M,0).getDate(),pct=function(a,b){return b?Math.round(a/b*100):0};
  var bar=function(l,v,mx,t,cls){return '<div class="br"><span>'+esc(l)+'</span><div class="bar"><div style="width:'+pct(v,mx)+'%;'+(cls?'background:#b5835a!important':'')+'"></div></div><span>'+t+'</span></div>'};
  var P=D.plan||{},dl=D.daily||{},dd=dl.days||last,fm=D.focusMinutes||{},tot=Object.keys(fm).reduce(function(a,k){return a+fm[k]},0),mx=Math.max.apply(null,Object.keys(fm).map(function(k){return fm[k]}).concat([1]));
+ var m1=Y+'-'+p2(M)+'-01',mL=Y+'-'+p2(M)+'-'+p2(last),MREC=dailyRange(m1,mL),MA=aggDaily(MREC);
  var html='<h1>Roby 月報　'+Y+' 年 '+M+' 月</h1><div class="sub">'+M+'/1 ～ '+M+'/'+last+'</div>'+(D.sample?'<div class="sample">⚠️ 範例資料（版面預覽用，非真實紀錄）</div>':'');
  html+='<div class="card"><h2>本月總覽</h2><div class="kpi"><div>讀書計畫完成率<b>'+pct(P.done,P.total)+'%</b><small>'+(P.done||0)+' / '+(P.total||0)+' 項</small></div><div>聯絡簿<b>'+(dl.contact||0)+' / '+dd+' 天</b>'+(dl.contactMissing?'<small>未帶 '+dl.contactMissing+' 天</small>':'')+'</div><div>英文大師<b>'+(dl.english||0)+' / '+dd+' 天</b>'+(dl.englishAvg!=null?'<small>平均 <span class="'+(dl.englishAvg>=90?'sc-hi':dl.englishAvg>=70?'sc-mid':'sc-low')+'">'+dl.englishAvg+' 分</span></small>':'')+'</div><div>國文大師<b>'+(dl.chinese!=null?dl.chinese+' / '+dd+' 天':'—')+'</b>'+(dl.chineseAvg!=null?'<small>平均 <span class="'+(dl.chineseAvg>=90?'sc-hi':dl.chineseAvg>=70?'sc-mid':'sc-low')+'">'+dl.chineseAvg+' 分</span></small>':'')+'</div><div>專注總時數<b>'+(tot/60).toFixed(1)+' 小時</b></div></div></div>';
+ if(MREC.length)html+=aggCard('本月 App 紀錄彙總',MA,last,null);
+ html+='<div class="card noprint"><h2>同步本月紀錄</h2><p class="small">打包本月每日紀錄成 JSON（下載存 OneDrive，同時放進送出佇列）。</p><button id="msync">📦 同步本月紀錄（'+MREC.length+' 天）</button></div>';
  if((D.weeks||[]).length)html+='<div class="card"><h2>各週讀書計畫完成率</h2>'+D.weeks.map(function(w){return bar(w.label.replace(/（.*/,''),w.done,w.total,pct(w.done,w.total)+'%（'+w.done+'/'+w.total+'）')}).join('')+'</div>';
  if((D.homework||[]).length)html+='<div class="card"><h2>家教／補習功課準時率</h2><table><tr><th>項目</th><th>準時</th><th>逾期</th><th>準時率</th></tr>'+D.homework.map(function(h){return '<tr><td>'+esc(h.name)+'</td><td class="ok">'+h.ontime+'</td><td class="no">'+h.late+'</td><td>'+pct(h.ontime,h.ontime+h.late)+'%</td></tr>'}).join('')+'</table></div>';
  if(tot)html+='<div class="card"><h2>專注計時（各科時數）</h2>'+Object.keys(fm).map(function(k){return bar(k,fm[k],mx,Math.floor(fm[k]/60)+' 小時 '+(fm[k]%60)+' 分',1)}).join('')+'</div>';
@@ -427,7 +494,7 @@ function monthlyPage(root){var D=DATA.monthly||DATA.monthlyPrev;root.insertAdjac
  if((D.notes||[]).length)html+='<div class="card"><h2>筆記加點</h2><table><tr><th>科目</th><th>筆數</th><th>本月點數</th></tr>'+D.notes.map(function(n){return '<tr><td>'+esc(n.subject)+'</td><td>'+n.count+'</td><td>'+n.points+'</td></tr>'}).join('')+'</table><p>本月小計：<b>'+D.notes.reduce(function(a,n){return a+n.points},0)+'</b> 點・累計點數：<b>'+(D.pointsTotal||0)+'</b> 點</p></div>';
  [['highlights','本月亮點'],['advice','下月建議']].forEach(function(k){if((D[k[0]]||[]).length)html+='<div class="card"><h2>'+k[1]+'</h2><ul>'+D[k[0]].map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ul></div>'});
  html+='<button id="save" class="noprint" style="width:100%">完成並存成圖片</button>';
- root.insertAdjacentHTML('beforeend',html);$('#save').onclick=function(){savePNG(root,'Roby月報_'+Y+p2(M)+'.png')};}
+ root.insertAdjacentHTML('beforeend',html);$('#save').onclick=function(){savePNG(root,'Roby月報_'+Y+p2(M)+'.png')};$('#msync').onclick=function(){syncRange('monthly-sync','本月紀錄',m1,mL,{year:Y,month:M},'Roby月紀錄_'+Y+p2(M)+'.json')};}
 
 /* ---------- 共用 ---------- */
 function empty(msg,img){var cc=(DATA.config||{}).characters||{};if(img==='monkey-head.png'&&cc.monkey&&cc.monkey.avatar)img=cc.monkey.avatar;if(img==='cat-foot.webp'&&cc.cat&&cc.cat.avatar)img=cc.cat.avatar;var d=document.createElement('div');d.className='card empty';d.innerHTML='<img src="'+img+'" alt="">'+esc(msg);return d}

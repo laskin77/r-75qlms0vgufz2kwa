@@ -70,3 +70,12 @@ table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #e2d8c6;
 .story-sep{display:flex;align-items:center;gap:8px;margin:22px 4px 10px;color:#8a5a2b;font-weight:700;font-size:15px}.story-sep:before,.story-sep:after{content:'';flex:1;border-top:2px dashed #d9b98f}
 
 .wavg{white-space:nowrap}b.sc-hi,b.sc-mid,b.sc-low,span.sc-hi,span.sc-mid,span.sc-low{color:#fff;padding:1px 6px;border-radius:8px;font-weight:700}
+.pin-ov{position:fixed;inset:0;background:rgba(60,45,30,.35);display:flex;align-items:center;justify-content:center;z-index:999}
+.pin-box{background:#fffaf2;border-radius:16px;padding:16px 18px;width:260px;box-shadow:0 6px 24px rgba(0,0,0,.2);font-size:15px;text-align:center}
+.pin-t{display:block;margin-bottom:6px}.pin-l{font-size:14px;color:#6b5a48;margin-bottom:6px}
+.pin-in{width:120px;font-size:22px;letter-spacing:.5em;text-align:center;padding:6px 8px;border:1px solid #d9c3a5;border-radius:12px}
+.pin-m{min-height:18px;color:#c0392b;font-size:13px;margin:4px 0}.pin-b{display:flex;gap:8px;justify-content:center}.pin-b button{font-size:14px;padding:6px 16px;border-radius:12px}
+.pin-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#5b4636;color:#fff;padding:8px 14px;border-radius:14px;font-size:14px;z-index:1000}
+.pc-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.pc-btns button{font-size:13px;padding:4px 10px;border-radius:12px}
+.day-locked label{opacity:.75}.agg table{font-size:14px}.aggd{margin-top:8px;font-size:13px}
+.day-locked .tbtn{opacity:.4;pointer-events:none}.pc-l input:checked+span{text-decoration:none!important;opacity:1!important}

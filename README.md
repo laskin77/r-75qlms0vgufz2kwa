@@ -179,3 +179,15 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 ## 聯絡簿已簽／未帶（二擇一）
 每日必做中「聯絡簿已簽」與「聯絡簿未帶」放在同一列 `<div class="pair">`，兩個勾選框都帶 `data-excl="cb"`（excl.js 互斥：點一個另一個自動取消，可都不選）；「未帶」的 label 有 `class="alt"`，內文 `<span class="tagred">聯絡簿未帶</span>`，勾選時為磚紅實心小標籤，PNG 亦畫紅標籤。不計入「全部完成」判斷。狀態存同一個 `roby-check-YYYY-MM-DD`。**每日排程請保留這段 pair 結構。**
 週報／月報排程可從每日 PNG 統計：聯絡簿已簽天數、**聯絡簿未帶天數**（月報 JSON 可加 `daily.contactMissing`）。
+
+## 家長確認（PIN）與每日紀錄（2026-11-04 起，取代手指簽名＋存 PNG）
+- **今日檢查**：Roby 先勾「Roby 確認」→ 家長勾「家長確認」並輸入 4 位數 PIN → 當天勾選鎖定（要改按「🔓 解鎖修改」輸入 PIN；解鎖後需重新確認）。不再產生 PNG；「匯出今日紀錄（JSON）」為選用備份。
+- **PIN 儲存**：只存在這台 iPad 的 localStorage `roby-parent-pin`＝`{v,algo:"SHA-256",salt(16 bytes hex),hash=SHA-256(salt+":"+PIN),fails,lockUntil,set_at}`，不存明文、不進 repo/data/。連錯 5 次鎖 1 分鐘。「變更 PIN」需舊 PIN。
+- **忘記 PIN（沒有後門）**：在 iPad Safari 清除本網站資料（設定 → Safari → 進階 → 網站資料 → 搜尋 `laskin77.github.io` → 刪除）會連同所有本機紀錄一起清掉；若只想清 PIN，用電腦 Safari 網頁檢閱器連接 iPad，在 Console 執行 `localStorage.removeItem('roby-parent-pin')`，下次確認時重新設定。清 PIN 前建議先在週報／月報按「同步」下載備份。
+- **每日紀錄** `roby-daily-<YYYY-MM-DD>`（家長確認時寫入，也附在 checklist webhook payload 的 `daily` 欄位）：
+  `{schema:"roby-daily/1", date, items[{section,text,checked,score,focus{start,end,minutes}}], done, total, rate(0–100，不含「聯絡簿未帶」), contact_book:"signed"|"missing"|"none", scores{english, chinese_review, chinese_quiz}(數字或 null), focus[{text,start,end,minutes}], focus_minutes, note, roby_confirmed, parent_confirmed_at(ISO), legacy_signed_at, saved_at}`
+- checklist payload 另加 `parent_confirmed, parent_confirmed_at, daily`；舊欄位 `signed/signed_at` 保留（現在代表家長確認）。舊的 `S.sig/sigAt`、`roby-weekly-sig-*` 仍可讀取顯示，不會報錯。
+- **週報／月報**：頁面會讀本機 `roby-daily-*` 自動彙總（完成率、聯絡簿、英文／國文複習／國文小測驗天數與平均、計時、家長確認天數），`data/weekly`、`data/monthly` JSON 仍提供文字內容（亮點、提醒）。週報 JSON 可用 `overview.parentConfirmed`、`days[].parentConfirmed`（取代 signed，舊欄位仍可讀）。
+- **同步按鈕**：週報「📦 同步本週紀錄」／月報「📦 同步本月紀錄」→ 打包 `{subject:"weekly-sync"|"monthly-sync", from, to, days:[每日紀錄…], summary{days,rate,done,total,contact,contactMissing,english{days,avg},chinese_review{days,avg},chinese_quiz{days,avg},parent,roby,focus}, exported_at}`（週另含 `week_start, notes(筆記加點), base, points_week, points_total, parent_confirm`），同時①下載 JSON 檔（`Roby週紀錄_<週一>.json`／`Roby月紀錄_<YYYYMM>.json`）②放進 outbox 走 `webhooks.checklist`。
+- **資料流向（目前實況）**：排程在雲端讀不到 iPad localStorage。`webhooks.checklist.url` 目前是空的 → 佇列只會待送，**不會自動到排程**。所以現階段：Doc 每週日／月底在週報／月報按「同步」，把下載的 JSON 存到 OneDrive「Roby週報」，排程從 OneDrive 讀這個 JSON 產生 `data/weekly|monthly`。日後 checklist webhook 設好網址後，每日確認與同步會自動送達，就不用手動存檔。
+- 週報底部「家長確認」（PIN）存 `roby-weekly-confirm-<週一>`；筆記加點流程（存成圖片放 OneDrive）暫時保留原樣，加點資料也已包含在同步 JSON 的 `notes`。
