@@ -21,6 +21,7 @@ function tpeNowText(){var n=new Date(new Date().toLocaleString('en-US',{timeZone
 
 /* ---------- 資料讀取 ---------- */
 var RAW={},DATA={};
+var MERGE_FROM='2026-11-05';/* 這天起李老師的國文題目併入「八上二段國文複習」框內（review/index.html 同名常數） */
 function getJSON(path){return fetch(path,{cache:'no-store'}).then(function(r){return r.ok?r.text():null}).catch(function(){return null})}
 var WK=monday(DATE),MON=DATE.slice(0,7),PREVWK=addDays(WK,-7),PM=(function(){var d=dobj(DATE);d.setDate(1);d.setMonth(d.getMonth()-1);return ymd(d).slice(0,7)})();
 var SRC={config:'data/config.json',checklist:'data/checklist/'+DATE+'.json',chinese:'data/chinese/'+DATE+'.json',english:'data/english/'+DATE+'.json',
@@ -155,6 +156,7 @@ function crResetBtn(){var b=document.createElement('button');b.className='clr cr
 function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,false);root.appendChild(bud);
  if(subj==='chinese'){var fw=document.createElement('div');fw.className='review-embed';fw.innerHTML='<div class="re-h"><b>📚 八上二段國文複習・今日題目</b><a href="review/index.html" target="_blank">單獨開啟 ↗</a></div><iframe id="reviewFrame" src="review/index.html?embed=1" scrolling="no" title="八上二段國文複習"></iframe>';var rr=document.createElement('div');rr.className='clr-row noprint';rr.appendChild(crResetBtn());root.appendChild(rr);root.appendChild(fw);
   var fr=$('iframe',fw);fr.onload=function(){try{var d=fr.contentDocument,fit=function(){var h=d.documentElement.scrollHeight;if(h&&Math.abs(h-fr.offsetHeight)>2)fr.style.height=h+'px'};fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(d.body);setInterval(fit,800)}catch(e){fr.style.height='1600px';fr.setAttribute('scrolling','yes')}}}
+ if(subj==='chinese'&&DATE>=MERGE_FROM){bud.say('今天的國文都在下面：先讀小故事，再寫故事小測、李老師的題目和複習題，加油！');return}
  if(!D){if(subj==='chinese'){bud.say('今天的複習題目在下面，加油！');return}root.appendChild(empty('今天沒有英文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
  var KEY='roby-quiz-'+subj+'-'+(D.date||DATE),st=LS.get(KEY,{});st.started_at=st.started_at||nowIso();st.blocks=st.blocks||{};st.steps=st.steps||{};
  var save=function(){LS.set(KEY,st)};save();
@@ -342,6 +344,7 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   if(d&&!done&&a>0&&a>=n-2){var rk=DATE+':'+a;if(window.__crRep!==rk){window.__crRep=rk;var hf=document.getElementById('crRepair');if(hf)hf.remove();hf=document.createElement('iframe');hf.id='crRepair';hf.style.display='none';hf.src='review/index.html?embed=1&repair=1&t='+Date.now();document.body.appendChild(hf)}if(a>=n)info=info.replace('作答中','結算中…')}
   var ex=$('input[data-subj="chinese"]',root);
   if(ex){var lb=ex.parentNode,sp=$('.score',lb),q=LS.get('roby-quiz-chinese-'+DATE,null);$('span',lb).insertAdjacentHTML('beforeend','<span class="cr-merge">｜八上二段國文複習'+info+'<span class="score cr-score" data-score="'+(sc==null?'':sc)+'" data-label="複習"></span></span>');
+   if(DATE>=MERGE_FROM&&sp&&!sp.classList.contains('cr-score'))sp.remove();
    if(done&&!(q&&q.completed_at)){ex.dataset.crdone='1'}return}
   var row='<label class="cr-row"><input type="checkbox" class="cr-auto" data-cr="1"'+(done?' checked':'')+'><span>八上二段國文複習'+info+'<span class="score" data-score="'+(sc==null?'':sc)+'" data-label="小測驗"></span></span></label>';
   var cards=$$('.card',root),dc=cards.find(function(c){var h=$('h2',c);return h&&h.textContent==='每日必做'});

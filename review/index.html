@@ -111,6 +111,22 @@ function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return s
 
 /* ---- 今日 30 題：優先沒做過，其次最少做過 ---- */
 var DAYS=22,PSTART='2026-11-04',PEND='2026-11-25',MINS=[8,5,10],CAPS=[23,5,12],WTS=[24,40,36];
+/* ---- 2026-11-05 起：李老師當日題目（data/chinese/<date>.json）併入複習，一次作答、一次計分、一次回報 ---- */
+var MERGE_FROM='2026-11-05';
+var MERGE_CAPS=[8,3,5];/* 合併日 形音義／改錯（段）／閱讀 題數上限（李老師約 13–16 題＋這些 ≈ 30 題） */
+var MERGE_WTS={story:10,daily:18,review:[20,30,22]};/* 合併日配分：故事小測＋李老師的題目＋形音義／改錯／閱讀，總和 100 */
+var DAILY=null;
+function cvAns(a,o){if(typeof a==='number')return a;var t=String(a==null?'':a).trim().toUpperCase(),i='ABCDEFGH'.indexOf(t.charAt(0));if(t.length===1&&i>=0)return i;var m=t.match(/^\(?([A-H])[).．、\s]/);if(m)return 'ABCDEFGH'.indexOf(m[1]);if(/^\d+$/.test(t))return +t-1;return (o||[]).map(function(x){return String(x).trim()}).indexOf(String(a).trim())}
+function cvDaily(D,date){if(!D||!Array.isArray(D.questions))return null;var story=[],daily=[];
+ D.questions.forEach(function(q,k){var grp=q.type==='group'||!!q.items,subs=grp?(q.items||q.questions||[]):[q],gp=q.passage||q.text||'';
+  subs.forEach(function(x,j){var oid=String(x.id||((q.id||'q'+(k+1))+(grp?'-'+(j+1):''))),st=/^ST-/.test(oid),o={id:'ls-'+oid,orig:oid,ls:true,topic:st?'故事小測':'李老師的題目',lesson:'李老師',question:String(x.question||''),explanation:x.explanation||'',hint:x.hint||''};
+   if(grp&&j===0&&gp)o.passage=gp;else if(!grp&&x.passage)o.passage=x.passage;
+   if(Array.isArray(x.options)&&x.options.length&&x.type!=='fill'){o.type='choice';o.options=x.options.map(String);o.answer=cvAns(x.answer,x.options);if(!(o.answer>=0&&o.answer<o.options.length))return}
+   else{o.type='fill';o.answer=[].concat(x.answer==null?[]:x.answer,x.accept||[]).map(String).filter(Boolean);if(!o.answer.length)return}
+   (st?story:daily).push(o)})});
+ if(!story.length&&!daily.length)return null;return {date:date,title:D.title||'',learn:D.learn||null,story:story,daily:daily}}
+function regQs(dq){if(dq)dq.story.concat(dq.daily).forEach(function(q){BY[q.id]=q})}
+function mergedFor(d){return DAILY&&DAILY.date===d&&d>=MERGE_FROM?DAILY:null}
 function drawable(p,q){return p[1].indexOf(q.topic)>=0&&(p[1][0]==='改錯')===(q.type==='passage')}
 var POOL=QS.filter(function(q){return PLAN.some(function(p){return drawable(p,q)})});
 function dnum(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)}
@@ -120,17 +136,20 @@ function ensureStart(){var pl=LS.get(K.plan,null);if(!pl||pl.startDate!==PSTART|
 ensureStart();
 function dayN(d){return dnum(PSTART,d)+1}
 function pickDay(date){var prog=LS.get(K.prog,{}),r=rng(hash(date)),used={},ids=[],sections=[];
- var weak=LS.get(K.weak,{}),n0=dayN(date),left=n0<1?DAYS:Math.max(1,DAYS-n0+1);
+ var M=mergedFor(date),CP=M?MERGE_CAPS:CAPS,weak=LS.get(K.weak,{}),n0=dayN(date),left=n0<1?DAYS:Math.max(1,DAYS-n0+1);
  PLAN.forEach(function(p,pi){var pool=QS.filter(function(q){return drawable(p,q)});
-  var unseen=pool.filter(function(q){return !(prog[q.id]||{}).seen}).length,need=n0>DAYS?[20,5,12][pi]:Math.min(CAPS[pi],Math.max(MINS[pi],Math.ceil(unseen/left)));if(pi===1)need=5;
-  var wrongs=pool.filter(function(q){var g=prog[q.id];return g&&g.seen&&g.lastOk===false&&g.last!==date}).map(function(q){return q.id}).slice(0,pi===1?1:3);
+  var unseen=pool.filter(function(q){return !(prog[q.id]||{}).seen}).length,need=n0>DAYS?(M?CP[pi]:[20,5,12][pi]):Math.min(CP[pi],Math.max(Math.min(MINS[pi],CP[pi]),Math.ceil(unseen/left)));if(pi===1)need=M?CP[1]:5;
+  var wrongs=pool.filter(function(q){var g=prog[q.id];return g&&g.seen&&g.lastOk===false&&g.last!==date}).map(function(q){return q.id}).slice(0,pi===1?1:M?Math.min(3,need):3);
   pool.forEach(function(q){q._r=r();q._w=q.type==='passage'?q.errors.filter(function(e){return weak[e.right]||weak[e.wrong]}).length:0});
   pool.sort(function(a,b){var sa=(prog[a.id]||{}).seen||0,sb=(prog[b.id]||{}).seen||0;return sa-sb||b._w-a._w||a._r-b._r});
   var take=[];wrongs.forEach(function(id){take.push(id);used[id]=1});for(var i=0;i<pool.length&&take.length<need;i++){var q=pool[i];if(used[q.id])continue;take.push(q.id);used[q.id]=1}
   for(i=0;i<pool.length&&take.length<need;i++){if(!used[pool[i].id]){take.push(pool[i].id);used[pool[i].id]=1}}
-  sections.push({name:p[0],ids:take,w:WTS[pi]});ids=ids.concat(take)});
- return {date:date,day:dayN(date),trial:dayN(date)<1,sections:sections,ids:ids,cur:{},first:null,rounds:[],submitted:false,done:false,started:false,created_at:nowIso()}}
-function getDay(){var days=LS.get(K.days,{}),d=today();if(!days[d]){days[d]=pickDay(d);LS.set(K.days,days)}return days[d]}
+  sections.push(M?{name:p[0],ids:take,w:MERGE_WTS.review[pi],topic:['形音義','改錯','閱讀'][pi]}:{name:p[0],ids:take,w:WTS[pi]});ids=ids.concat(take)});
+ var X={};if(M){var pre=[];if(M.story.length)pre.push({name:'故事小測',kind:'story',topic:'故事小測',ids:M.story.map(function(q){return q.id}),w:MERGE_WTS.story});if(M.daily.length)pre.push({name:'李老師的題目',kind:'daily',topic:'李老師的題目',ids:M.daily.map(function(q){return q.id}),w:MERGE_WTS.daily});
+  if(pre.length===1)pre[0].w=MERGE_WTS.story+MERGE_WTS.daily;sections=pre.concat(sections);ids=[];sections.forEach(function(s){ids=ids.concat(s.ids)});X={merged:true,dq:M}}
+ return Object.assign(X,{date:date,day:dayN(date),trial:dayN(date)<1,sections:sections,ids:ids,cur:{},first:null,rounds:[],submitted:false,done:false,started:false,created_at:nowIso()})}
+function getDay(){var days=LS.get(K.days,{}),d=today(),x=days[d];if(x&&x.dq)regQs(x.dq);
+ if(!x||(mergedFor(d)&&!x.dq&&!x.f1&&!x.first)){days[d]=pickDay(d);LS.set(K.days,days);regQs(days[d].dq)}return days[d]}
 function saveDay(st){var days=LS.get(K.days,{});days[st.date]=st;LS.set(K.days,days)}
 
 /* ---- 錯題本相容格式（模擬原 App roby-wrongbook 的欄位）---- */
@@ -156,7 +175,7 @@ function todayView(v){var st=getDay();repairDay(st);if(EMB&&!st.started){st.star
  var N0=dayN(st.date);v.insertAdjacentHTML('beforeend','<div class="daybar"><b>'+(N0<1?'計畫 '+md(PSTART)+' 開始，還有 '+(1-N0)+' 天</b>（今天是試做，不算在 22 天計畫裡）':N0>DAYS?'計畫已在 '+md(PEND)+' 結束</b>（可以繼續複習）':'第 '+N0+' / '+DAYS+' 天</b>')+'　'+md(st.date)+'　今天 '+st.ids.length+' 題'+(st.f1||st.first?'・已完成 '+Object.keys(st.first||st.f1).length+' 題':'')+'<span class="small">　'+md(PSTART)+'–'+md(PEND)+' 把 '+POOL.length+' 題輪完一次</span></div>');
  if(!st.started){var cnt={};TOPICS.forEach(function(t){cnt[t]=QS.filter(function(q){return q.topic===t}).length});
   v.innerHTML+='<div class="card"><h2 class="serif">今天的題目還沒開始</h2><div class="small" style="font-size:19px">每組題目會優先出還沒做過的題，答錯的題目會自動收進錯題本。</div><div class="grid3">'+
-  st.sections.map(function(s){return '<div class="stat"><div class="big">'+s.ids.length+'</div>'+s.name+'</div>'}).join('')+'</div><div class="small">形音義 24 分＋改錯 40 分＋閱讀 36 分＝100 分（題數依 30 天計畫自動分配，錯題優先複習）。題庫共 '+QS.length+' 題：形音義 '+cnt['形音義']+' 題、注音 '+cnt['注音']+' 題、改錯 '+cnt['改錯']+' 題（整段 '+QS.filter(function(q){return q.type==='passage'}).length+' 段）、閱讀 '+cnt['閱讀']+' 題，取自翰林八上第二次段考題庫解析卷與各校段考答案卷。</div><button class="btn" id="go">開始今天的題目</button></div>';
+  st.sections.map(function(s){return '<div class="stat"><div class="big">'+s.ids.length+'</div>'+s.name+'</div>'}).join('')+'</div><div class="small">'+(st.dq?st.sections.map(function(s){return s.name+' '+s.w+' 分'}).join('＋')+'＝100 分（先讀小故事再寫故事小測；':'形音義 24 分＋改錯 40 分＋閱讀 36 分＝100 分（')+'題數依 30 天計畫自動分配，錯題優先複習）。題庫共 '+QS.length+' 題：形音義 '+cnt['形音義']+' 題、注音 '+cnt['注音']+' 題、改錯 '+cnt['改錯']+' 題（整段 '+QS.filter(function(q){return q.type==='passage'}).length+' 段）、閱讀 '+cnt['閱讀']+' 題，取自翰林八上第二次段考題庫解析卷與各校段考答案卷。</div><button class="btn" id="go">開始今天的題目</button></div>';
   $('#go').onclick=function(){st.started=true;saveDay(st);render()};return}
  if(st.done){var sc=st.score;v.innerHTML+='<div class="card" style="text-align:center"><h2 class="serif">今天的題目完成了！</h2><div class="score '+cls(sc)+'">'+sc+' 分</div><div>第一次答對 '+st.first_correct+' 題・答錯 '+(st.ids.length-st.first_correct)+' 題（已全部訂正）</div><div class="small">錯題已寫入錯題本（topic 分類：形音義／注音／改錯／閱讀）</div><button class="btn ghost" id="rev">回顧今天的題目</button></div>';
   $('#rev').onclick=function(){st._review=!st._review;drawQs(v,st,true)};return}
@@ -166,7 +185,9 @@ function todayView(v){var st=getDay();repairDay(st);if(EMB&&!st.started){st.star
 function expText(q){var e=String(q.explanation||'').trim(),a=ansText(q);return e.length>=6?e:'依解析卷：正確答案為 '+a+'。'+(e?' '+e:'')}
 function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$('#qbox');if(old)old.remove()}box.id='qbox';v.appendChild(box);
  var sub=!!st.submitted,n=0,lastRound=st.rounds.length;
+ if(st.dq)storyCard(box,st,ro);
  st.sections.forEach(function(s){var h='<div class="sec">'+esc(s.name)+'（'+s.ids.length+' 題）</div>';box.insertAdjacentHTML('beforeend',h);
+  if(s.kind==='story'&&st.dq&&st.dq.learn&&!st.story_read&&!s.ids.some(function(i){return st.f1&&i in st.f1})){box.insertAdjacentHTML('beforeend','<div class="q locked">🔒 先讀完上面的小故事，按「我讀完了」，故事小測就會打開喔！</div>');n+=s.ids.length;return}
   s.ids.forEach(function(id){var q=BY[id];if(!q)return;n++;var L=!sub&&!!(st.f1&&(id in st.f1)),show=sub||L,val=st.cur[id],ok=show&&isRight(q,val),firstOk=st.first&&isRight(q,st.first[id]);
    var e=document.createElement('div');e.className='q'+(show?(ok?' ok':' ng'):'');e.dataset.id=id;
    if(q.type==='passage'){e.classList.add('pq');box.appendChild(e);drawPass(e,st,q,n,show,ok,ro,L);return}
@@ -185,22 +206,35 @@ function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$(
  if(!sub){var lk=Object.keys(st.f1||{}).length;box.insertAdjacentHTML('beforeend','<div class="prog-note" id="progNote">已完成 '+lk+' / '+st.ids.length+' 題（每題寫完會馬上對答案）</div>');return}
  var b=document.createElement('button');b.className='btn';b.id='submit';b.textContent='訂正好了，再檢查';box.appendChild(b);
  b.onclick=function(){submit(st)}}
+function storyCard(box,st,ro){var L=st.dq&&st.dq.learn;if(!L)return;var secs=L.sections||(L.text?[{title:'',text:L.text}]:[]);
+ var h='<div class="q story"><div class="qt">📖 '+esc(L.title||'今日小故事')+(st.story_read?'　<span class="small s-g">✓ 已讀完</span>':'')+'</div>'+secs.map(function(x){return (x.title?'<b>'+esc(x.title)+'</b>':'')+'<div class="passage">'+esc(x.text)+'</div>'}).join('')+
+  (L.vocab||[]).map(function(v){return '<div class="small"><b>'+esc(v.word||v.term)+'</b>　'+esc(v.zh||v.meaning||'')+'</div>'}).join('')+(!st.story_read&&!ro?'<button class="btn" id="readOK">我讀完了，開始故事小測</button>':'')+'</div>';
+ box.insertAdjacentHTML('beforeend',h);var b=$('#readOK',box);if(b)b.onclick=function(){st.story_read=nowIso();saveDay(st);var y=window.scrollY;render();window.scrollTo(0,y)}}
 /* ---- 成績回報（送到 App 的送出佇列，同一天只保留最新一筆）---- */
 var OBK='roby-outbox';
 function secStats(st,src){return (st.sections||[]).map(function(s,pi){var n=s.ids.length,w=s.w||(PLAN[pi]?[24,40,36][pi]:0),e=0,ok=0,a=0;
   s.ids.forEach(function(id){if(!(src&&id in src)||!BY[id])return;a++;var q=BY[id],c=q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0;if(c===1)ok++;e+=c*w/(n||1)});
-  return {name:s.name,topic:['形音義','改錯','閱讀'][pi]||s.name,answered:a,total:n,correct:ok,earned:Math.round(e*10)/10,max:w}})}
+  return {name:s.name,topic:s.topic||['形音義','改錯','閱讀'][pi]||s.name,answered:a,total:n,correct:ok,earned:Math.round(e*10)/10,max:w}})}
 function buildReport(st,reason){var src=st.first||st.f1||{},n=st.ids.length,a=Object.keys(src).length,done=!!st.first,N=dayN(st.date),secs=secStats(st,src);
  var sc=done?st.score:Math.round(secs.reduce(function(t,x){return t+x.earned},0));
  var wrong=st.ids.filter(function(id){return id in src&&BY[id]&&!isRight(BY[id],src[id])}).map(function(id){var q=BY[id];
   if(q.type==='passage'){var g=grade(q,src[id]);return {id:id,topic:'改錯',q:q.title,miss:g.res.filter(function(x){return x.credit<1}).map(function(x){return x.e.wrong+'→'+x.e.right+'（'+x.e.word+'）'}),false_clicks:g.fal.length,percent:Math.round(g.frac*100)}}
   return {id:id,topic:q.topic,q:String(q.question).slice(0,40),yours:yourText(q,src[id]),answer:ansText(q)}});
- return {subject:'chinese',source:'review',title:'八上二段國文複習',date:st.date,md:md(st.date),
+ var R={subject:'chinese',source:'review',title:'八上二段國文複習',date:st.date,md:md(st.date),
   plan:{day:N,days:DAYS,start:PSTART,end:PEND,label:N<1?'試做（計畫前）':N>DAYS?'計畫結束後':'第 '+N+' / '+DAYS+' 天',in_plan:N>=1&&N<=DAYS},
   status:done?'complete':'in_progress',reason:reason,progress:{answered:a,total:n,percent:n?Math.round(a/n*100):0},
   score:sc,score_note:done?'第一次作答分數（滿分 100）':'目前已作答部分的得分（滿分 100，未作答以 0 計）',
   sections:secs,first_correct:st.ids.filter(function(id){return id in src&&isRight(BY[id],src[id])}).length,first_wrong:wrong.length,total:n,
-  wrong:wrong,self_assessed:(st.self_assessed||[]).length,updated_at:nowIso()}}
+  wrong:wrong,self_assessed:(st.self_assessed||[]).length,updated_at:nowIso()};if(st.dq)mergeInfo(R,st,src);return R}
+function mergeInfo(R,st,src){function part(ss,wt){var ids=[],T=0,W=0;ss.forEach(function(s){var n=s.ids.length;W+=s.w||0;s.ids.forEach(function(id){var q=BY[id];if(!q)return;ids.push(id);if(id in src)T+=(q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0)*(s.w||0)/(n||1)})});
+  var ok=ids.filter(function(i){return i in src&&isRight(BY[i],src[i])}),bad=ids.filter(function(i){return i in src&&!isRight(BY[i],src[i])});
+  return {score:wt?(W?Math.round(T/W*100):0):(ids.length?Math.round(ok.length/ids.length*100):0),first_correct:ok.length,first_wrong:bad.length,total:ids.length,bad:bad}}
+ var a=part(st.sections.filter(function(s){return !s.kind}),1),b=part(st.sections.filter(function(s){return !!s.kind}),0);
+ R.merged=true;R.merge_from=MERGE_FROM;R.daily_title=st.dq.title||'';R.story_read_at=st.story_read||null;R.started_at=st.created_at||null;
+ R.parts={review:{score:a.score,first_correct:a.first_correct,first_wrong:a.first_wrong,total:a.total},daily:{title:st.dq.title||'',score:b.score,first_correct:b.first_correct,first_wrong:b.first_wrong,total:b.total,wrong:b.bad.map(function(i){return BY[i].orig})}};
+ R.wrong.forEach(function(w){var q=BY[w.id];w.section=q&&q.ls?q.topic:(st.sections.filter(function(s){return s.ids.indexOf(w.id)>=0})[0]||{}).name;if(q&&q.ls)w.orig=q.orig});
+ if(st.first){var n=vids(st).length,lw=(st.rounds[st.rounds.length-1]||{wrong:[]}).wrong.length;R.after_correction={correct:st.done?n:n-lw,total:n,rounds:st.rounds.length};
+  R.answers={first:st.first,final:st.cur,rounds:st.rounds.map(function(r){return r.wrong})};R.submitted_at=st.submitted_at||null;if(st.done_at)R.completed_at=st.done_at}}
 function sendReport(st,reason){var p=buildReport(st,reason),dd='chinese-review-'+st.date;
  var S=LS.get('roby-cr-sent',{}),s0=S[st.date]||{};s0.n=p.progress.answered;s0.at=nowIso();s0.reason=reason;s0.count=(s0.count||0)+1;if(p.status==='complete')s0.final=true;s0.score=p.score;S[st.date]=s0;LS.set('roby-cr-sent',S);
  if(EMB&&window.parent!==window){try{window.parent.postMessage({type:'roby-review-result',payload:p,dedupe:dd},location.origin)}catch(e){}}
@@ -214,13 +248,13 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 window.addEventListener('pagehide',function(){try{var st=getDay();if(st.started)maybeProgress(st,'leave')}catch(e){}});
 setInterval(sendBadge,3000);
 function lockQ(st,id){var q=BY[id],v=st.cur[id],prog=LS.get(K.prog,{});st.f1=st.f1||{};if(id in st.f1)return;st.f1[id]=JSON.parse(JSON.stringify(v==null?'':v));
- var ok=isRight(q,v),p=prog[id]||{seen:0,correct:0};p.seen++;if(ok)p.correct++;p.last=st.date;p.lastOk=ok;prog[id]=p;LS.set(K.prog,prog);
- if(ok)wbFixLater(id);else{wbAdd(st,q,v);if(q.topic!=='閱讀')weakAdd(q,v)}
+ var ok=isRight(q,v),p=prog[id]||{seen:0,correct:0};if(!q.ls){p.seen++;if(ok)p.correct++;p.last=st.date;p.lastOk=ok;prog[id]=p;LS.set(K.prog,prog)}
+ if(ok)wbFixLater(id);else{wbAdd(st,q,v);if(q.topic!=='閱讀'&&!q.ls)weakAdd(q,v)}
  var y=window.scrollY;if(vids(st).every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);maybeProgress(st,'step');render();window.scrollTo(0,y)}}
 function vids(st){return st.ids.filter(function(id){return !!BY[id]})}
 function repairDay(st){if(!st||st.first||!st.f1||!vids(st).length)return false;if(!vids(st).every(function(i){return i in st.f1}))return false;
  st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;st.started=true;var wrong=vids(st).filter(function(id){return !isRight(BY[id],st.first[id])});st.first_correct=vids(st).length-wrong.length;st.score=dayScore(st);st.rounds=st.rounds||[];st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur||{})),repaired:true});if(!wrong.length){st.done=true;st.done_at=nowIso()}st.repaired_at=nowIso();saveDay(st);try{sendReport(st,'complete')}catch(e){}return true}
-function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;var wrong=vids(st).filter(function(id){return !isRight(BY[id],st.first[id])});
+function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;if(st.dq)st.submitted_at=nowIso();var wrong=vids(st).filter(function(id){return !isRight(BY[id],st.first[id])});
  st.first_correct=vids(st).length-wrong.length;st.score=dayScore(st);st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
  if(!wrong.length){st.done=true;st.done_at=nowIso()}saveDay(st);sendReport(st,'complete');render();
  toast(wrong.length?'全部寫完！第一次 '+st.score+' 分，錯的 '+wrong.length+' 題再做一次':'全對！太厲害了 🎉');
@@ -254,7 +288,7 @@ function submit(st){var prog=LS.get(K.prog,{});
  st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
  if(!wrong.length){st.done=true;st.done_at=nowIso();st.ids.forEach(function(id){if(!isRight(BY[id],st.first[id]))wbFix(st,id)})}
  else if(st.rounds.length>1)toast('還有 '+wrong.length+' 題要訂正');
- saveDay(st);render();
+ saveDay(st);if(st.dq&&st.done)sendReport(st,'corrected');render();
  if(wrong.length){var e=$('.q[data-id="'+wrong[0]+'"]');if(e)e.scrollIntoView({block:'center'})}}
 
 /* ---- 錯題本：正式版併入原 App 的錯題本；這裡只示意 ---- */
@@ -290,8 +324,10 @@ function logView(v){var prog=LS.get(K.prog,{}),done=POOL.filter(function(q){retu
  h+='</div>';v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
 
 $('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong','roby-cr-sent'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
-if(/[?&]repair=1/.test(location.search)){var rd=LS.get(K.days,{})[today()];if(rd)repairDay(rd);return}
-render();
+function boot(){if(/[?&]repair=1/.test(location.search)){var rd=LS.get(K.days,{})[today()];if(rd){regQs(rd.dq);repairDay(rd)}return}render()}
+var D0=today(),X0=LS.get(K.days,{})[D0];
+if(D0<MERGE_FROM||(X0&&(X0.dq||X0.f1||X0.first)))boot();
+else fetch('../data/chinese/'+D0+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(D){try{DAILY=cvDaily(D,D0)}catch(e){DAILY=null}},function(){}).then(boot,boot);
 })();
 </script>
 </body></html>
