@@ -418,5 +418,8 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
  setInterval(tick,1000);tick();})();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 window.__roby={DATE:DATE,flush:flush,load:load,ansIndex:ansIndex,outbox:function(){return LS.get(OB,[])}};
+/* 國文複習頁（iframe）送來的成績 → 走同一個送出佇列 */
+window.__roby.enqueue=enqueue;
+window.addEventListener('message',function(e){if(e.origin!==location.origin)return;var d=e.data||{};if(d.type!=='roby-review-result'||!d.payload||!d.dedupe)return;enqueue('chinese',d.payload,d.dedupe)});
 obStatus();render();load();
 })();

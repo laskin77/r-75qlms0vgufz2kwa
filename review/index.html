@@ -63,6 +63,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
 .reset-row{text-align:center;margin:18px 0 70px}.reset{font-size:13px;padding:4px 14px;min-height:30px;border-radius:14px;border:1px solid #d9b8a8;background:#fff7f2;color:#a0523d}
 .emb,.emb body{background:transparent}.emb .back,.emb h1,.emb .lead,.emb .monkey{display:none}.emb .top{position:static;border-radius:14px;margin:0 0 6px}.emb .wrap{padding:0 0 20px}.emb .reset-row{margin:12px 0 10px}.emb .prog-note{margin:10px 0 12px}.emb .toast{position:fixed;top:12px;bottom:auto}
 .daybar{background:#fff6e3;border:1px solid #e0c99a;border-radius:14px;padding:6px 12px;margin:0 0 10px;font-size:15px;color:#6b4f2a}.pies2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}.pc b{font-size:24px}.dt td,.dt th{font-size:14px;padding:5px 4px}.dt .bar{height:6px;margin-top:3px}.dt tr.today{background:#fff6e3}
+.sendst{text-align:center;margin:8px 0 0;font-size:12px;color:#8a7560}
 </style></head>
 <body>
 <div class="top"><div><span>題庫總數</span><b id="sTotal">0</b><span>題</span></div><div><span>已寫過</span><b id="sSeen">0</b><span>題</span></div><div><span>今天已寫</span><b id="sToday">0</b><span>題</span></div></div>
@@ -71,6 +72,7 @@ input.fix{width:42px;height:38px;font-size:20px;text-align:center;margin:0 4px;b
  <p class="lead">翰林版　愛蓮說、鳥、生命中的碎珠　11/4–11/25 共 22 天計畫：每天約 40 題（形音義 23＋改錯 5 段＋閱讀 12）（形音義＋3 段改錯＋閱讀），答錯的題目自動收進「錯題本」</p>
  <div class="tabs"><button data-t="today" class="on">今日題目</button><button data-t="wrong" id="toWb">錯題本（App）<span class="badge" id="wbBadge">0</span></button><button data-t="log">紀錄／總表</button></div>
  <div id="view"></div>
+ <div id="sendst" class="small sendst"></div>
  <div class="reset-row"><button id="resetAll" class="reset">↺ 全部重來</button></div>
 </div>
 <img class="monkey" src="assets/monkey.png" alt="" onerror="this.style.display='none'">
@@ -182,13 +184,41 @@ function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$(
  if(!sub){var lk=Object.keys(st.f1||{}).length;box.insertAdjacentHTML('beforeend','<div class="prog-note" id="progNote">已完成 '+lk+' / '+st.ids.length+' 題（每題寫完會馬上對答案）</div>');return}
  var b=document.createElement('button');b.className='btn';b.id='submit';b.textContent='訂正好了，再檢查';box.appendChild(b);
  b.onclick=function(){submit(st)}}
+/* ---- 成績回報（送到 App 的送出佇列，同一天只保留最新一筆）---- */
+var OBK='roby-outbox';
+function secStats(st,src){return (st.sections||[]).map(function(s,pi){var n=s.ids.length,w=s.w||(PLAN[pi]?[24,40,36][pi]:0),e=0,ok=0,a=0;
+  s.ids.forEach(function(id){if(!(src&&id in src))return;a++;var q=BY[id],c=q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0;if(c===1)ok++;e+=c*w/(n||1)});
+  return {name:s.name,topic:['形音義','改錯','閱讀'][pi]||s.name,answered:a,total:n,correct:ok,earned:Math.round(e*10)/10,max:w}})}
+function buildReport(st,reason){var src=st.first||st.f1||{},n=st.ids.length,a=Object.keys(src).length,done=!!st.first,N=dayN(st.date),secs=secStats(st,src);
+ var sc=done?st.score:Math.round(secs.reduce(function(t,x){return t+x.earned},0));
+ var wrong=st.ids.filter(function(id){return id in src&&!isRight(BY[id],src[id])}).map(function(id){var q=BY[id];
+  if(q.type==='passage'){var g=grade(q,src[id]);return {id:id,topic:'改錯',q:q.title,miss:g.res.filter(function(x){return x.credit<1}).map(function(x){return x.e.wrong+'→'+x.e.right+'（'+x.e.word+'）'}),false_clicks:g.fal.length,percent:Math.round(g.frac*100)}}
+  return {id:id,topic:q.topic,q:String(q.question).slice(0,40),yours:yourText(q,src[id]),answer:ansText(q)}});
+ return {subject:'chinese',source:'review',title:'八上二段國文複習',date:st.date,md:md(st.date),
+  plan:{day:N,days:DAYS,start:PSTART,end:PEND,label:N<1?'試做（計畫前）':N>DAYS?'計畫結束後':'第 '+N+' / '+DAYS+' 天',in_plan:N>=1&&N<=DAYS},
+  status:done?'complete':'in_progress',reason:reason,progress:{answered:a,total:n,percent:n?Math.round(a/n*100):0},
+  score:sc,score_note:done?'第一次作答分數（滿分 100）':'目前已作答部分的得分（滿分 100，未作答以 0 計）',
+  sections:secs,first_correct:st.ids.filter(function(id){return id in src&&isRight(BY[id],src[id])}).length,first_wrong:wrong.length,total:n,
+  wrong:wrong,self_assessed:(st.self_assessed||[]).length,updated_at:nowIso()}}
+function sendReport(st,reason){var p=buildReport(st,reason),dd='chinese-review-'+st.date;
+ var S=LS.get('roby-cr-sent',{}),s0=S[st.date]||{};s0.n=p.progress.answered;s0.at=nowIso();s0.reason=reason;s0.count=(s0.count||0)+1;if(p.status==='complete')s0.final=true;s0.score=p.score;S[st.date]=s0;LS.set('roby-cr-sent',S);
+ if(EMB&&window.parent!==window){try{window.parent.postMessage({type:'roby-review-result',payload:p,dedupe:dd},location.origin)}catch(e){}}
+ else{var q=LS.get(OBK,[]);q=q.filter(function(x){return x.dedupe!==dd||x.status==='unconfirmed'});q.push({id:Date.now()+'-'+Math.random().toString(36).slice(2,6),kind:'chinese',payload:p,dedupe:dd,queued_at:nowIso(),tries:0});LS.set(OBK,q)}
+ setTimeout(sendBadge,300)}
+function maybeProgress(st,reason){if(st.first)return;var a=Object.keys(st.f1||{}).length,last=(LS.get('roby-cr-sent',{})[st.date]||{}).n||0;if(a>last&&(reason!=='step'||a-last>=10))sendReport(st,reason)}
+function sendBadge(){var e=$('#sendst');if(!e)return;var st=getDay(),dd='chinese-review-'+st.date,q=LS.get(OBK,[]).filter(function(x){return x.dedupe===dd}),last=q[q.length-1],sn=LS.get('roby-cr-sent',{})[st.date];
+ if(!sn){e.textContent='';return}st={sent:sn};
+ var t=last?(last.status==='unconfirmed'?'📮 成績已送出（'+(st.sent.final?'完成':'進度 '+st.sent.n+' 題')+'，無法確認對方是否收到）':'📮 成績待送出（'+(st.sent.final?'完成':'進度 '+st.sent.n+' 題')+'，會自動補送）'):'📮 成績已送出（'+(st.sent.final?'完成':'進度 '+st.sent.n+' 題')+'）';e.textContent=t}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){try{var st=getDay();if(st.started)maybeProgress(st,'leave')}catch(e){}}});
+window.addEventListener('pagehide',function(){try{var st=getDay();if(st.started)maybeProgress(st,'leave')}catch(e){}});
+setInterval(sendBadge,3000);
 function lockQ(st,id){var q=BY[id],v=st.cur[id],prog=LS.get(K.prog,{});st.f1=st.f1||{};if(id in st.f1)return;st.f1[id]=JSON.parse(JSON.stringify(v==null?'':v));
  var ok=isRight(q,v),p=prog[id]||{seen:0,correct:0};p.seen++;if(ok)p.correct++;p.last=st.date;p.lastOk=ok;prog[id]=p;LS.set(K.prog,prog);
  if(ok)wbFixLater(id);else{wbAdd(st,q,v);if(q.topic!=='閱讀')weakAdd(q,v)}
- var y=window.scrollY;if(st.ids.every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);render();window.scrollTo(0,y)}}
+ var y=window.scrollY;if(st.ids.every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);maybeProgress(st,'step');render();window.scrollTo(0,y)}}
 function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;var wrong=st.ids.filter(function(id){return !isRight(BY[id],st.first[id])});
  st.first_correct=st.ids.length-wrong.length;st.score=dayScore(st);st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
- if(!wrong.length){st.done=true;st.done_at=nowIso()}saveDay(st);render();
+ if(!wrong.length){st.done=true;st.done_at=nowIso()}saveDay(st);sendReport(st,'complete');render();
  toast(wrong.length?'全部寫完！第一次 '+st.score+' 分，錯的 '+wrong.length+' 題再做一次':'全對！太厲害了 🎉');
  if(wrong.length){var e=$('.q[data-id="'+wrong[0]+'"]');if(e)e.scrollIntoView({block:'center'})}}
 
@@ -208,7 +238,7 @@ function drawPass(e,st,q,n,sub,ok,ro,L){var v=st.cur[q.id]||{s:{},self:{}},g=sub
  $$('input.fix',e).forEach(function(i){i.oninput=function(){var v2=st.cur[q.id];v2.s[i.dataset.k]=i.value.trim();saveDay(st)}});
  $$('.selfok',e).forEach(function(b){b.onclick=function(){var k=b.dataset.k;[st.cur[q.id],st.first&&st.first[q.id],st.f1&&st.f1[q.id]].forEach(function(x){if(x){x.self=x.self||{};x.self[k]=true}});
   st.self_assessed=st.self_assessed||[];st.self_assessed.push({qid:q.id,pos:+k,right:q.text[k]&&BY[q.id].errors.filter(function(x){return x.i==k})[0].right,yours:st.cur[q.id].s[k],at:nowIso()});
-  var F=st.first||st.f1;if(st.first)st.score=dayScore(st);if(grade(q,F[q.id]).full)wbFixLater(q.id);else wbAdd(st,q,F[q.id]);saveDay(st);toast('已記為自評寫對');render()}})}
+  var F=st.first||st.f1;if(st.first){st.score=dayScore(st);clearTimeout(window._saT);window._saT=setTimeout(function(){sendReport(getDay(),'self_assess')},4000)}if(grade(q,F[q.id]).full)wbFixLater(q.id);else wbAdd(st,q,F[q.id]);saveDay(st);toast('已記為自評寫對');render()}})}
 function submit(st){var prog=LS.get(K.prog,{});
  var wrong=st.ids.filter(function(id){return !isRight(BY[id],st.cur[id])});
  if(!st.first){if(wrong.length===st.ids.length&&!confirm('還有很多題沒寫，確定要送出嗎？'))return;
@@ -255,7 +285,7 @@ function logView(v){var prog=LS.get(K.prog,{}),done=POOL.filter(function(q){retu
   var extra=Object.keys(days).filter(function(k){return (k<s||k>PEND)&&days[k].started});if(extra.length)h+='<tr><td colspan="4" class="small">計畫外（試做／結束後）：'+extra.sort().map(function(k){var c=dayRec(days[k]);return md(k)+' '+c.a+'/'+c.n}).join('、')+'</td></tr>';h+='</table>'}
  h+='</div>';v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
 
-$('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
+$('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong','roby-cr-sent'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
 render();
 })();
 </script>
