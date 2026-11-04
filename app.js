@@ -164,6 +164,9 @@ function finish(subj,D,st,save,bud,payload){if(st.completed_at)return;st.complet
  enqueue(subj,payload,subj+'-'+payload.date);bud.say(bud.L.done+'（第一次 '+payload.score+' 分）');celebrate();}
 
 function genericFlow(subj,D,root,bud,st,save){var date=D.date||DATE;
+ var isST=function(it){return /^ST-/.test(String(it.id||''))},allIt=normItems(D.questions,'q'),stIt=allIt.filter(isST),oq=st.blocks.quiz||{};
+ var useCF=subj==='chinese'&&(D.learn||stIt.length)&&!(oq.first&&stIt.some(function(it){return oq.first[it.id]!=null}));
+ if(useCF)return chineseFlow(subj,D,root,bud,st,save,allIt.filter(function(it){return !isST(it)}),stIt);
  var learnOK=!D.learn||st.steps.learn;
  if(D.learn){var c=card(root,'📖 '+(D.learn.title||'先學習'));var Lr=D.learn;
   var secs=Lr.sections||(Lr.text?[{title:'',text:Lr.text}]:[]);secs.forEach(function(s){c.insertAdjacentHTML('beforeend',(s.title?'<b>'+esc(s.title)+'</b>':'')+'<div class="passage">'+esc(s.text)+'</div>')});
@@ -180,6 +183,25 @@ function genericFlow(subj,D,root,bud,st,save){var date=D.date||DATE;
    wrong:items.filter(function(it){return !isRight(it,bs.first[it.id])}).map(function(it){return it.id}),
    after_correction:{correct:n,total:n,rounds:bs.rounds.length},answers:{first:bs.first,final:bs.cur,rounds:bs.rounds},
    started_at:st.started_at,submitted_at:bs.submitted_at,completed_at:nowIso()});}}
+
+/* 國文：李老師其他題目在上，今日小故事＋故事小測放最底部（分開計分區塊，合併成一次回報） */
+function learnCard(root,Lr,title){var c=card(root,'📖 '+(title||Lr.title||'今日小故事'),'story-learn');
+ var secs=Lr.sections||(Lr.text?[{title:'',text:Lr.text}]:[]);secs.forEach(function(s){c.insertAdjacentHTML('beforeend',(s.title?'<b>'+esc(s.title)+'</b>':'')+'<div class="passage">'+esc(s.text)+'</div>')});
+ (Lr.vocab||[]).forEach(function(v){c.insertAdjacentHTML('beforeend','<div class="voc"><b>'+esc(v.word||v.term)+'</b><i>'+esc(v.pos||'')+'</i>'+esc(v.zh||v.meaning||'')+(v.example?'<div class="ex">'+esc(v.example)+'</div>':'')+'</div>')});return c}
+function chineseFlow(subj,D,root,bud,st,save,mainIt,stIt){var date=D.date||DATE,blks=[];
+ if((D.passages||[]).length){var pc=card(root,'📜 閱讀');D.passages.forEach(function(p){pc.insertAdjacentHTML('beforeend','<div class="passage">'+(p.id?'<b>〔'+esc(p.id)+'〕</b>':'')+esc(p.text)+(p.source?'<span class="src">— '+esc(p.source)+'</span>':'')+'</div>')})}
+ function mk(el,items,key){var bs=st.blocks[key]=st.blocks[key]||{};var b=quizBlock({el:el,items:items,st:bs,save:save,bud:bud,subj:subj,date:date,title:D.title,onDone:done});if(bs.done)$('.ok-tag',el).textContent='✓ 完成';blks.push({b:b,bs:bs,items:items})}
+ if(mainIt.length)mk(card(root,'✏️ 李老師的題目'),mainIt,'quiz');
+ root.insertAdjacentHTML('beforeend','<div class="story-sep"><span>📖 今日小故事／故事小測</span></div>');
+ if(D.learn){var lc=learnCard(root,D.learn);if(st.steps.learn)$('.ok-tag',lc).textContent='✓ 已讀完';else{var rb=document.createElement('button');rb.className='go';rb.textContent='我讀完了';rb.onclick=function(){st.steps.learn=nowIso();save();render()};lc.appendChild(rb)}}
+ if(stIt.length){if(D.learn&&!st.steps.learn)lockCard(root,'✏️ 故事小測','先讀完上面的小故事，故事小測就會打開喔！');else mk(card(root,'✏️ 故事小測','story-quiz'),stIt,'story')}
+ var bs0=st.blocks.quiz||{};if(!bs0.submitted)bud.say(lines(subj,D).present);
+ function done(){if(blks.length<(mainIt.length?1:0)+(stIt.length?1:0)||!blks.every(function(x){return x.bs.done}))return;
+  var items=[],first={},cur={},rounds=0,fc=0,subAt=null;blks.forEach(function(x){items=items.concat(x.items);fc+=x.b.firstCorrect();Object.assign(first,x.bs.first||{});Object.assign(cur,x.bs.cur||{});rounds=Math.max(rounds,(x.bs.rounds||[]).length);subAt=x.bs.submitted_at||subAt});
+  var n=items.length;finish(subj,D,st,save,bud,{subject:subj,date:date,title:D.title||'',score:n?Math.round(fc/n*100):0,first_correct:fc,first_wrong:n-fc,total:n,
+   wrong:items.filter(function(it){return !isRight(it,first[it.id])}).map(function(it){return it.id}),
+   after_correction:{correct:n,total:n,rounds:rounds},answers:{first:first,final:cur,rounds:blks.map(function(x){return x.bs.rounds||[]})},
+   started_at:st.started_at,submitted_at:subAt,completed_at:nowIso()});}}
 
 /* 英文（蔡英文老師格式）：shadow → vocab → grammar → uoe → quiz */
 var YTP=null,ytReady=null;
