@@ -3,7 +3,7 @@
     "chinese": {
       "url": "https://api2.cursor.sh/automations/webhook/1943935f-53f9-57c6-9481-e98d165f4b0e",
       "headers": {
-        "Authorization": ""
+        "Authorization": "Bearer crsr_79c30c2e514ffe891305051ef8041ac134231ebe6f8209c1ff3f66a8f8d50be8"
       }
     },
     "english": {
