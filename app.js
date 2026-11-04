@@ -142,9 +142,18 @@ function quizBlock(o){/* o:{el,items,st(物件),save(),bud,subj,date,title,onDon
   if(st.done&&o.onDone)o.onDone();}
  draw();return {items:items,firstCorrect:function(){return items.filter(function(it){return isRight(it,st.first&&st.first[it.id])}).length}};}
 
+/* ---------- 重設今天國文（只清本機今天的國文資料） ---------- */
+function crResetToday(){if(!confirm('確定要重設今天的國文嗎？今天的作答和成績會清掉，無法復原。'))return;withPin('重設今天國文',function(){
+ localStorage.removeItem('roby-quiz-chinese-'+DATE);
+ ['roby-cr-days','roby-cr-sent'].forEach(function(k){var o=LS.get(k,null);if(o&&o[DATE]){delete o[DATE];LS.set(k,o)}});
+ LS.set(WBK,LS.get(WBK,[]).filter(function(x){return !(x.subject==='chinese'&&x.date===DATE)}));
+ LS.set(OB,LS.get(OB,[]).filter(function(x){return !(x.kind==='chinese'&&x.payload&&x.payload.date===DATE)}));obStatus();
+ var C=DATA.checklist,K='roby-check-'+DATE,S=LS.get(K,null);if(C&&S){var i=(C.plan||[]).length,f=-1;(C.daily||[]).forEach(function(d){if(f>=0)return;if(typeof d!=='string'&&(d.pair||d.type==='pair')){i+=2;return}if(d&&d.subject==='chinese')f=i;i++});if(f>=0&&S[f]){S[f]=false;LS.set(K,S)}}
+ window.__crRep=null;render();toast2('已重設今天的國文')})}
+function crResetBtn(){var b=document.createElement('button');b.className='clr cr-reset noprint';b.textContent='🔄 重設今天國文';b.onclick=crResetToday;return b}
 /* ---------- 科目頁 ---------- */
 function subjPage(subj,root){var D=DATA[subj],bud=buddy(subj,D,false);root.appendChild(bud);
- if(subj==='chinese'){var fw=document.createElement('div');fw.className='review-embed';fw.innerHTML='<div class="re-h"><b>📚 八上二段國文複習・今日題目</b><a href="review/index.html" target="_blank">單獨開啟 ↗</a></div><iframe id="reviewFrame" src="review/index.html?embed=1" scrolling="no" title="八上二段國文複習"></iframe>';root.appendChild(fw);
+ if(subj==='chinese'){var fw=document.createElement('div');fw.className='review-embed';fw.innerHTML='<div class="re-h"><b>📚 八上二段國文複習・今日題目</b><a href="review/index.html" target="_blank">單獨開啟 ↗</a></div><iframe id="reviewFrame" src="review/index.html?embed=1" scrolling="no" title="八上二段國文複習"></iframe>';var rr=document.createElement('div');rr.className='clr-row noprint';rr.appendChild(crResetBtn());root.appendChild(rr);root.appendChild(fw);
   var fr=$('iframe',fw);fr.onload=function(){try{var d=fr.contentDocument,fit=function(){var h=d.documentElement.scrollHeight;if(h&&Math.abs(h-fr.offsetHeight)>2)fr.style.height=h+'px'};fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(d.body);setInterval(fit,800)}catch(e){fr.style.height='1600px';fr.setAttribute('scrolling','yes')}}}
  if(!D){if(subj==='chinese'){bud.say('今天的複習題目在下面，加油！');return}root.appendChild(empty('今天沒有英文功課喔，休息一下',bud.L.img));bud.say('今天沒有新的題目，明天見！');return}
  var KEY='roby-quiz-'+subj+'-'+(D.date||DATE),st=LS.get(KEY,{});st.started_at=st.started_at||nowIso();st.blocks=st.blocks||{};st.steps=st.steps||{};
@@ -417,7 +426,7 @@ function wrongPage(root){var bud=buddy('check',null);bud.L.name='小猴子';root
  var SN={chinese:'國文',english:'英文'},subs=[];a.forEach(function(x){if(subs.indexOf(x.subject)<0)subs.push(x.subject)});
  if(subs.length){var f3=document.createElement('div');f3.className='clr-row noprint';subs.forEach(function(sj){var nm=SN[sj]||sj,b=document.createElement('button');b.className='clr';b.dataset.subj=sj;b.textContent='🧹 清空'+nm+'錯題';
   b.onclick=function(){var n=LS.get(WBK,[]).filter(function(y){return y.subject===sj}).length;if(!confirm('確定要清空「'+nm+'」的 '+n+' 題錯題嗎？清空後無法復原。'))return;
-   LS.set(WBK,LS.get(WBK,[]).filter(function(y){return y.subject!==sj}));if(sj==='chinese'){localStorage.removeItem('roby-cr-wrong');localStorage.removeItem('roby-cr-weak')}render()};f3.appendChild(b)});root.appendChild(f3)}
+   LS.set(WBK,LS.get(WBK,[]).filter(function(y){return y.subject!==sj}));if(sj==='chinese'){localStorage.removeItem('roby-cr-wrong');localStorage.removeItem('roby-cr-weak')}render()};f3.appendChild(b)});f3.appendChild(crResetBtn());root.appendChild(f3)}
  var list=a.filter(function(x){return (wbFilter==='all'||(wbFilter==='todo'?!x.fixed:x.subject===wbFilter))&&(wbTopic==='all'||x.topic===wbTopic)});
  bud.say(a.length?'這裡有 '+a.length+' 題錯過的題目，考前拿出來複習最有用！':'錯題本是空的，太厲害了！');
  if(!list.length){root.appendChild(empty('這裡還沒有錯題 ✨','monkey-head.png'));return}

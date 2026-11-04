@@ -79,3 +79,4 @@ table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #e2d8c6;
 .pc-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.pc-btns button{font-size:13px;padding:4px 10px;border-radius:12px}
 .day-locked label{opacity:.75}.agg table{font-size:14px}.aggd{margin-top:8px;font-size:13px}
 .day-locked .tbtn{opacity:.4;pointer-events:none}.pc-l input:checked+span{text-decoration:none!important;opacity:1!important}
+.clr.cr-reset{font-size:16px;min-height:44px;padding:8px 18px;border-radius:22px}
