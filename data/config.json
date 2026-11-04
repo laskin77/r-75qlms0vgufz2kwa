@@ -1,42 +1,42 @@
 {
- "webhooks": {
-  "chinese": {
-   "url": "",
-   "headers": {
-    "Authorization": ""
-   }
+  "webhooks": {
+    "chinese": {
+      "url": "https://api2.cursor.sh/automations/webhook/1943935f-53f9-57c6-9481-e98d165f4b0e",
+      "headers": {
+        "Authorization": ""
+      }
+    },
+    "english": {
+      "url": "",
+      "headers": {
+        "Authorization": ""
+      }
+    },
+    "checklist": {
+      "url": "",
+      "headers": {
+        "Authorization": ""
+      }
+    }
   },
-  "english": {
-   "url": "",
-   "headers": {
-    "Authorization": ""
-   }
-  },
-  "checklist": {
-   "url": "",
-   "headers": {
-    "Authorization": ""
-   }
+  "characters": {
+    "chinese": {
+      "name": "李清照",
+      "avatar": "assets/chinese-teacher-face.webp",
+      "full": "assets/chinese-teacher-full.webp"
+    },
+    "english": {
+      "name": "蔡英文",
+      "avatar": "assets/english-teacher-face.webp",
+      "full": "assets/english-teacher-full.webp"
+    },
+    "monkey": {
+      "name": "小猴子",
+      "avatar": "assets/monkey.png"
+    },
+    "cat": {
+      "name": "小貓",
+      "avatar": "assets/cat.webp"
+    }
   }
- },
- "characters": {
-  "chinese": {
-   "name": "李清照",
-   "avatar": "assets/chinese-teacher-face.webp",
-   "full": "assets/chinese-teacher-full.webp"
-  },
-  "english": {
-   "name": "蔡英文",
-   "avatar": "assets/english-teacher-face.webp",
-   "full": "assets/english-teacher-full.webp"
-  },
-  "monkey": {
-   "name": "小猴子",
-   "avatar": "assets/monkey.png"
-  },
-  "cat": {
-   "name": "小貓",
-   "avatar": "assets/cat.webp"
-  }
- }
 }
