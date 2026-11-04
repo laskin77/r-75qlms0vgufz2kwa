@@ -284,6 +284,7 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
  /* 八上二段國文複習：一律自動多一列（不佔原本勾選框索引，不影響已存的勾選狀態）*/
  (function(){var days=LS.get('roby-cr-days',{}),d=days[DATE],n=d?d.ids.length:0,a=d?(d.first?n:Object.keys(d.f1||{}).length):0,done=!!(d&&d.first),sc=done?d.score:null;
   var info='<small class="cr-prog">　'+(d&&a?a+' / '+n+' 題（'+Math.round(a/n*100)+'%）':'尚未開始')+(d&&a&&!done?'・作答中':'')+'</small>';
+  if(d&&!done&&a>0&&a>=n-2){var rk=DATE+':'+a;if(window.__crRep!==rk){window.__crRep=rk;var hf=document.getElementById('crRepair');if(hf)hf.remove();hf=document.createElement('iframe');hf.id='crRepair';hf.style.display='none';hf.src='review/index.html?embed=1&repair=1&t='+Date.now();document.body.appendChild(hf)}if(a>=n)info=info.replace('作答中','結算中…')}
   var ex=$('input[data-subj="chinese"]',root);
   if(ex){var lb=ex.parentNode,sp=$('.score',lb),q=LS.get('roby-quiz-chinese-'+DATE,null);$('span',lb).insertAdjacentHTML('beforeend','<span class="cr-merge">｜八上二段國文複習'+info+'<span class="score cr-score" data-score="'+(sc==null?'':sc)+'" data-label="複習"></span></span>');
    if(done&&!(q&&q.completed_at)){ex.dataset.crdone='1'}return}

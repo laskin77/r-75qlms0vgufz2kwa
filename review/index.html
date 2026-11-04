@@ -95,10 +95,10 @@ function norm(s){return String(s==null?'':s).replace(/[\uff01-\uff5e]/g,function
 var PUN=/[\s，。、；：！？「」『』（）《》〈〉…—．,.;:!?()]/;
 function grade(q,v){v=v||{};var s=v.s||{},self=v.self||{},pos={},sum=0,res=q.errors.map(function(e){pos[e.i]=1;var f=(e.i in s),r=f&&norm(s[e.i])===norm(e.right),sa=f&&!r&&!!self[e.i];var c=r||sa?1:f?0.5:0;sum+=c;return {e:e,found:f,right:r,self:sa,credit:c,yours:f?s[e.i]:''}});
  var fal=Object.keys(s).filter(function(k){return !pos[k]});var frac=Math.max(0,(sum-0.5*fal.length)/q.errors.length);return {res:res,fal:fal,frac:frac,full:frac===1&&!fal.length}}
-function answeredQ(q,v){return q.type==='passage'?!!(v&&v.s&&Object.keys(v.s).length):(v!==''&&v!=null)}
-function dayScore(st){if(st.sections&&st.sections[0]&&st.sections[0].w){var T=0;st.sections.forEach(function(s){var n=s.ids.length;if(!n)return;s.ids.forEach(function(id){var q=BY[id];T+=(q.type==='passage'?grade(q,st.first[id]).frac:isRight(q,st.first[id])?1:0)*s.w/n})});return Math.round(T)}
- var np=st.ids.filter(function(id){return BY[id].type==='passage'}).length,no=st.ids.length-np,t=0;
- st.ids.forEach(function(id){var q=BY[id];if(q.type==='passage')t+=grade(q,st.first[id]).frac*40/np;else if(isRight(q,st.first[id]))t+=60/no});return Math.round(t)}
+function answeredQ(q,v){if(!q)return true;return q.type==='passage'?!!(v&&v.s&&Object.keys(v.s).length):(v!==''&&v!=null)}
+function dayScore(st){if(st.sections&&st.sections[0]&&st.sections[0].w){var T=0;st.sections.forEach(function(s){var n=s.ids.length;if(!n)return;s.ids.forEach(function(id){var q=BY[id];if(!q)return;T+=(q.type==='passage'?grade(q,st.first[id]).frac:isRight(q,st.first[id])?1:0)*s.w/n})});return Math.round(T)}
+ var np=st.ids.filter(function(id){return BY[id]&&BY[id].type==='passage'}).length,no=st.ids.filter(function(id){return !!BY[id]}).length-np,t=0;
+ st.ids.forEach(function(id){var q=BY[id];if(!q)return;if(q.type==='passage')t+=grade(q,st.first[id]).frac*40/np;else if(isRight(q,st.first[id]))t+=60/no});return Math.round(t)}
 function weakAdd(q,v){var w=LS.get(K.weak,{}),cs='';if(q.type==='passage'){grade(q,v).res.forEach(function(r){if(r.credit<1)cs+=r.e.right+r.e.wrong})}
  else if(q.type==='fill')cs=q.answer.join('');else{var m=(q.question+(q.options[q.answer]||'')).match(/「[^」]+」/g);cs=(m||[]).join('')}
  cs.replace(/[\u4e00-\u9fff]/g,function(c){w[c]=(w[c]||0)+1});LS.set(K.weak,w)}
@@ -152,7 +152,7 @@ var tab='today';
 function render(){$$('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});var v=$('#view');if(EMB)v.style.minHeight=v.offsetHeight+'px';v.innerHTML='';({today:todayView,wrong:wrongView,log:logView})[tab](v);stats();if(EMB)setTimeout(function(){v.style.minHeight=''},60)}
 $$('.tabs button').forEach(function(b){b.onclick=function(){if(b.dataset.t==='wrong'){(EMB?window.top:window).location.href=new URL('../index.html#wrong',location.href).href;return}tab=b.dataset.t;render();window.scrollTo(0,0)}});
 
-function todayView(v){var st=getDay();if(EMB&&!st.started){st.started=true;saveDay(st)}
+function todayView(v){var st=getDay();repairDay(st);if(EMB&&!st.started){st.started=true;saveDay(st)}
  var N0=dayN(st.date);v.insertAdjacentHTML('beforeend','<div class="daybar"><b>'+(N0<1?'計畫 '+md(PSTART)+' 開始，還有 '+(1-N0)+' 天</b>（今天是試做，不算在 22 天計畫裡）':N0>DAYS?'計畫已在 '+md(PEND)+' 結束</b>（可以繼續複習）':'第 '+N0+' / '+DAYS+' 天</b>')+'　'+md(st.date)+'　今天 '+st.ids.length+' 題'+(st.f1||st.first?'・已完成 '+Object.keys(st.first||st.f1).length+' 題':'')+'<span class="small">　'+md(PSTART)+'–'+md(PEND)+' 把 '+POOL.length+' 題輪完一次</span></div>');
  if(!st.started){var cnt={};TOPICS.forEach(function(t){cnt[t]=QS.filter(function(q){return q.topic===t}).length});
   v.innerHTML+='<div class="card"><h2 class="serif">今天的題目還沒開始</h2><div class="small" style="font-size:19px">每組題目會優先出還沒做過的題，答錯的題目會自動收進錯題本。</div><div class="grid3">'+
@@ -160,6 +160,7 @@ function todayView(v){var st=getDay();if(EMB&&!st.started){st.started=true;saveD
   $('#go').onclick=function(){st.started=true;saveDay(st);render()};return}
  if(st.done){var sc=st.score;v.innerHTML+='<div class="card" style="text-align:center"><h2 class="serif">今天的題目完成了！</h2><div class="score '+cls(sc)+'">'+sc+' 分</div><div>第一次答對 '+st.first_correct+' 題・答錯 '+(st.ids.length-st.first_correct)+' 題（已全部訂正）</div><div class="small">錯題已寫入錯題本（topic 分類：形音義／注音／改錯／閱讀）</div><button class="btn ghost" id="rev">回顧今天的題目</button></div>';
   $('#rev').onclick=function(){st._review=!st._review;drawQs(v,st,true)};return}
+ if(st.first&&st.score!=null){var sc2=st.score,nw=vids(st).length-(st.first_correct||0);v.insertAdjacentHTML('beforeend','<div class="card" id="scoreCard" style="text-align:center"><h2 class="serif">今天的題目寫完了！</h2><div class="score '+cls(sc2)+'">'+sc2+' 分</div><div>第一次答對 '+(st.first_correct||0)+' 題・答錯 '+nw+' 題'+(nw?'，下面錯的題目再訂正一次':'')+'</div></div>')}
  drawQs(v,st,false)}
 
 function expText(q){var e=String(q.explanation||'').trim(),a=ansText(q);return e.length>=6?e:'依解析卷：正確答案為 '+a+'。'+(e?' '+e:'')}
@@ -187,11 +188,11 @@ function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$(
 /* ---- 成績回報（送到 App 的送出佇列，同一天只保留最新一筆）---- */
 var OBK='roby-outbox';
 function secStats(st,src){return (st.sections||[]).map(function(s,pi){var n=s.ids.length,w=s.w||(PLAN[pi]?[24,40,36][pi]:0),e=0,ok=0,a=0;
-  s.ids.forEach(function(id){if(!(src&&id in src))return;a++;var q=BY[id],c=q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0;if(c===1)ok++;e+=c*w/(n||1)});
+  s.ids.forEach(function(id){if(!(src&&id in src)||!BY[id])return;a++;var q=BY[id],c=q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0;if(c===1)ok++;e+=c*w/(n||1)});
   return {name:s.name,topic:['形音義','改錯','閱讀'][pi]||s.name,answered:a,total:n,correct:ok,earned:Math.round(e*10)/10,max:w}})}
 function buildReport(st,reason){var src=st.first||st.f1||{},n=st.ids.length,a=Object.keys(src).length,done=!!st.first,N=dayN(st.date),secs=secStats(st,src);
  var sc=done?st.score:Math.round(secs.reduce(function(t,x){return t+x.earned},0));
- var wrong=st.ids.filter(function(id){return id in src&&!isRight(BY[id],src[id])}).map(function(id){var q=BY[id];
+ var wrong=st.ids.filter(function(id){return id in src&&BY[id]&&!isRight(BY[id],src[id])}).map(function(id){var q=BY[id];
   if(q.type==='passage'){var g=grade(q,src[id]);return {id:id,topic:'改錯',q:q.title,miss:g.res.filter(function(x){return x.credit<1}).map(function(x){return x.e.wrong+'→'+x.e.right+'（'+x.e.word+'）'}),false_clicks:g.fal.length,percent:Math.round(g.frac*100)}}
   return {id:id,topic:q.topic,q:String(q.question).slice(0,40),yours:yourText(q,src[id]),answer:ansText(q)}});
  return {subject:'chinese',source:'review',title:'八上二段國文複習',date:st.date,md:md(st.date),
@@ -215,9 +216,12 @@ setInterval(sendBadge,3000);
 function lockQ(st,id){var q=BY[id],v=st.cur[id],prog=LS.get(K.prog,{});st.f1=st.f1||{};if(id in st.f1)return;st.f1[id]=JSON.parse(JSON.stringify(v==null?'':v));
  var ok=isRight(q,v),p=prog[id]||{seen:0,correct:0};p.seen++;if(ok)p.correct++;p.last=st.date;p.lastOk=ok;prog[id]=p;LS.set(K.prog,prog);
  if(ok)wbFixLater(id);else{wbAdd(st,q,v);if(q.topic!=='閱讀')weakAdd(q,v)}
- var y=window.scrollY;if(st.ids.every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);maybeProgress(st,'step');render();window.scrollTo(0,y)}}
-function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;var wrong=st.ids.filter(function(id){return !isRight(BY[id],st.first[id])});
- st.first_correct=st.ids.length-wrong.length;st.score=dayScore(st);st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
+ var y=window.scrollY;if(vids(st).every(function(i){return i in st.f1}))finalize(st);else{saveDay(st);maybeProgress(st,'step');render();window.scrollTo(0,y)}}
+function vids(st){return st.ids.filter(function(id){return !!BY[id]})}
+function repairDay(st){if(!st||st.first||!st.f1||!vids(st).length)return false;if(!vids(st).every(function(i){return i in st.f1}))return false;
+ st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;st.started=true;var wrong=vids(st).filter(function(id){return !isRight(BY[id],st.first[id])});st.first_correct=vids(st).length-wrong.length;st.score=dayScore(st);st.rounds=st.rounds||[];st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur||{})),repaired:true});if(!wrong.length){st.done=true;st.done_at=nowIso()}st.repaired_at=nowIso();saveDay(st);try{sendReport(st,'complete')}catch(e){}return true}
+function finalize(st){st.first=JSON.parse(JSON.stringify(st.f1));st.submitted=true;var wrong=vids(st).filter(function(id){return !isRight(BY[id],st.first[id])});
+ st.first_correct=vids(st).length-wrong.length;st.score=dayScore(st);st.rounds.push({at:nowIso(),wrong:wrong,answers:JSON.parse(JSON.stringify(st.cur))});
  if(!wrong.length){st.done=true;st.done_at=nowIso()}saveDay(st);sendReport(st,'complete');render();
  toast(wrong.length?'全部寫完！第一次 '+st.score+' 分，錯的 '+wrong.length+' 題再做一次':'全對！太厲害了 🎉');
  if(wrong.length){var e=$('.q[data-id="'+wrong[0]+'"]');if(e)e.scrollIntoView({block:'center'})}}
@@ -286,6 +290,7 @@ function logView(v){var prog=LS.get(K.prog,{}),done=POOL.filter(function(q){retu
  h+='</div>';v.innerHTML=h;$$('.seg button',v).forEach(function(b){b.onclick=function(){logBy=b.dataset.b;render()}})}
 
 $('#resetAll').onclick=function(){if(!confirm('確定要全部重來嗎？今天和以前的作答紀錄、分數都會清除（錯題本不受影響）。'))return;[K.prog,K.days,K.weak,'roby-cr-wrong','roby-cr-sent'].forEach(function(k){localStorage.removeItem(k)});tab='today';render();window.scrollTo(0,0);toast('已重設，回到尚未作答')};
+if(/[?&]repair=1/.test(location.search)){var rd=LS.get(K.days,{})[today()];if(rd)repairDay(rd);return}
 render();
 })();
 </script>
