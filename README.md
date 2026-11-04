@@ -105,6 +105,14 @@ python3 build.py                                  # 驗證＋更新 sw.js 版本
 git add data/checklist sw.js && git commit -qm "checklist $(TZ=Asia/Taipei date +%F)" && git push -q
 ```
 週日另寫 `data/weekly/<週一>.json`（`week_start, base 累計點數, overview, days[], homework[], noteSubjects, pending[], highlights[], next[], parentNote`），每月 1 日寫 `data/monthly/YYYY-MM.json`（與舊月報 JSON 相同，可加 `scores[]`、`daily.contactMissing`）。
+
+**國文大師欄位（2026-11-04 新增，選填、向下相容）**
+- 週報 `days[].chinese`：與 `days[].english` 完全相同的寫法——數字分數（0–100，例 `88`，顯示時 ≥90 綠、70–89 棕、<70 紅）或文字狀態（`"未做"`、`"未回傳"`、`"暫停"`…）。來源：國文複習（`subject:"chinese"` 回報的 `score`／checklist 項目「八上二段國文複習」的 `score`）。
+- 週報 `overview.chinese`：本週國文有成績的天數（整數），顯示「國文大師 N/7 天」。
+- 週報平均：App 自動以 `days[].english`／`days[].chinese` 中的數字分數計算「英文大師平均／國文大師平均」，排程不用填。
+- 月報 `daily.chinese`：本月國文有成績天數（與 `daily.english` 同義），顯示「國文大師 N / daily.days 天」；可選 `daily.chineseAvg`、`daily.englishAvg`（本月平均分數，數字）。
+- 舊檔沒有這些欄位：週報不顯示國文大師列、總覽顯示「國文大師 —」；月報顯示「—」。
+- 範例：`"overview":{…,"english":4,"chinese":5}`、`"days":[{"date":"2026-11-02","plan":"✓","english":92,"chinese":95},{"date":"2026-11-05","english":65,"chinese":"未做"}]`、`"daily":{"days":30,"contact":20,"english":20,"englishAvg":91,"chinese":18,"chineseAvg":84}`。
 測試：`python3 /workspace/roby/test_v2.py`（headless Chromium、iPad 820×1180，含 webhook 模擬）。
 
 ---
@@ -150,7 +158,7 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 ## 月報 monthly.html（每月 1 日更新上個月）
 - 範本：`/workspace/roby/monthly_template.html`。只需改檔案中 `<script id="data" type="application/json">` 的 JSON：
   `sample`（true 會顯示紅色「範例資料」標示，真實資料請設 false）、`year`/`month`、`plan{done,total}`、
-  `weeks[{label,done,total}]`、`daily{days,contact,english}`、`homework[{name,ontime,late}]`、
+  `weeks[{label,done,total}]`、`daily{days,contact,english,chinese?,englishAvg?,chineseAvg?}`、`homework[{name,ontime,late}]`、
   `focusMinutes{科目:分鐘}`（來自每日 PNG 的「共 N 分」累加）、`notes[{subject,count,points}]`、`pointsTotal`（累計點數）、`highlights[]`、`advice[]`。
 - 月份標題、日期範圍、百分比、長條圖、時數由頁面自動計算。
 - 產生：`python3 build.py` 會同時產生 index.html、weekly.html、monthly.html（頁首切換列「今日檢查｜週報｜月報」，月報頁首用貓插圖），再 commit/push。
