@@ -259,11 +259,21 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
  html+='<div class="card"><h2>家長簽名</h2><div class="row"><b>家長簽名</b><button class="noprint" id="sigclr">清除</button></div><div class="small noprint">↓ 請用手指在框內簽名</div><canvas class="sig" id="sig"></canvas><div class="small" id="sigdate"></div></div>';
  html+='<button id="save" class="noprint" style="width:100%">完成並存成圖片</button><img class="foot" src="cat-foot.webp" alt="讀書的小貓"><div class="footnote">慢慢來，比較快</div>';
  var wrap=document.createElement('div');wrap.innerHTML=html;while(wrap.firstChild)root.appendChild(wrap.firstChild);
- var els=$$('input[type=checkbox],textarea',root);
+ /* 八上二段國文複習：一律自動多一列（不佔原本勾選框索引，不影響已存的勾選狀態）*/
+ (function(){var days=LS.get('roby-cr-days',{}),d=days[DATE],n=d?d.ids.length:0,a=d?(d.first?n:Object.keys(d.f1||{}).length):0,done=!!(d&&d.first),sc=done?d.score:null;
+  var info='<small class="cr-prog">　'+(d&&a?a+' / '+n+' 題（'+Math.round(a/n*100)+'%）':'尚未開始')+(d&&a&&!done?'・作答中':'')+'</small>';
+  var ex=$('input[data-subj="chinese"]',root);
+  if(ex){var lb=ex.parentNode,sp=$('.score',lb),q=LS.get('roby-quiz-chinese-'+DATE,null);$('span',lb).insertAdjacentHTML('beforeend','<span class="cr-merge">｜八上二段國文複習'+info+'<span class="score cr-score" data-score="'+(sc==null?'':sc)+'" data-label="複習"></span></span>');
+   if(done&&!(q&&q.completed_at)){ex.dataset.crdone='1'}return}
+  var row='<label class="cr-row"><input type="checkbox" class="cr-auto" data-cr="1"'+(done?' checked':'')+'><span>八上二段國文複習'+info+'<span class="score" data-score="'+(sc==null?'':sc)+'" data-label="小測驗"></span></span></label>';
+  var cards=$$('.card',root),dc=cards.find(function(c){var h=$('h2',c);return h&&h.textContent==='每日必做'});
+  if(dc)dc.insertAdjacentHTML('beforeend',row);else{var note=cards.find(function(c){return $('textarea',c)});var nc=document.createElement('div');nc.className='card';nc.innerHTML='<h2>每日必做</h2>'+row;root.insertBefore(nc,note||null)}})();
+ var els=$$('input[type=checkbox],textarea',root).filter(function(e){return !e.classList.contains('cr-auto')});
+ $$('input.cr-auto',root).forEach(function(cb){cb.addEventListener('click',function(e){e.preventDefault()})});
  els.forEach(function(e,i){if(i in S){if(e.type==='checkbox')e.checked=!!S[i];else e.value=S[i]}});
  /* 科目測驗完成 → 自動打勾＋分數 */
  $$('input[data-subj]',root).forEach(function(cb){var subj=cb.dataset.subj,q=LS.get('roby-quiz-'+subj+'-'+DATE,null),sp=$('.score',cb.parentNode);
-  if(q&&q.completed_at){cb.checked=true;if(sp&&q.score!=null)sp.dataset.score=q.score}});
+  if(q&&q.completed_at){cb.checked=true;if(sp&&q.score!=null)sp.dataset.score=q.score}else if(cb.dataset.crdone){cb.checked=true}});
  $$('.score',root).forEach(function(s){var v=(s.dataset.score||'').trim(),n=parseFloat(v),lb=s.dataset.label||'小測驗';s.className='score '+(v===''||isNaN(n)?'sc-none':n>=90?'sc-hi':n>=70?'sc-mid':'sc-low');s.textContent=lb+' '+(v===''?'—':v+' 分')});
  function save(){els.forEach(function(x,j){S[j]=x.type==='checkbox'?x.checked:x.value});LS.set(K,S)}
  save();
@@ -420,6 +430,7 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 window.__roby={DATE:DATE,flush:flush,load:load,ansIndex:ansIndex,outbox:function(){return LS.get(OB,[])}};
 /* 國文複習頁（iframe）送來的成績 → 走同一個送出佇列 */
 window.__roby.enqueue=enqueue;
-window.addEventListener('message',function(e){if(e.origin!==location.origin)return;var d=e.data||{};if(d.type!=='roby-review-result'||!d.payload||!d.dedupe)return;enqueue('chinese',d.payload,d.dedupe)});
+window.addEventListener('message',function(e){if(e.origin!==location.origin)return;var d=e.data||{};if(d.type!=='roby-review-result'||!d.payload||!d.dedupe)return;enqueue('chinese',d.payload,d.dedupe);if(cur()==='check')render()});
+window.addEventListener('storage',function(e){if(e.key==='roby-cr-days'&&cur()==='check')render()});
 obStatus();render();load();
 })();
