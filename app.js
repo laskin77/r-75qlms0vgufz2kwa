@@ -99,7 +99,7 @@ function normItems(qs,prefix){var out=[];(qs||[]).forEach(function(q,k){var id=q
 /* ---------- 錯題本 ---------- */
 var WBK='roby-wrongbook';
 function wbAdd(subj,date,it,v,title){var a=LS.get(WBK,[]),key=subj+'|'+date+'|'+it.id;a=a.filter(function(x){return x.key!==key});
- a.unshift({key:key,subject:subj,date:date,id:it.id,title:title||'',question:it.q||it.gtitle||'',options:it.opts,answer:ansText(it),yours:yourText(it,v),explanation:it.exp,added_at:nowIso(),fixed:false});LS.set(WBK,a)}
+ a.unshift({key:key,subject:subj,date:date,id:it.id,title:title||'',question:it.q||it.gtitle||'',stem:it.q||'',passage:it.group||'',answer_index:it.kind==='fill'?null:it.ai,yours_index:it.kind!=='fill'&&v!==''&&v!=null?+v:null,options:it.opts,answer:ansText(it),yours:yourText(it,v),explanation:it.exp,added_at:nowIso(),fixed:false});LS.set(WBK,a)}
 function wbFix(subj,date,id){var a=LS.get(WBK,[]);a.forEach(function(x){if(x.key===subj+'|'+date+'|'+id){x.fixed=true;x.fixed_at=nowIso()}});LS.set(WBK,a)}
 
 /* ---------- 測驗區塊（作答→送出→對錯→訂正→完成）---------- */
@@ -434,10 +434,13 @@ function wrongPage(root){var bud=buddy('check',null);bud.L.name='小猴子';root
  bud.say(a.length?'這裡有 '+a.length+' 題錯過的題目，考前拿出來複習最有用！':'錯題本是空的，太厲害了！');
  if(!list.length){root.appendChild(empty('這裡還沒有錯題 ✨','monkey-head.png'));return}
  var c=card(root,'');list.forEach(function(x){var e=document.createElement('div');e.className='wb';
-  e.innerHTML='<div class="meta">'+(x.subject==='english'?'英文':x.subject==='chinese'?'國文':esc(x.subject))+'・'+md(x.date)+'・'+esc(x.id)+(x.topic?'・<span class="tp">'+esc(x.topic)+'</span>':'')+(x.fixed?'・<span class="ok-tag">已訂正</span>':'・<span class="no">未訂正</span>')+'</div><div'+(x.words?' class="wbp"':'')+'>'+esc(x.question)+'</div>'+(x.words?wbPairs(x):'')+
+  e.innerHTML='<div class="meta">'+(x.subject==='english'?'英文':x.subject==='chinese'?'國文':esc(x.subject))+'・'+md(x.date)+'・'+esc(x.id)+(x.topic?'・<span class="tp">'+esc(x.topic)+'</span>':'')+(x.fixed?'・<span class="ok-tag">已訂正</span>':'・<span class="no">未訂正</span>')+'</div>'+(x.passage&&x.stem?'<details class="wbpass"><summary>📜 閱讀文章（點開看）</summary><div class="passage">'+esc(x.passage)+'</div></details>':'')+'<div'+(x.words?' class="wbp"':'')+'>'+esc(x.stem||x.question)+'</div>'+(x.words?wbPairs(x):'')+wbOpts(x)+
   '<div>你的答案：<span class="yours">'+esc(x.yours)+'</span>　正解：<span class="ans">'+esc(x.answer)+'</span></div>'+(x.explanation?'<div class="exp">💡 '+esc(x.explanation)+'</div>':'')+'<button class="noprint del" style="float:right">我會了，移除</button><div style="clear:both"></div>';
   $('.del',e).onclick=function(){LS.set(WBK,LS.get(WBK,[]).filter(function(y){return y.key!==x.key}));render()};c.appendChild(e)});}
 
+function wbOpts(x){var o=x.options;if(!Array.isArray(o)||!o.length)return '';var L='ABCDEFGH',ai=x.answer_index,yi=x.yours_index;
+ if(ai==null){var t=String(x.answer||'');o.forEach(function(s,i){if(t===String(s)||t.indexOf(L[i]+'. ')===0)ai=i})}if(yi==null){var u=String(x.yours||'');o.forEach(function(s,i){if(u===String(s)||u.indexOf(L[i]+'. ')===0)yi=i})}
+ return '<ol class="wbo" style="list-style:none;padding-left:0;margin:6px 0">'+o.map(function(s,i){var ok=i===ai,me=i===yi;return '<li style="padding:2px 6px;border-radius:8px'+(ok?';background:#e3efd9;font-weight:700':me?';background:#f6dcd6':'')+'">'+L[i]+'. '+esc(s)+(ok?' ✓ 正解':'')+(me&&!ok?' ✗ 你的答案':'')+'</li>'}).join('')+'</ol>'}
 function wbPairs(x){var bad={};(x.words||[]).forEach(function(w){bad[w.wrong+w.right]=w.status});var lab={half:'寫錯',missed:'沒找到',self:'自評對'};
  return '<div class="pairs">'+String(x.answer||'').split('、').map(function(p){var m=p.match(/^(.)→(.)（(.*)）$/);if(!m)return '';var st=bad[m[1]+m[2]];
   return '<span class="pair'+(st&&st!=='self'?' bad':'')+'"><s>'+esc(m[1])+'</s>→<b>'+esc(m[2])+'</b> <small>'+esc(m[3])+(st?'・'+lab[st]:'')+'</small></span>'}).join('')+((x.false_clicks||[]).length?'<span class="pair bad">點錯：'+esc(x.false_clicks.join('、'))+'</span>':'')+'</div>'}

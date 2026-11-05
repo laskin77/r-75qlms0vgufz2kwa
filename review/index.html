@@ -113,14 +113,14 @@ function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return s
 var DAYS=22,PSTART='2026-11-04',PEND='2026-11-25',MINS=[8,5,10],CAPS=[23,5,12],WTS=[24,40,36];
 /* ---- 2026-11-05 起：李老師當日題目（data/chinese/<date>.json）併入複習，一次作答、一次計分、一次回報 ---- */
 var MERGE_FROM='2026-11-05';
-var MERGE_CAPS=[8,3,5];/* 合併日 形音義／改錯（段）／閱讀 題數上限（李老師約 13–16 題＋這些 ≈ 30 題） */
-var MERGE_WTS={story:10,daily:18,review:[20,30,22]};/* 合併日配分：故事小測＋李老師的題目＋形音義／改錯／閱讀，總和 100 */
+var MERGE_CAPS=[8,3,5];/* 合併日 形音義／改錯（段）／閱讀（本身，不含李老師）題數上限；再加李老師約 11–13 題＋故事小測 3 題 ≈ 30 題 */
+var MERGE_WTS={story:12,review:[20,28,40]};/* 合併日配分：形音義／改錯／閱讀理解與課文深究（含李老師的題目）＋故事小測（最後），總和 100 */
 var DAILY=null;
 function cvAns(a,o){if(typeof a==='number')return a;var t=String(a==null?'':a).trim().toUpperCase(),i='ABCDEFGH'.indexOf(t.charAt(0));if(t.length===1&&i>=0)return i;var m=t.match(/^\(?([A-H])[).．、\s]/);if(m)return 'ABCDEFGH'.indexOf(m[1]);if(/^\d+$/.test(t))return +t-1;return (o||[]).map(function(x){return String(x).trim()}).indexOf(String(a).trim())}
 function cvDaily(D,date){if(!D||!Array.isArray(D.questions))return null;var story=[],daily=[];
  D.questions.forEach(function(q,k){var grp=q.type==='group'||!!q.items,subs=grp?(q.items||q.questions||[]):[q],gp=q.passage||q.text||'';
   subs.forEach(function(x,j){var oid=String(x.id||((q.id||'q'+(k+1))+(grp?'-'+(j+1):''))),st=/^ST-/.test(oid),o={id:'ls-'+oid,orig:oid,ls:true,topic:st?'故事小測':'李老師的題目',lesson:'李老師',question:String(x.question||''),explanation:x.explanation||'',hint:x.hint||''};
-   if(grp&&j===0&&gp)o.passage=gp;else if(!grp&&x.passage)o.passage=x.passage;
+   if(grp&&gp)o.gpass=gp;if(grp&&j===0&&gp)o.passage=gp;else if(!grp&&x.passage)o.passage=x.passage;
    if(Array.isArray(x.options)&&x.options.length&&x.type!=='fill'){o.type='choice';o.options=x.options.map(String);o.answer=cvAns(x.answer,x.options);if(!(o.answer>=0&&o.answer<o.options.length))return}
    else{o.type='fill';o.answer=[].concat(x.answer==null?[]:x.answer,x.accept||[]).map(String).filter(Boolean);if(!o.answer.length)return}
    (st?story:daily).push(o)})});
@@ -145,8 +145,8 @@ function pickDay(date){var prog=LS.get(K.prog,{}),r=rng(hash(date)),used={},ids=
   var take=[];wrongs.forEach(function(id){take.push(id);used[id]=1});for(var i=0;i<pool.length&&take.length<need;i++){var q=pool[i];if(used[q.id])continue;take.push(q.id);used[q.id]=1}
   for(i=0;i<pool.length&&take.length<need;i++){if(!used[pool[i].id]){take.push(pool[i].id);used[pool[i].id]=1}}
   sections.push(M?{name:p[0],ids:take,w:MERGE_WTS.review[pi],topic:['形音義','改錯','閱讀'][pi]}:{name:p[0],ids:take,w:WTS[pi]});ids=ids.concat(take)});
- var X={};if(M){var pre=[];if(M.story.length)pre.push({name:'故事小測',kind:'story',topic:'故事小測',ids:M.story.map(function(q){return q.id}),w:MERGE_WTS.story});if(M.daily.length)pre.push({name:'李老師的題目',kind:'daily',topic:'李老師的題目',ids:M.daily.map(function(q){return q.id}),w:MERGE_WTS.daily});
-  if(pre.length===1)pre[0].w=MERGE_WTS.story+MERGE_WTS.daily;sections=pre.concat(sections);ids=[];sections.forEach(function(s){ids=ids.concat(s.ids)});X={merged:true,dq:M}}
+ var X={};if(M){var rd=sections[2];rd.ids=rd.ids.concat(M.daily.map(function(q){return q.id}));rd.daily=M.daily.length;if(M.story.length)sections.push({name:'故事小測',kind:'story',topic:'故事小測',ids:M.story.map(function(q){return q.id}),w:MERGE_WTS.story});else rd.w+=MERGE_WTS.story;
+  ids=[];sections.forEach(function(s){ids=ids.concat(s.ids)});X={merged:true,layout:2,dq:M}}
  return Object.assign(X,{date:date,day:dayN(date),trial:dayN(date)<1,sections:sections,ids:ids,cur:{},first:null,rounds:[],submitted:false,done:false,started:false,created_at:nowIso()})}
 function getDay(){var days=LS.get(K.days,{}),d=today(),x=days[d];if(x&&x.dq)regQs(x.dq);
  if(!x||(mergedFor(d)&&!x.dq&&!x.f1&&!x.first)){days[d]=pickDay(d);LS.set(K.days,days);regQs(days[d].dq)}return days[d]}
@@ -159,7 +159,7 @@ function wbAdd(st,q,v){var a=LS.get(K.wrong,[]),key='chinese|'+st.date+'|cr-'+q.
    yours:g.res.map(function(r){return r.e.wrong+'：'+(r.self?'自評寫對（'+r.yours+'）':lab[r.credit]+(r.found&&!r.right?'（寫成'+(r.yours||'空白')+'）':''))}).join('；')+(g.fal.length?'；點錯 '+g.fal.map(function(k){return '「'+q.text[k]+'」'}).join(''):''),
    explanation:q.explanation,added_at:nowIso(),fixed:false,topic:'改錯',lesson:q.lesson,origin:'chinese-review',qid:q.id,
    words:g.res.filter(function(r){return r.credit<1||r.self}).map(function(r){return {wrong:r.e.wrong,right:r.e.right,word:r.e.word,status:r.self?'self':r.found?'half':'missed'}}),false_clicks:g.fal.map(function(k){return q.text[k]})});LS.set(K.wrong,a);return}
- a.unshift({key:key,subject:'chinese',date:st.date,id:'cr-'+q.id,title:'八上二段國文複習',question:(q.passage?q.passage.slice(0,60)+'…\n':'')+q.question,options:q.options,answer:ansText(q),yours:yourText(q,v),explanation:q.explanation,added_at:nowIso(),fixed:false,topic:q.topic,lesson:q.lesson,origin:'chinese-review',qid:q.id});LS.set(K.wrong,a)}
+ a.unshift({key:key,subject:'chinese',date:st.date,id:'cr-'+q.id,title:'八上二段國文複習',question:(q.passage?q.passage.slice(0,60)+'…\n':'')+q.question,stem:q.question,passage:q.passage||q.gpass||'',answer_index:q.type==='choice'?q.answer:null,yours_index:q.type==='choice'&&v!==''&&v!=null?+v:null,from:q.ls?'daily':'review',orig:q.orig||q.id,options:q.options,answer:ansText(q),yours:yourText(q,v),explanation:q.explanation,added_at:nowIso(),fixed:false,topic:q.topic,lesson:q.lesson,origin:'chinese-review',qid:q.id});LS.set(K.wrong,a)}
 function wbFix(st,id){var a=LS.get(K.wrong,[]);a.forEach(function(x){if(x.key==='chinese|'+st.date+'|cr-'+id){x.fixed=true;x.fixed_at=nowIso()}});LS.set(K.wrong,a)}
 function wbFixLater(qid){var a=LS.get(K.wrong,[]),ch=0;a.forEach(function(x){if(x.qid===qid&&!x.fixed){x.fixed=true;x.fixed_at=nowIso();ch=1}});if(ch)LS.set(K.wrong,a)}
 
@@ -185,8 +185,8 @@ function todayView(v){var st=getDay();repairDay(st);if(EMB&&!st.started){st.star
 function expText(q){var e=String(q.explanation||'').trim(),a=ansText(q);return e.length>=6?e:'依解析卷：正確答案為 '+a+'。'+(e?' '+e:'')}
 function drawQs(v,st,ro){var box=document.createElement('div');if(ro){var old=$('#qbox');if(old)old.remove()}box.id='qbox';v.appendChild(box);
  var sub=!!st.submitted,n=0,lastRound=st.rounds.length;
- if(st.dq)storyCard(box,st,ro);
- st.sections.forEach(function(s){var h='<div class="sec">'+esc(s.name)+'（'+s.ids.length+' 題）</div>';box.insertAdjacentHTML('beforeend',h);
+ var sc0=st.dq&&!st.sections.some(function(s){return s.kind==='story'});if(sc0)storyCard(box,st,ro);
+ st.sections.forEach(function(s){if(s.kind==='story'&&st.dq)storyCard(box,st,ro);var h='<div class="sec">'+esc(s.name)+'（'+s.ids.length+' 題）</div>';box.insertAdjacentHTML('beforeend',h);
   if(s.kind==='story'&&st.dq&&st.dq.learn&&!st.story_read&&!s.ids.some(function(i){return st.f1&&i in st.f1})){box.insertAdjacentHTML('beforeend','<div class="q locked">🔒 先讀完上面的小故事，按「我讀完了」，故事小測就會打開喔！</div>');n+=s.ids.length;return}
   s.ids.forEach(function(id){var q=BY[id];if(!q)return;n++;var L=!sub&&!!(st.f1&&(id in st.f1)),show=sub||L,val=st.cur[id],ok=show&&isRight(q,val),firstOk=st.first&&isRight(q,st.first[id]);
    var e=document.createElement('div');e.className='q'+(show?(ok?' ok':' ng'):'');e.dataset.id=id;
@@ -219,20 +219,20 @@ function buildReport(st,reason){var src=st.first||st.f1||{},n=st.ids.length,a=Ob
  var sc=done?st.score:Math.round(secs.reduce(function(t,x){return t+x.earned},0));
  var wrong=st.ids.filter(function(id){return id in src&&BY[id]&&!isRight(BY[id],src[id])}).map(function(id){var q=BY[id];
   if(q.type==='passage'){var g=grade(q,src[id]);return {id:id,topic:'改錯',q:q.title,miss:g.res.filter(function(x){return x.credit<1}).map(function(x){return x.e.wrong+'→'+x.e.right+'（'+x.e.word+'）'}),false_clicks:g.fal.length,percent:Math.round(g.frac*100)}}
-  return {id:id,topic:q.topic,q:String(q.question).slice(0,40),yours:yourText(q,src[id]),answer:ansText(q)}});
+  var o={id:id,topic:q.topic,q:String(q.question),yours:yourText(q,src[id]),answer:ansText(q)};if(q.type==='choice'){o.options=q.options;o.answer_index=q.answer;o.yours_index=src[id]===''||src[id]==null?null:+src[id]}if(q.passage||q.gpass)o.passage=String(q.passage||q.gpass).slice(0,600);if(q.explanation)o.explanation=String(q.explanation);return o});
  var R={subject:'chinese',source:'review',title:'八上二段國文複習',date:st.date,md:md(st.date),
   plan:{day:N,days:DAYS,start:PSTART,end:PEND,label:N<1?'試做（計畫前）':N>DAYS?'計畫結束後':'第 '+N+' / '+DAYS+' 天',in_plan:N>=1&&N<=DAYS},
   status:done?'complete':'in_progress',reason:reason,progress:{answered:a,total:n,percent:n?Math.round(a/n*100):0},
   score:sc,score_note:done?'第一次作答分數（滿分 100）':'目前已作答部分的得分（滿分 100，未作答以 0 計）',
   sections:secs,first_correct:st.ids.filter(function(id){return id in src&&isRight(BY[id],src[id])}).length,first_wrong:wrong.length,total:n,
   wrong:wrong,self_assessed:(st.self_assessed||[]).length,updated_at:nowIso()};if(st.dq)mergeInfo(R,st,src);return R}
-function mergeInfo(R,st,src){function part(ss,wt){var ids=[],T=0,W=0;ss.forEach(function(s){var n=s.ids.length;W+=s.w||0;s.ids.forEach(function(id){var q=BY[id];if(!q)return;ids.push(id);if(id in src)T+=(q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0)*(s.w||0)/(n||1)})});
+function mergeInfo(R,st,src){function part(pr,wt){var ids=[],T=0,W=0;st.sections.forEach(function(s){var n=s.ids.length;s.ids.forEach(function(id){var q=BY[id];if(!q||!pr(q))return;ids.push(id);W+=(s.w||0)/(n||1);if(id in src)T+=(q.type==='passage'?grade(q,src[id]).frac:isRight(q,src[id])?1:0)*(s.w||0)/(n||1)})});
   var ok=ids.filter(function(i){return i in src&&isRight(BY[i],src[i])}),bad=ids.filter(function(i){return i in src&&!isRight(BY[i],src[i])});
   return {score:wt?(W?Math.round(T/W*100):0):(ids.length?Math.round(ok.length/ids.length*100):0),first_correct:ok.length,first_wrong:bad.length,total:ids.length,bad:bad}}
- var a=part(st.sections.filter(function(s){return !s.kind}),1),b=part(st.sections.filter(function(s){return !!s.kind}),0);
+ var a=part(function(q){return !q.ls},1),b=part(function(q){return !!q.ls},0);
  R.merged=true;R.merge_from=MERGE_FROM;R.daily_title=st.dq.title||'';R.story_read_at=st.story_read||null;R.started_at=st.created_at||null;
  R.parts={review:{score:a.score,first_correct:a.first_correct,first_wrong:a.first_wrong,total:a.total},daily:{title:st.dq.title||'',score:b.score,first_correct:b.first_correct,first_wrong:b.first_wrong,total:b.total,wrong:b.bad.map(function(i){return BY[i].orig})}};
- R.wrong.forEach(function(w){var q=BY[w.id];w.section=q&&q.ls?q.topic:(st.sections.filter(function(s){return s.ids.indexOf(w.id)>=0})[0]||{}).name;if(q&&q.ls)w.orig=q.orig});
+ R.wrong.forEach(function(w){var q=BY[w.id];w.section=(st.sections.filter(function(s){return s.ids.indexOf(w.id)>=0})[0]||{}).name;if(q&&q.ls){w.orig=q.orig;w.from='daily'}else w.from='review'});
  if(st.first){var n=vids(st).length,lw=(st.rounds[st.rounds.length-1]||{wrong:[]}).wrong.length;R.after_correction={correct:st.done?n:n-lw,total:n,rounds:st.rounds.length};
   R.answers={first:st.first,final:st.cur,rounds:st.rounds.map(function(r){return r.wrong})};R.submitted_at=st.submitted_at||null;if(st.done_at)R.completed_at=st.done_at}}
 function sendReport(st,reason){var p=buildReport(st,reason),dd='chinese-review-'+st.date;

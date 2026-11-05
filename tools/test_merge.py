@@ -3,7 +3,9 @@
 import json,asyncio,os,subprocess,time,sys
 from playwright.async_api import async_playwright
 ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'));B='http://localhost:8766/'
-FX=json.load(open(os.path.join(ROOT,'data/chinese/2026-11-04.json'),encoding='utf-8'));FX['date']='2026-11-05';FX=json.dumps(FX,ensure_ascii=False)
+_F5=os.path.join(ROOT,'data/chinese/2026-11-05.json')
+if os.path.exists(_F5):FX=open(_F5,encoding='utf-8').read()  # 真檔（只讀）
+else:FX=json.load(open(os.path.join(ROOT,'data/chinese/2026-11-04.json'),encoding='utf-8'));FX['date']='2026-11-05';FX=json.dumps(FX,ensure_ascii=False)
 CFG=json.load(open(os.path.join(ROOT,'data/config.json')));CFG['webhooks']={k:{'url':'https://hook.example/'+k} for k in('chinese','english','checklist')}
 posts=[];have={'on':False};ok=[]
 def check(name,c):ok.append((name,bool(c)));print(('PASS ' if c else 'FAIL ')+name)
@@ -49,12 +51,14 @@ async def main():
     check('11/05 無檔：無錯誤',not errs)
     # C) 11/05 有檔（同一個 localStorage：尚未作答的當天應改成合併版）
     have['on']=True;await pg.reload();await pg.wait_for_timeout(2500);fi=await frameInfo(pg);print('11/05 merged',fi)
-    check('11/05 合併：順序 故事小測→李老師→形音義→改錯→閱讀',[s.rsplit('（',1)[0] for s in fi['secs']]==['故事小測','李老師的題目','形音義選擇題','改錯（整段）','閱讀理解與課文深究'])
+    check('11/05 合併：順序 形音義→改錯→閱讀(含李老師)→故事小測',[s.rsplit('（',1)[0] for s in fi['secs']]==['形音義選擇題','改錯（整段）','閱讀理解與課文深究','故事小測'])
     check('11/05 合併：故事卡＋故事小測上鎖',fi['story']==1 and fi['locked']==1)
     check('11/05 合併：app 無分開區塊',await pg.locator('.sec-gap').count()==0 and await pg.locator('h2:has-text("李老師的題目")').count()==0)
     f=pg.frames[1];await f.click('#readOK');await pg.wait_for_timeout(500);fi=await frameInfo(pg);print('after read',fi)
     check('讀完故事後解鎖',fi['locked']==0)
-    first=await f.evaluate("document.querySelector('.q[data-id]').dataset.id");check('第一題是故事小測 '+first,first.startswith('ls-ST-'))
+    ids=await f.evaluate("[...document.querySelectorAll('.q[data-id]')].map(e=>e.dataset.id)");print('order',ids)
+    check('最後 3 題是故事小測、李老師題目在故事小測前',all(i.startswith('ls-ST-') for i in ids[-3:]) and any(i.startswith('ls-SE') for i in ids[:-3]))
+    so=await f.evaluate("(()=>{const a=[...document.querySelectorAll('#qbox > *')];const i=a.findIndex(e=>e.classList.contains('story')),j=a.findIndex(e=>e.textContent.startsWith('閱讀理解'));return [i,j]})()");check('故事卡在閱讀段之後 '+str(so),so[0]>so[1]>=0)
     for i in range(80):
       f=pg.frames[1]
       r=await f.evaluate("""(()=>{const q=[...document.querySelectorAll('.q[data-id]')].find(e=>!e.classList.contains('ok')&&!e.classList.contains('ng')&&(e.querySelector('.opt:not([disabled])')||e.querySelector('.pconf')||e.querySelector('.okbtn')));if(!q)return 'none';
@@ -76,11 +80,17 @@ async def main():
       need=['source','subject','date','score','first_correct','first_wrong','total','wrong','status','merged','parts','after_correction','answers','submitted_at','sections']
       check('payload 欄位齊全 '+str([k for k in need if k not in P]),all(k in P for k in need) and P['merged'] is True)
       check('parts.review/daily',set(P['parts'])=={'review','daily'} and isinstance(P['parts']['daily']['wrong'],list))
-      check('sections 含 故事小測/李老師的題目',[s['name'] for s in P['sections']][:2]==['故事小測','李老師的題目'] and sum(s['max'] for s in P['sections'])==100)
+      check('sections 順序與配分',[s['name'] for s in P['sections']]==['形音義選擇題','改錯（整段）','閱讀理解與課文深究','故事小測'] and sum(s['max'] for s in P['sections'])==100)
+      print('sections',json.dumps(P['sections'],ensure_ascii=False))
+      ch=[w for w in P['wrong'] if 'options' in w];check('wrong[] 有完整題幹/選項/索引/from',ch and all(len(w['q'])>0 and 'answer_index' in w and 'yours_index' in w and w.get('from') in('daily','review') for w in P['wrong'] if 'options' in w) and any(w.get('from')=='daily' and w['section']=='閱讀理解與課文深究' for w in P['wrong']))
       check('wrong 為物件且有 id/section',all(isinstance(w,dict) and 'id' in w and 'section' in w for w in P['wrong']))
       print('summary',json.dumps({k:P[k] for k in('score','first_correct','first_wrong','total','parts')},ensure_ascii=False))
     wb=await pg.evaluate("JSON.parse(localStorage['roby-wrongbook']||'[]').filter(x=>x.date==='2026-11-05').map(x=>x.id)");print('wrongbook 11/05',len(wb),wb[:3])
     await pg.goto(B+'?date=2026-11-05#check');await pg.wait_for_timeout(2000);rows=await pg.locator('.cr-merge,.cr-row').all_inner_texts();print('check page cr rows',rows,await pg.locator('label:has(input[data-subj=chinese])').all_inner_texts());check('今日檢查顯示合併分數一次',any(('複習 '+str(days.get('score'))+' 分') in r or ('小測驗 '+str(days.get('score'))+' 分') in r for r in rows) and not any('小測驗 —' in t for t in await pg.locator('label:has(input[data-subj=chinese])').all_inner_texts()))
+    await pg.evaluate("(()=>{const a=JSON.parse(localStorage['roby-wrongbook']||'[]');a.push({key:'chinese|2026-10-01|old',subject:'chinese',date:'2026-10-01',id:'old',question:'舊格式題目',answer:'A. x',yours:'B. y',fixed:false});localStorage['roby-wrongbook']=JSON.stringify(a)})()")
+    await pg.goto(B+'?date=2026-11-05#wrong');await pg.wait_for_timeout(1500)
+    n_wb=await pg.locator('.wb').count();n_o=await pg.locator('.wb .wbo').count();n_p=await pg.locator('.wb details.wbpass').count();print('wrongbook rendered',n_wb,'with options',n_o,'with passage',n_p)
+    check('錯題本顯示選項與文章、舊格式不壞',n_wb>=len(wb)+1 and n_o>0 and n_p>0 and await pg.locator('.wb:has-text("舊格式題目")').count()==1)
     check('全程無錯誤 '+str(errs),not errs);await br.close()
   finally:srv.terminate()
   print('RESULT',sum(1 for _,c in ok if c),'/',len(ok))
