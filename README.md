@@ -5,7 +5,7 @@
 - `index.html`／`v2/index.html`（只差 `<base href="../">`）＋ `app.js` ＋ `app.css` ＋ `theme.css`：**固定不動，每天不用重建**。
 - 分頁：今日檢查／國文／英文／錯題本／週報／月報。日期＝台北今天，可用 `?date=YYYY-MM-DD` 預覽別天。
 - 執行時用 `fetch(url,{cache:'no-store'})` 讀 `data/`，開啟時與切回前景（visibilitychange）都會重讀。檔案不存在就顯示「今天沒有…」。
-- localStorage：`roby-check-YYYY-MM-DD`（與舊版相同格式：依勾選框/備註順序的索引、`t` 計時；v2 另加 `sig`/`sigAt` 簽名）、`roby-weekly-sig-<週一>`（同舊版）、`roby-weekly-notes-<週一>`（筆記加點）、`roby-quiz-<subject>-<date>`（作答進度）、`roby-wrongbook`（錯題本）、`roby-outbox`（待送出佇列）、`roby-timer`。
+- localStorage：`roby-check-YYYY-MM-DD`（與舊版相同格式：依勾選框/備註順序的索引、`t` 計時；v2 另加 `sig`/`sigAt` 簽名）、`roby-weekdays-<週一>`（本週按日勾選，`{<id>:[bool×7]}`）、`roby-weekly-sig-<週一>`（同舊版）、`roby-weekly-notes-<週一>`（筆記加點）、`roby-quiz-<subject>-<date>`（作答進度）、`roby-wrongbook`（錯題本）、`roby-outbox`（待送出佇列）、`roby-timer`。
 
 ## 資料夾與負責人
 | 資料夾 | 誰寫 | 何時 |
@@ -90,12 +90,13 @@ git push                                # 被拒絕就再 git pull --rebase 後 
 {"date":"2026-10-23","warning":["明天截止：…"],
  "plan":[{"text":"08:00 理化","timer":true}],
  "daily":[{"pair":["聯絡簿已簽","聯絡簿未帶"]},{"text":"英文大師","subject":"english","label":"小測驗"},{"text":"國文小測驗","subject":"chinese"}],
- "weekTodo":[{"text":"國文家教功課","due":"10/24（六）前"}],
+ "weekTodo":[{"text":"國文家教功課","due":"10/24（六）前"},{"text":"國文家教功課：每天閱讀測驗","due":"11/7（六）前","days":7}],
  "note":"✏️ Roby 自己勾：…"}
 ```
 - `due` 可寫「10/24（六）前」或 `YYYY-MM-DD`（自動顯示成 10/24（六）前），紅字。
+- `weekTodo[].days`（選填）：設成 `7` 或標籤陣列（預設 `["一","二","三","四","五","六","日"]`，對應本週一～日）時，該項改為「標題＋截止日＋7 個按日勾選」；勾選狀態存 `roby-weekdays-<該週週一 YYYY-MM-DD>`（例 `{chinese_tutor:[true,false,…]}`，key 用 `id` 或由 text 衍生），**不佔**當日 `roby-check-<DATE>` 索引。畫面顯示「本週 N/7 天」，七天全勾有完成樣式；今日標籤會反白。沒有 `days` 的舊項仍是單一勾選框。
 - 有 timer 的項目有「開始」鍵（25 分專注＋5 分休息），顯示「開始 HH:MM｜結束 HH:MM｜共 N 分」。
-- 為了和舊版 localStorage 對齊，順序固定為：plan → daily（pair 算兩格）→ weekTodo → 備註 → Roby 確認。
+- 為了和舊版 localStorage 對齊，順序固定為：plan → daily（pair 算兩格）→ weekTodo（無 `days` 的項）→ 備註 → Roby 確認；有 `days` 的 weekTodo 不進入此索引。
 
 ## 每日排程（v2）
 ```bash
@@ -185,7 +186,7 @@ git add -A && git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git push -q 
 - **PIN 儲存**：只存在這台 iPad 的 localStorage `roby-parent-pin`＝`{v,algo:"SHA-256",salt(16 bytes hex),hash=SHA-256(salt+":"+PIN),fails,lockUntil,set_at}`，不存明文、不進 repo/data/。連錯 5 次鎖 1 分鐘。「變更 PIN」需舊 PIN。
 - **忘記 PIN（沒有後門）**：在 iPad Safari 清除本網站資料（設定 → Safari → 進階 → 網站資料 → 搜尋 `laskin77.github.io` → 刪除）會連同所有本機紀錄一起清掉；若只想清 PIN，用電腦 Safari 網頁檢閱器連接 iPad，在 Console 執行 `localStorage.removeItem('roby-parent-pin')`，下次確認時重新設定。清 PIN 前建議先在週報／月報按「同步」下載備份。
 - **每日紀錄** `roby-daily-<YYYY-MM-DD>`（家長確認時寫入，也附在 checklist webhook payload 的 `daily` 欄位）：
-  `{schema:"roby-daily/1", date, items[{section,text,checked,score,focus{start,end,minutes}}], done, total, rate(0–100，不含「聯絡簿未帶」), contact_book:"signed"|"missing"|"none", scores{english, chinese_review, chinese_quiz}(數字或 null), focus[{text,start,end,minutes}], focus_minutes, note, roby_confirmed, parent_confirmed_at(ISO), legacy_signed_at, saved_at}`
+  `{schema:"roby-daily/1", date, items[{section,text,checked,score,focus{start,end,minutes}}], done, total, rate(0–100，不含「聯絡簿未帶」), contact_book:"signed"|"missing"|"none", scores{english, chinese_review, chinese_quiz}(數字或 null), focus[{text,start,end,minutes}], focus_minutes, note, roby_confirmed, parent_confirmed_at(ISO), legacy_signed_at, saved_at, weekdays?{<id>:{ticks:[bool×7],count:n}}}`
 - checklist payload 另加 `parent_confirmed, parent_confirmed_at, daily`；舊欄位 `signed/signed_at` 保留（現在代表家長確認）。舊的 `S.sig/sigAt`、`roby-weekly-sig-*` 仍可讀取顯示，不會報錯。
 - **週報／月報**：頁面會讀本機 `roby-daily-*` 自動彙總（完成率、聯絡簿、英文／國文複習／國文小測驗天數與平均、計時、家長確認天數），`data/weekly`、`data/monthly` JSON 仍提供文字內容（亮點、提醒）。週報 JSON 可用 `overview.parentConfirmed`、`days[].parentConfirmed`（取代 signed，舊欄位仍可讀）。
 - **同步按鈕**：週報「📦 同步本週紀錄」／月報「📦 同步本月紀錄」→ 打包 `{subject:"weekly-sync"|"monthly-sync", from, to, days:[每日紀錄…], summary{days,rate,done,total,contact,contactMissing,english{days,avg},chinese_review{days,avg},chinese_quiz{days,avg},parent,roby,focus}, exported_at}`（週另含 `week_start, notes(筆記加點), base, points_week, points_total, parent_confirm`），同時①下載 JSON 檔（`Roby週紀錄_<週一>.json`／`Roby月紀錄_<YYYYMM>.json`）②放進 outbox 走 `webhooks.checklist`。

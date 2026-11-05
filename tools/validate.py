@@ -68,6 +68,14 @@ def v_checklist(f,o,name):
     for i,t in enumerate(o.get('weekTodo',[])):
         if not isinstance(t,dict) or not t.get('text'):E(f,f'weekTodo[{i}] 需要 text')
         elif not t.get('due'):W(f,f'weekTodo[{i}] 沒有 due')
+        days=t.get('days')
+        if days is not None:
+            if isinstance(days,int):
+                if days!=7:W(f,f'weekTodo[{i}].days 目前以 7 為主（收到 {days}）')
+            elif isinstance(days,list):
+                if not days or not all(isinstance(x,str) for x in days):E(f,f'weekTodo[{i}].days 陣列需為字串標籤')
+                elif len(days)!=7:W(f,f'weekTodo[{i}].days 標籤數建議 7（收到 {len(days)}）')
+            else:E(f,f'weekTodo[{i}].days 應為 7 或字串陣列')
     if 'note' in o and not isinstance(o['note'],str):E(f,'note 必須是字串')
 def v_generic(f,o,name,subj):
     date_ok(f,o,name)

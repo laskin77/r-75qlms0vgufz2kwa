@@ -315,6 +315,14 @@ function dlJSON(name,obj){var b=new Blob([JSON.stringify(obj,null,1)],{type:'app
 function syncRange(kind,label,a,b,extra,fname){var recs=dailyRange(a,b),p=Object.assign({subject:kind,from:a,to:b,days:recs,summary:aggDaily(recs),exported_at:nowIso()},extra||{});
  enqueue('checklist',p,kind+'-'+a);dlJSON(fname,p);toast2(label+'已打包：'+recs.length+' 天（已下載 JSON 並放進送出佇列）');return p}
 
+
+/* ---------- 本週按日勾選（weekTodo.days；存 roby-weekdays-<週一>，不佔每日勾選索引） ---------- */
+function hasDays(t){return !!(t&&(typeof t.days==='number'||Array.isArray(t.days)))}
+function wdId(t){if(t&&t.id!=null&&String(t.id))return String(t.id);var s=String(t&&t.text||'').split(/[：:]/)[0].trim();if(/國文家教/.test(s))return 'chinese_tutor';return s.replace(/\s+/g,'').slice(0,32)||'wd'}
+function wdLabels(t){var def=['一','二','三','四','五','六','日'];if(Array.isArray(t.days)&&t.days.length)return t.days.map(String);return def}
+function wdKey(date){return 'roby-weekdays-'+monday(date||DATE)}
+function wdStore(date){return LS.get(wdKey(date),{})}
+function wdSnapFrom(store){var out={};Object.keys(store||{}).forEach(function(id){var t=store[id],ticks=Array.isArray(t)?t:(t&&Array.isArray(t.ticks)?t.ticks:[]);out[id]={ticks:ticks,count:ticks.filter(Boolean).length}});return out}
 function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('check',null,false);
  root.insertAdjacentHTML('beforeend','<img class="hero" src="monkey-hero.webp" alt="">');
  root.appendChild(bud);
@@ -332,7 +340,9 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   if(d.pair||d.type==='pair'){var pr=d.pair||['聯絡簿已簽','聯絡簿未帶'];html+='<div class="pair">'+lab(esc(pr[0]),' data-excl="cb"')+lab('<span class="tagred">'+esc(pr[1])+'</span>',' data-excl="cb"',true)+'</div>';return}
   var sc=d.subject?'<span class="score" data-subj="'+esc(d.subject)+'" data-score="'+esc(d.score==null?'':d.score)+'" data-label="'+esc(d.label||'小測驗')+'"></span>':'';
   html+=lab(esc(d.text)+sc,d.subject?' data-subj="'+esc(d.subject)+'"':'')});html+='</div>';}
- if((D.weekTodo||[]).length)html+='<div class="card"><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>'+D.weekTodo.map(function(t){return (t.timer===false?'':'<div data-t>')+lab(dueTxt(t))+(t.timer===false?'':'</div>')}).join('')+'</div>';
+ if((D.weekTodo||[]).length){html+='<div class="card"><h2>本週待完成（做完就勾，沒勾會一直帶到下一天）</h2>';html+=D.weekTodo.map(function(t){
+  if(hasDays(t)){var id=wdId(t),labs=wdLabels(t),n=labs.length;return '<div class="wd-item" data-wd-id="'+esc(id)+'" data-wd-n="'+n+'"><div class="wd-head"><span class="wd-title">'+dueTxt(t)+'</span> <span class="wd-prog small"></span></div><div class="wd-days">'+labs.map(function(lb,i){return '<label class="wd-day"><input type="checkbox" class="wd-day" data-wd="'+esc(id)+'" data-i="'+i+'"><span>'+esc(lb)+'</span></label>'}).join('')+'</div></div>'}
+  return (t.timer===false?'':'<div data-t>')+lab(dueTxt(t))+(t.timer===false?'':'</div>')}).join('')+'</div>';}
  html+='<div class="card"><h2>備註</h2><textarea rows="3" placeholder="今天的狀況…"></textarea></div>';
  html+='<div class="card"><h2>Roby 確認</h2>'+lab('我已經自己檢查完今天的項目',' id="confirm"')+'</div>';
  html+='<div class="card pcard"><h2>家長確認</h2><label class="pc-l"><input type="checkbox" id="pconfirm"><span>家長已確認今天的項目（需 PIN）</span></label><div class="small" id="pcst"></div><div class="pc-btns noprint"><button id="pcunlock">🔓 解鎖修改</button><button id="pcchg">變更 PIN</button><button id="pcexp">匯出今日紀錄（JSON）</button></div></div>';
@@ -349,13 +359,18 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   var row='<label class="cr-row"><input type="checkbox" class="cr-auto" data-cr="1"'+(done?' checked':'')+'><span>八上二段國文複習'+info+'<span class="score" data-score="'+(sc==null?'':sc)+'" data-label="小測驗"></span></span></label>';
   var cards=$$('.card',root),dc=cards.find(function(c){var h=$('h2',c);return h&&h.textContent==='每日必做'});
   if(dc)dc.insertAdjacentHTML('beforeend',row);else{var note=cards.find(function(c){return $('textarea',c)});var nc=document.createElement('div');nc.className='card';nc.innerHTML='<h2>每日必做</h2>'+row;root.insertBefore(nc,note||null)}})();
- var els=$$('input[type=checkbox],textarea',root).filter(function(e){return !e.classList.contains('cr-auto')&&e.id!=='pconfirm'});
+ var els=$$('input[type=checkbox],textarea',root).filter(function(e){return !e.classList.contains('cr-auto')&&!e.classList.contains('wd-day')&&e.id!=='pconfirm'});
  $$('input.cr-auto',root).forEach(function(cb){cb.addEventListener('click',function(e){e.preventDefault()})});
  els.forEach(function(e,i){if(i in S){if(e.type==='checkbox')e.checked=!!S[i];else e.value=S[i]}});
  /* 科目測驗完成 → 自動打勾＋分數 */
  $$('input[data-subj]',root).forEach(function(cb){var subj=cb.dataset.subj,q=LS.get('roby-quiz-'+subj+'-'+DATE,null),sp=$('.score',cb.parentNode);
   if(q&&q.completed_at){cb.checked=true;if(sp&&q.score!=null)sp.dataset.score=q.score}else if(cb.dataset.crdone){cb.checked=true}});
  $$('.score',root).forEach(function(s){var v=(s.dataset.score||'').trim(),n=parseFloat(v),lb=s.dataset.label||'小測驗';s.className='score '+(v===''||isNaN(n)?'sc-none':n>=90?'sc-hi':n>=70?'sc-mid':'sc-low');s.textContent=lb+' '+(v===''?'—':v+' 分')});
+ function wdSnap(){var out={},st=wdStore(DATE);$$('.wd-item',root).forEach(function(box){var id=box.dataset.wdId,cbs=$$('input.wd-day',box),ticks=cbs.map(function(c){return !!c.checked});out[id]={ticks:ticks,count:ticks.filter(Boolean).length};st[id]=ticks});return out}
+ (function(){var st=wdStore(DATE),todayIdx=(dobj(DATE).getDay()+6)%7;$$('.wd-item',root).forEach(function(box){var id=box.dataset.wdId,n=+box.dataset.wdN||7,ticks=Array.isArray(st[id])?st[id].slice():[];while(ticks.length<n)ticks.push(false);ticks=ticks.slice(0,n);var cbs=$$('input.wd-day',box);
+  function refresh(){var count=cbs.filter(function(c){return c.checked}).length,prog=$('.wd-prog',box);if(prog)prog.textContent='本週 '+count+'/'+n+' 天';box.classList.toggle('wd-done',count>=n)}
+  function persist(){if(S.locked)return;st[id]=cbs.map(function(c){return !!c.checked});LS.set(wdKey(DATE),st);refresh()}
+  cbs.forEach(function(cb,i){cb.checked=!!ticks[i];var lb=cb.closest('label');if(lb&&i===todayIdx)lb.classList.add('wd-today');cb.addEventListener('change',function(){if(S.locked){cb.checked=!cb.checked;toast2('今天已家長確認並鎖定');return}persist()})});refresh()});})();
  function save(){els.forEach(function(x,j){S[j]=x.type==='checkbox'?x.checked:x.value});LS.set(K,S)}
  save();
  $$('input[data-excl]',root).forEach(function(e){e.addEventListener('change',function(){if(e.checked)$$('input[data-excl="'+e.dataset.excl+'"]',root).forEach(function(o){if(o!==e){o.checked=false}});save();progress()})});
@@ -368,7 +383,7 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   if(e.id==='confirm'&&e.checked){bud.say('謝謝你自己檢查！小猴子幫你送出囉 📮');sendChecklist('confirm')}})});
  /* 家長確認（取代手指簽名＋存圖）：Roby 先確認 → 家長 PIN → 寫每日紀錄＋送出佇列 → 鎖定當天 */
  var pc=$('#pconfirm',root),pst=$('#pcst',root);
- function lockUI(){var L=!!S.locked;els.forEach(function(x){x.disabled=L});$$('.tbtn',root).forEach(function(x){x.disabled=L});pc.checked=!!(S.parent&&S.parent.at);root.classList.toggle('day-locked',L);
+ function lockUI(){var L=!!S.locked;els.forEach(function(x){x.disabled=L});$$('input.wd-day',root).forEach(function(x){x.disabled=L});$$('.tbtn',root).forEach(function(x){x.disabled=L});pc.checked=!!(S.parent&&S.parent.at);root.classList.toggle('day-locked',L);
   $('#pcunlock',root).style.display=L?'':'none';
   pst.innerHTML=(S.parent&&S.parent.at?'✅ 家長已確認：'+esc(S.parent.text||'')+(L?'・今天的勾選已鎖定':''):(S.parent_prev?'已解鎖修改中，改好後請家長再確認一次':'Roby 勾「Roby 確認」後，家長再打勾並輸入 PIN'))+(S.sig||S.sigAt?'<br>（舊版手指簽名紀錄：'+esc(S.sigAt||'有')+'）':'')}
  pc.addEventListener('click',function(e){e.preventDefault();if(S.parent&&S.parent.at){toast2('今天已確認；要修改請按「解鎖修改」');return}
@@ -386,7 +401,7 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
    contact_book:cbs[0]&&cbs[0].checked?'signed':cbs[1]&&cbs[1].checked?'missing':'none',
    scores:{english:qs('english'),chinese_review:cr&&cr.first&&cr.score!=null?+cr.score:null,chinese_quiz:qs('chinese')},
    focus:fo,focus_minutes:fo.reduce(function(a,x){return a+(x.minutes||0)},0),note:($('textarea',root)||{}).value||'',
-   roby_confirmed:!!($('#confirm',root)||{}).checked,parent_confirmed_at:S.parent&&S.parent.at||null,legacy_signed_at:S.sigAt||null,saved_at:nowIso()}}
+   roby_confirmed:!!($('#confirm',root)||{}).checked,parent_confirmed_at:S.parent&&S.parent.at||null,legacy_signed_at:S.sigAt||null,saved_at:nowIso(),weekdays:(function(){var o=wdSnap();return Object.keys(o).length?o:undefined})()}}
  function sendChecklist(by){var items=buildItems(),rec=buildRec();
   var cbs=$$('input[data-excl="cb"]',root);
   enqueue('checklist',{subject:'checklist',date:DATE,by:by,items:items,done:items.filter(function(x){return x.checked}).length,total:items.length,
@@ -447,8 +462,8 @@ function wbPairs(x){var bad={};(x.words||[]).forEach(function(w){bad[w.wrong+w.r
 /* ---------- 週報 ---------- */
 function weeklyPage(root){var D=DATA.weekly||DATA.weeklyPrev;root.insertAdjacentHTML('beforeend','<img class="hero" src="monkey-hero.webp" alt="">');
  var LREC=dailyRange(WK,addDays(WK,6)),LOC=false;
- if(D&&D.week_start&&D.week_start!==WK&&LREC.length){D={week_start:WK,days:[]};LOC=true}
- if(!D){if(!LREC.length){root.appendChild(empty('這週還沒有週報喔（週日更新）','cat-foot.webp'));return}D={week_start:WK,days:[]};LOC=true}
+ if(D&&D.week_start&&D.week_start!==WK&&(LREC.length||Object.keys(wdStore(WK)).length)){D={week_start:WK,days:[]};LOC=true}
+ if(!D){if(!LREC.length&&!Object.keys(wdStore(WK)).length){root.appendChild(empty('這週還沒有週報喔（週日更新）','cat-foot.webp'));return}D={week_start:WK,days:[]};LOC=true}
  var mon=D.week_start||(DATA.weekly?WK:PREVWK),sun=addDays(mon,6),WREC=dailyRange(mon,sun),WA=aggDaily(WREC);
  var html='<h1>Roby 週報</h1><div class="sub">'+md(mon)+'（一）～ '+md(sun)+'（日）</div>';if(D.sample)html+='<div class="sample">⚠️ 範例資料</div>';
  var O=D.overview||{},pct=function(a,b){return b?Math.round(a/b*100):0};if(LOC)O={planDone:WA.done,planTotal:WA.total,contact:WA.contact,contactMissing:WA.contactMissing,english:WA.english.days,chinese:WA.chinese_review.days};
@@ -459,6 +474,8 @@ function weeklyPage(root){var D=DATA.weekly||DATA.weeklyPrev;root.insertAdjacent
  var avgP=['english','chinese'].map(function(k){var a=avgOf(k);return a==null?'':'<span class="wavg">'+(k==='english'?'英文':'國文')+'大師平均 <b class="'+sc(a)+'">'+a+' 分</b></span>'}).filter(Boolean).join('　');if(avgP)avgP='<p>'+avgP+'</p>';
  html+='<div class="card"><h2>本週總覽</h2><p>讀書計畫完成率：'+pct(O.planDone,O.planTotal)+'%（'+(O.planDone||0)+' / '+(O.planTotal||0)+' 項）</p><div class="bar" style="height:10px;border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pct(O.planDone,O.planTotal)+'%"></div></div><p>每日必做：聯絡簿 '+(O.contact||0)+'/7 天'+(O.contactMissing?'（未帶 '+O.contactMissing+' 天）':'')+'、英文大師 '+(O.english||0)+'/7 天、國文大師 '+chD+'</p>'+avgP+'<p>家長確認天數：'+(WREC.length?WA.parent:O.parentConfirmed!=null?O.parentConfirmed:(O.signed||0))+'/7</p>'+(LOC?'<p class="small">本週文字週報尚未產生，以下為本機每日紀錄彙總。</p>':'')+'</div>';
  if(WREC.length)html+=aggCard('本週 App 紀錄彙總',WA,7,WREC);
+ var WDmap=wdStore(mon),WDlines=[];Object.keys(WDmap).forEach(function(id){var ticks=Array.isArray(WDmap[id])?WDmap[id]:[],c=ticks.filter(Boolean).length,n=ticks.length||7,label=id==='chinese_tutor'?'國文家教功課閱讀測驗':id;WDlines.push(label+' '+c+'/'+n+' 天')});
+ if(WDlines.length)html+='<div class="card"><h2>本週每日練習</h2><p>'+WDlines.map(esc).join('、')+'</p></div>';
  html+='<div class="card noprint"><h2>同步本週紀錄</h2><p class="small">把本週每日紀錄＋筆記加點打包成 JSON：下載後存到 OneDrive「Roby週報」，同時放進送出佇列（webhook 設好後自動送）。</p><button id="wsync">📦 同步本週紀錄（'+WREC.length+' 天）</button></div>';
  var RD={};WREC.forEach(function(r){RD[r.date]=r});
  var DAYS=[];for(var di=0;di<7;di++){var dd0=addDays(mon,di),jd=(D.days||[]).filter(function(x){return x.date===dd0})[0]||{date:dd0},r0=RD[dd0],o=Object.assign({},jd);
