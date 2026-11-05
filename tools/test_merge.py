@@ -51,6 +51,7 @@ async def main():
     check('11/05 無檔：無錯誤',not errs)
     # C) 11/05 有檔（同一個 localStorage：尚未作答的當天應改成合併版）
     have['on']=True;await pg.reload();await pg.wait_for_timeout(2500);fi=await frameInfo(pg);print('11/05 merged',fi)
+    _d=json.loads(FX);_n=sum(len(q.get('items',[])) if q.get('type')=='group' else 1 for q in _d['questions'] if not q['id'].startswith('ST-'));check('11/05 合併：閱讀段=5 題+李老師 %d 題、無〈森林〉'%_n,any(s.startswith('閱讀理解與課文深究（%d 題）'%(5+_n)) for s in fi['secs']) and '森林' not in FX and '徐仁修' not in FX)
     check('11/05 合併：順序 形音義→改錯→閱讀(含李老師)→故事小測',[s.rsplit('（',1)[0] for s in fi['secs']]==['形音義選擇題','改錯（整段）','閱讀理解與課文深究','故事小測'])
     check('11/05 合併：故事卡＋故事小測上鎖',fi['story']==1 and fi['locked']==1)
     check('11/05 合併：app 無分開區塊',await pg.locator('.sec-gap').count()==0 and await pg.locator('h2:has-text("李老師的題目")').count()==0)
