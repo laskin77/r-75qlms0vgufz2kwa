@@ -12,18 +12,19 @@ ok=[]
 def check(name,c):ok.append((name,bool(c)));print(('PASS ' if c else 'FAIL ')+name)
 def clock(t):return "(()=>{const off=new Date('%sT20:00:00+08:00').getTime()-Date.now(),_D=Date;class D extends _D{constructor(...a){if(!a.length)super(_D.now()+off);else super(...a)}static now(){return _D.now()+off}};window.Date=D})()"%t
 def seed(ls):return "(()=>{if(sessionStorage.getItem('__seeded'))return;sessionStorage.setItem('__seeded','1');localStorage.clear();const o=%s;for(const k in o)localStorage.setItem(k,o[k])})()"%json.dumps(ls)
-# ---- (c) 靜態：184 題 ----
+# ---- (c) 靜態：183 題 ----
 KJ=[q for q in CR['questions'] if q['id'].startswith('KJ-')]
 ids=[q['id'] for q in KJ]
-check('(c) KJ 題 184 題、id 不重複',len(KJ)==184 and len(set(ids))==184)
+check('(c) KJ 題 183 題、id 不重複',len(KJ)==183 and len(set(ids))==183)
 check('(c) 每題 4 選項、answer 0–3、選項不重複',all(len(q['options'])==4 and 0<=q['answer']<4 and len(set(q['options']))==4 for q in KJ))
 check('(c) 不含 KJ-SZ-004',('KJ-SZ-004' not in ids))
-check('(c) 課表 184 題＝題庫 KJ 題、無重複',sorted(i for v in SCHED.values() for i in v)==sorted(ids))
+check('(c) 不含 KJ-NI-034',('KJ-NI-034' not in ids))
+check('(c) 課表 183 題＝題庫 KJ 題、無重複',sorted(i for v in SCHED.values() for i in v)==sorted(ids))
 check('(c) 課表與內嵌課表一致',CR['handout']['schedule']==SCHED)
 check('(c) lesson 無書名號、無「生命中的碎歌」',all(q['lesson'] in('愛蓮說','鳥','生命的碎珠') for q in KJ) and not any(q.get('lesson')=='生命中的碎歌' for q in CR['questions']))
 check('(c) 字音→注音、其餘→形音義',all(q['topic']==('注音' if q['kind']=='字音' else '形音義') for q in KJ))
 def wd(d):return datetime.date.fromisoformat(d).weekday()>=5
-check('(c) 題數：平日 8、週末 20、11/21 16',all(len(v)==(16 if d=='2026-11-21' else 20 if wd(d) else 8) for d,v in SCHED.items()) and len(SCHED)==16)
+check('(c) 題數：平日 8、週末 20、11/21 16、11/14 19（刪 KJ-NI-034）',all(len(v)==(16 if d=='2026-11-21' else 19 if d=='2026-11-14' else 20 if wd(d) else 8) for d,v in SCHED.items()) and len(SCHED)==16)
 OLDQ=None
 async def ctxFor(br,t,ls,fx=None,mutq=None):
   c=await br.new_context(viewport={'width':820,'height':1180},locale='zh-TW',timezone_id='Asia/Taipei',service_workers='block')
@@ -110,7 +111,7 @@ async def main():
       if d>'2026-11-09':ls,v,e=await openDay(br,8767,d,ls)
     ls,v,e=await openDay(br,8767,'2026-11-22',ls);x22=day(ls,'2026-11-22')['sections'][0]['ids']
     seen=set(i for d in sorted(SCHED) for i in day(ls,d)['sections'][0]['ids'])
-    check('(d) 11/22 緩衝日吸收順延的新題（11/21 最後一題）、184 題全部出過',x22[0]==SCHED['2026-11-21'][-1] and len(seen|set(x22))==184)
+    check('(d) 11/22 緩衝日吸收順延的新題（11/21 最後一題）、183 題全部出過',x22[0]==SCHED['2026-11-21'][-1] and len(seen|set(x22))==183)
     # (e) 舊版已產生 11/06（未開始）→ 新版不重抽
     lsO,_,_=await openDay(br,8768,'2026-11-06',{'roby-cr-days':json.dumps({'2026-11-05':day(ls1,'2026-11-05')})})
     lsN,_,_=await openDay(br,8767,'2026-11-06',lsO)
