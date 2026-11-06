@@ -553,7 +553,9 @@ function render(){rendered=true;var c=cur(),nav=$('#nav');nav.innerHTML='';TABS.
  ({check:checkPage,chinese:function(r){subjPage('chinese',r)},english:function(r){subjPage('english',r)},wrong:wrongPage,weekly:weeklyPage,monthly:monthlyPage})[c](root);
  document.title='Roby '+TABS.find(function(t){return t[0]===c})[1];tTick();scrollTo(0,y);}
 window.addEventListener('hashchange',render);
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')load()});
+function ensureToday(){if(qd)return false;var t=tpeToday();if(t===DATE)return false;location.reload();return true}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){if(!ensureToday())load()}});
+window.addEventListener('pageshow',function(e){if(e.persisted){if(!ensureToday())load()}});
 /* 小時鐘（純顯示台北時間）*/
 (function(){var fmt=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
  var c=document.createElement('div');c.id='clk';c.innerHTML='<span class="cf"><i class="hh"></i><i class="mm"></i></span><span class="ct">--:--</span><small class="cs"></small>';
