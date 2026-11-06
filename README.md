@@ -90,11 +90,11 @@ git push                                # 被拒絕就再 git pull --rebase 後 
 {"date":"2026-10-23","warning":["明天截止：…"],
  "plan":[{"text":"08:00 理化","timer":true}],
  "daily":[{"pair":["聯絡簿已簽","聯絡簿未帶"]},{"text":"英文大師","subject":"english","label":"小測驗"},{"text":"國文小測驗","subject":"chinese"}],
- "weekTodo":[{"text":"國文家教功課","due":"10/24（六）前"},{"text":"國文家教功課：每天閱讀測驗","due":"11/7（六）前","days":7}],
+ "weekTodo":[{"text":"國文家教功課","due":"10/24（六）前"},{"text":"國文家教功課：一至四、六閱讀測驗","due":"11/7（六）前","days":["一","二","三","四","六"]}],
  "note":"✏️ Roby 自己勾：…"}
 ```
 - `due` 可寫「10/24（六）前」或 `YYYY-MM-DD`（自動顯示成 10/24（六）前），紅字。
-- `weekTodo[].days`（選填）：設成 `7` 或標籤陣列（預設 `["一","二","三","四","五","六","日"]`，對應本週一～日）時，該項改為「標題＋截止日＋7 個按日勾選」；勾選狀態存 `roby-weekdays-<該週週一 YYYY-MM-DD>`（例 `{chinese_tutor:[true,false,…]}`，key 用 `id` 或由 text 衍生），**不佔**當日 `roby-check-<DATE>` 索引。畫面顯示「本週 N/7 天」，七天全勾有完成樣式；今日標籤會反白。沒有 `days` 的舊項仍是單一勾選框。
+- `weekTodo[].days`（選填）：設成數字（取一～日的前 N 天）或標籤陣列（例 `["一","二","三","四","六"]`＝一至四、六；預設七天 `["一","二","三","四","五","六","日"]`）時，該項改為「標題＋截止日＋按日勾選」；勾選狀態存 `roby-weekdays-<該週週一 YYYY-MM-DD>`（例 `{chinese_tutor:[true,false,…]}`，key 用 `id` 或由 text 衍生），**不佔**當日 `roby-check-<DATE>` 索引。畫面顯示「本週 N/M 天」，全勾有完成樣式；若今天在標籤內會反白。從舊的 7 格改成較少天數時，會依星期標籤對齊既有勾選。沒有 `days` 的舊項仍是單一勾選框。
 - 有 timer 的項目有「開始」鍵（25 分專注＋5 分休息），顯示「開始 HH:MM｜結束 HH:MM｜共 N 分」。
 - 為了和舊版 localStorage 對齊，順序固定為：plan → daily（pair 算兩格）→ weekTodo（無 `days` 的項）→ 備註 → Roby 確認；有 `days` 的 weekTodo 不進入此索引。
 

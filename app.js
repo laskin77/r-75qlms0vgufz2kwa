@@ -319,7 +319,12 @@ function syncRange(kind,label,a,b,extra,fname){var recs=dailyRange(a,b),p=Object
 /* ---------- 本週按日勾選（weekTodo.days；存 roby-weekdays-<週一>，不佔每日勾選索引） ---------- */
 function hasDays(t){return !!(t&&(typeof t.days==='number'||Array.isArray(t.days)))}
 function wdId(t){if(t&&t.id!=null&&String(t.id))return String(t.id);var s=String(t&&t.text||'').split(/[：:]/)[0].trim();if(/國文家教/.test(s))return 'chinese_tutor';return s.replace(/\s+/g,'').slice(0,32)||'wd'}
-function wdLabels(t){var def=['一','二','三','四','五','六','日'];if(Array.isArray(t.days)&&t.days.length)return t.days.map(String);return def}
+var WD_LB=['一','二','三','四','五','六','日'];
+function wdLabels(t){if(Array.isArray(t.days)&&t.days.length)return t.days.map(String);var n=typeof t.days==='number'&&t.days>0?Math.min(t.days,7):7;return WD_LB.slice(0,n)}
+function wdAlignTicks(stored,labs){var raw=Array.isArray(stored)?stored:(stored&&Array.isArray(stored.ticks)?stored.ticks:[]);
+ if(raw.length===7&&labs.length&&labs.length!==7)return labs.map(function(lb){var i=WD_LB.indexOf(lb);return i>=0?!!raw[i]:false});
+ var ticks=raw.slice();while(ticks.length<labs.length)ticks.push(false);return ticks.slice(0,labs.length)}
+function wdTodayIdx(labs){var lb=WD_LB[(dobj(DATE).getDay()+6)%7],i=labs.indexOf(lb);return i}
 function wdKey(date){return 'roby-weekdays-'+monday(date||DATE)}
 function wdStore(date){return LS.get(wdKey(date),{})}
 function wdSnapFrom(store){var out={};Object.keys(store||{}).forEach(function(id){var t=store[id],ticks=Array.isArray(t)?t:(t&&Array.isArray(t.ticks)?t.ticks:[]);out[id]={ticks:ticks,count:ticks.filter(Boolean).length}});return out}
@@ -367,10 +372,10 @@ function checkPage(root){var D=DATA.checklist,K='roby-check-'+DATE,bud=buddy('ch
   if(q&&q.completed_at){cb.checked=true;if(sp&&q.score!=null)sp.dataset.score=q.score}else if(cb.dataset.crdone){cb.checked=true}});
  $$('.score',root).forEach(function(s){var v=(s.dataset.score||'').trim(),n=parseFloat(v),lb=s.dataset.label||'小測驗';s.className='score '+(v===''||isNaN(n)?'sc-none':n>=90?'sc-hi':n>=70?'sc-mid':'sc-low');s.textContent=lb+' '+(v===''?'—':v+' 分')});
  function wdSnap(){var out={},st=wdStore(DATE);$$('.wd-item',root).forEach(function(box){var id=box.dataset.wdId,cbs=$$('input.wd-day',box),ticks=cbs.map(function(c){return !!c.checked});out[id]={ticks:ticks,count:ticks.filter(Boolean).length};st[id]=ticks});return out}
- (function(){var st=wdStore(DATE),todayIdx=(dobj(DATE).getDay()+6)%7;$$('.wd-item',root).forEach(function(box){var id=box.dataset.wdId,n=+box.dataset.wdN||7,ticks=Array.isArray(st[id])?st[id].slice():[];while(ticks.length<n)ticks.push(false);ticks=ticks.slice(0,n);var cbs=$$('input.wd-day',box);
+ (function(){var st=wdStore(DATE);$$('.wd-item',root).forEach(function(box){var id=box.dataset.wdId,labs=[].map.call($$('label.wd-day span',box),function(s){return s.textContent}),n=labs.length||(+box.dataset.wdN||7),ticks=wdAlignTicks(st[id],labs),todayIdx=wdTodayIdx(labs),cbs=$$('input.wd-day',box);
   function refresh(){var count=cbs.filter(function(c){return c.checked}).length,prog=$('.wd-prog',box);if(prog)prog.textContent='本週 '+count+'/'+n+' 天';box.classList.toggle('wd-done',count>=n)}
   function persist(){if(S.locked)return;st[id]=cbs.map(function(c){return !!c.checked});LS.set(wdKey(DATE),st);refresh()}
-  cbs.forEach(function(cb,i){cb.checked=!!ticks[i];var lb=cb.closest('label');if(lb&&i===todayIdx)lb.classList.add('wd-today');cb.addEventListener('change',function(){if(S.locked){cb.checked=!cb.checked;toast2('今天已家長確認並鎖定');return}persist()})});refresh()});})();
+  cbs.forEach(function(cb,i){cb.checked=!!ticks[i];var lb=cb.closest('label');if(lb&&todayIdx>=0&&i===todayIdx)lb.classList.add('wd-today');cb.addEventListener('change',function(){if(S.locked){cb.checked=!cb.checked;toast2('今天已家長確認並鎖定');return}persist()})});refresh()});})();
  function save(){els.forEach(function(x,j){S[j]=x.type==='checkbox'?x.checked:x.value});LS.set(K,S)}
  save();
  $$('input[data-excl]',root).forEach(function(e){e.addEventListener('change',function(){if(e.checked)$$('input[data-excl="'+e.dataset.excl+'"]',root).forEach(function(o){if(o!==e){o.checked=false}});save();progress()})});

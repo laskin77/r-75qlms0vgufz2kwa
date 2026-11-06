@@ -70,12 +70,14 @@ def v_checklist(f,o,name):
         elif not t.get('due'):W(f,f'weekTodo[{i}] 沒有 due')
         days=t.get('days')
         if days is not None:
+            ok_lb={'一','二','三','四','五','六','日'}
             if isinstance(days,int):
-                if days!=7:W(f,f'weekTodo[{i}].days 目前以 7 為主（收到 {days}）')
+                if not 1<=days<=7:E(f,f'weekTodo[{i}].days 數字需為 1–7（收到 {days}）')
             elif isinstance(days,list):
                 if not days or not all(isinstance(x,str) for x in days):E(f,f'weekTodo[{i}].days 陣列需為字串標籤')
-                elif len(days)!=7:W(f,f'weekTodo[{i}].days 標籤數建議 7（收到 {len(days)}）')
-            else:E(f,f'weekTodo[{i}].days 應為 7 或字串陣列')
+                elif not 1<=len(days)<=7:E(f,f'weekTodo[{i}].days 標籤數需為 1–7（收到 {len(days)}）')
+                elif any(x not in ok_lb for x in days):W(f,f'weekTodo[{i}].days 含非一～日標籤：{days}')
+            else:E(f,f'weekTodo[{i}].days 應為 1–7 的數字或字串標籤陣列')
     if 'note' in o and not isinstance(o['note'],str):E(f,'note 必須是字串')
 def v_generic(f,o,name,subj):
     date_ok(f,o,name)
