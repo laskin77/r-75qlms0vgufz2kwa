@@ -94,12 +94,35 @@ table.gc10 th,table.gc10 td{border-bottom:1px solid var(--line);padding:6px 4px;
   .char-hero .ch{font-size:2.8rem;}
   .codes{grid-template-columns:repeat(2,1fr);top:86px;}
 }
+
+.blank-wrap{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0 4px 6px 0;vertical-align:middle;}
+.fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:4px;}
+.fill-lab{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.chk-btn{appearance:none;border:1px solid var(--teal);background:#fff;color:var(--teal-d);
+  border-radius:8px;padding:6px 10px;font-size:.85rem;line-height:1.2;
+  min-height:36px;min-width:44px;cursor:pointer;white-space:nowrap;}
+.chk-btn:active{background:var(--teal-s);}
+.fb{font-size:.85rem;margin-left:2px;
+  font-family:"Noto Sans CJK TC","Noto Sans TC","Source Han Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;}
+input.blank.locked.ok{background:var(--ok-s);border-bottom-color:var(--ok);}
+input.blank.locked.bad{background:var(--wrong-s);border-bottom-color:var(--wrong);}
+input.blank.need{outline:2px solid var(--gold);}
+input.blank[readonly]{cursor:default;}
+.opt.locked{cursor:default;}
+.opt.ok{border-color:var(--ok);background:var(--ok-s);}
+.opt.bad{border-color:var(--wrong);background:var(--wrong-s);}
+.letters.locked button{pointer-events:none;}
+.letters button.sel.ok{background:var(--ok);color:#fff;border-color:var(--ok);}
+.letters button.sel.bad{background:var(--wrong);color:#fff;border-color:var(--wrong);}
+.letters button.reveal:not(.sel){border-color:var(--ok);box-shadow:0 0 0 2px var(--ok-s);}
+table.gc10 td{text-align:left;}
+table.gc10 th{text-align:center;}
 </style>
 </head>
 <body>
 <header class="app">
   <h1>必考形音義辨正　第一回</h1>
-  <div class="sub">捷英社　一日一回　題目照原書　題組不拆開</div>
+  <div class="sub">捷英社　一日一回　題目照原書　題組不拆開　寫完可立刻對答案</div>
   <nav class="steps" id="steps"></nav>
 </header>
 <main id="main"></main>
@@ -107,7 +130,7 @@ table.gc10 th,table.gc10 td{border-bottom:1px solid var(--line);padding:6px 4px;
 <script>
 
 const DATA = {"meta":{"book":"捷英社《必考形音義辨正》","unit":1,"unit_title":"第一回","pages":"4–11，解答 p.133","principle":"題幹、選項、注音、標點、「」與故意錯字一律照原書，不做自動修正或改寫。題組不拆開。","scoring":{"advanced_total":100,"zhiyin_blanks":20,"guozi_blanks":20,"gaicuo_short":8,"gaicuo_passage":10,"peidui":24,"xuanze":18,"note":"進階練習每格一分，共一百分。改錯短句每題須錯字與正字都對才給一分。短文題組每格一分（錯字與正字都對）。字卡暖身另外計分，不計入這100分。"},"uncertain":[{"page":4,"item":"基礎「營」","detail":"「駐紮」之「紮」旁注音未能完全看清，疑為ㄓㄚˊ。"},{"page":6,"item":"基礎「豪」","detail":"「強橫」的「強」旁有注音，音值未再單獨放大確認。"},{"page":6,"item":"基礎「仰」敬慕義","detail":"例詞空格暫依「仰慕、景仰、久仰大名」排列，請核對原書空格位置。"},{"page":8,"item":"改錯短句第1題","detail":"題幹「玫瑰花□上」的錯字暫錄「辯」，不能完全排除「辨」。答案為「瓣」。"},{"page":8,"item":"改錯短句第2題","detail":"題幹「晶□剔透」的錯字暫錄「塋」，不能完全排除螢、營。答案為「瑩」。"},{"page":8,"item":"國字第5題","detail":"題幹為「陳大哥興趣十分「ㄉㄨㄣ ㄏㄡˋ」」，與「敦厚」相符；解答頁第5題卻印「廣泛」。暫依題幹作答敦厚。"}]},"warmup":{"title":"基礎練習（字卡暖身）","pages":"4–7","cards":[{"id":"r01-card-01","char":"瑩","zhuyin":"ㄧㄥˊ","type":"fill","defs":["透明光潔的樣子。"],"examples":[{"pattern":"晶（　）","answers":["瑩"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-02","char":"螢","zhuyin":"ㄧㄥˊ","type":"fill","defs":["腹部會發出燐光（燐 ㄌㄧㄣˊ）的昆蟲。"],"examples":[{"pattern":"（　）火蟲","answers":["螢"]},{"pattern":"囊（　）映雪","answers":["螢"],"note":"囊 ㄋㄤˊ"}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-03","char":"縈","zhuyin":"ㄧㄥˊ","type":"fill","defs":["圍繞、纏繞。"],"examples":[{"pattern":"魂牽夢（　）","answers":["縈"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-04","char":"塋","zhuyin":"ㄧㄥˊ","type":"fill","defs":["墳地、墓地。"],"examples":[{"pattern":"墳（　）","answers":["塋"]},{"pattern":"祖（　）","answers":["塋"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-05","char":"營","zhuyin":"ㄧㄥˊ","type":"fill","defs":["軍隊駐紮的地方。","謀求。","管理。","建設、建造。","活動的組織名稱。"],"examples":[{"pattern":"軍（　）","answers":["營"],"sense":0},{"pattern":"步步為（　）","answers":["營"],"sense":0},{"pattern":"鑽（　）","answers":["營"],"sense":1},{"pattern":"（　）私舞弊","answers":["營"],"sense":1},{"pattern":"民（　）事業","answers":["營"],"sense":2},{"pattern":"（　）造","answers":["營"],"sense":3},{"pattern":"（　）建","answers":["營"],"sense":3},{"pattern":"夏令（　）","answers":["營"],"sense":4},{"pattern":"戰鬥（　）","answers":["營"],"sense":4}],"source":{"page":4,"photo":"IMG_0952.HEIC"},"notes":["書中「紮」字旁印有注音，疑為ㄓㄚˊ。"],"uncertain":[{"field":"def0","detail":"「駐紮」之「紮」旁注音未能完全看清，暫錄為可能是ㄓㄚˊ。"}]},{"id":"r01-card-06","char":"疤","zhuyin":"ㄅㄚ","type":"fill","defs":["瘡口或傷口癒合後所留下的痕跡。"],"examples":[{"pattern":"（　）痕","answers":["疤"],"note":"瘡 ㄔㄨㄤ，癒 ㄩˋ"}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-07","char":"靶","zhuyin":"ㄅㄚˇ","type":"fill","defs":["射擊的目標。"],"examples":[{"pattern":"槍（　）","answers":["靶"]},{"pattern":"打（　）","answers":["靶"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-08","char":"葩","zhuyin":"ㄆㄚ","type":"fill","defs":["花。"],"examples":[{"pattern":"奇（　）","answers":["葩"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-09","char":"杷","zhuyin":"ㄆㄚˊ","type":"fill","defs":["植物名。"],"examples":[{"pattern":"枇（　）","answers":["杷"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-10","char":"琶","zhuyin":"ㄆㄚˊ","type":"fill","defs":["樂器名。"],"examples":[{"pattern":"琵（　）","answers":["琶"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-11","char":"巴","zhuyin":"ㄅㄚ","type":"fill","defs":["期望、盼望。"],"examples":[{"pattern":"（　）望","answers":["巴"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-12","char":"芭","zhuyin":"ㄅㄚ","type":"fill","defs":["植物名。"],"examples":[{"pattern":"（　）蕉","answers":["芭"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-13","char":"笆","zhuyin":"ㄅㄚ","type":"fill","defs":["用竹枝或竹片編成的片狀物。"],"examples":[{"pattern":"竹籬（　）","answers":["笆"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-14","char":"乏","zhuyin":"ㄈㄚˊ","type":"fill","defs":["欠缺。","沒有。","疲勞的。"],"examples":[{"pattern":"（　）味","answers":["乏"],"sense":0},{"pattern":"缺（　）","answers":["乏"],"sense":0},{"pattern":"（　）人問津","answers":["乏"],"sense":1},{"pattern":"分身（　）術","answers":["乏"],"sense":1},{"pattern":"疲（　）","answers":["乏"],"sense":2},{"pattern":"兵困馬（　）","answers":["乏"],"sense":2}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-15","char":"泛","zhuyin":"ㄈㄢˋ","type":"fill","defs":["漂浮。","不切實。","廣博、普遍。","尋常的、浮淺的。"],"examples":[{"pattern":"（　）舟","answers":["泛"],"sense":0},{"pattern":"虛（　）","answers":["泛"],"sense":1},{"pattern":"空（　）","answers":["泛"],"sense":1},{"pattern":"廣（　）","answers":["泛"],"sense":2},{"pattern":"（　）（　）之輩","answers":["泛","泛"],"sense":3},{"pattern":"（　）（　）之交","answers":["泛","泛"],"sense":3}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-16","char":"砭","zhuyin":"ㄅㄧㄢ","type":"fill","defs":["比喻規勸過失。"],"examples":[{"pattern":"針（　）","answers":["砭"]}],"source":{"page":4,"photo":"IMG_0952.HEIC"}},{"id":"r01-card-17","char":"眨","zhuyin":"ㄓㄚˇ","type":"fill","defs":["眼瞼（瞼 ㄐㄧㄢˇ）一開一閉。"],"examples":[{"pattern":"（　）眼","answers":["眨"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-18","char":"貶","zhuyin":"ㄅㄧㄢˇ","type":"fill","defs":["降低、減少。","指出缺點，給予低微的評價。","官員降級任用。"],"examples":[{"pattern":"（　）值","answers":["貶"],"sense":0},{"pattern":"自（　）身價","answers":["貶"],"sense":0},{"pattern":"褒（　）","answers":["貶"],"sense":1},{"pattern":"（　）官","answers":["貶"],"sense":2}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-19","char":"罷","zhuyin":"ㄅㄚˋ","type":"fill","defs":["停止。","免除、廢止。","嘆詞。表示失望、忿恨等的語氣。","完畢。"],"examples":[{"pattern":"欲（　）不能","answers":["罷"],"sense":0},{"pattern":"（　）工","answers":["罷"],"sense":0},{"pattern":"（　）免","answers":["罷"],"sense":1},{"pattern":"（　）官","answers":["罷"],"sense":1},{"pattern":"（　）了","answers":["罷"],"sense":2},{"pattern":"吃（　）","answers":["罷"],"sense":3}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-20","char":"霸","zhuyin":"ㄅㄚˋ","type":"fill","defs":["把持、稱雄。","強橫無理。","古時諸侯的首領。"],"examples":[{"pattern":"獨（　）一方","answers":["霸"],"sense":0},{"pattern":"（　）占","answers":["霸"],"sense":1},{"pattern":"（　）道","answers":["霸"],"sense":1},{"pattern":"春秋五（　）","answers":["霸"],"sense":2}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-21","char":"壩","zhuyin":"ㄅㄚˋ","type":"fill","defs":["築在河上或湖口狹處，用以擋水並提高水位的建築物。"],"examples":[{"pattern":"水（　）","answers":["壩"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-22","char":"辨","zhuyin":"ㄅㄧㄢˋ","type":"fill","defs":["分別、判別。"],"examples":[{"pattern":"（　）別","answers":["辨"]},{"pattern":"明（　）是非","answers":["辨"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-23","char":"辦","zhuyin":"ㄅㄢˋ","type":"fill","defs":["處理事務。","創設、經營。"],"examples":[{"pattern":"公事公（　）","answers":["辦"],"sense":0},{"pattern":"興（　）","answers":["辦"],"sense":1},{"pattern":"創（　）","answers":["辦"],"sense":1}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-24","char":"辯","zhuyin":"ㄅㄧㄢˋ","type":"fill","defs":["爭論是非曲直。"],"examples":[{"pattern":"（　）論","answers":["辯"]},{"pattern":"百口莫（　）","answers":["辯"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-25","char":"瓣","zhuyin":"ㄅㄢˋ","type":"fill","defs":["花片。"],"examples":[{"pattern":"花（　）","answers":["瓣"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-26","char":"辮","zhuyin":"ㄅㄧㄢˋ","type":"fill","defs":["分股編成長條狀的頭髮。"],"examples":[{"pattern":"髮（　）","answers":["辮"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-27","char":"占","zhuyin":["ㄓㄢ","ㄓㄢˋ"],"type":"study","defs":[],"examples":[],"source":{"page":5,"photo":"IMG_0953.HEIC"},"readings":[{"zhuyin":"ㄓㄢ","defs":["根據徵兆以推知吉凶。"],"examples":[{"pattern":"占卜","note":"卜 ㄅㄨˇ"},{"pattern":"占卦"}]},{"zhuyin":"ㄓㄢˋ","defs":["將東西奪取過來，據為己有。通「佔」。"],"examples":[{"pattern":"占據","note":"旁注 ㄓㄢˋ"},{"pattern":"占領","note":"旁注 ㄓㄢˋ"},{"pattern":"占有","note":"旁注 ㄓㄢˋ"}]}]},{"id":"r01-card-28","char":"佔","zhuyin":"ㄓㄢˋ","type":"fill","defs":["將東西奪取過來，據為己有。通「占」。"],"examples":[{"pattern":"侵（　）","answers":["佔"]},{"pattern":"鳩（　）鵲巢","answers":["佔"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-29","char":"拈","zhuyin":"ㄋㄧㄢˊ","type":"fill","defs":["用手指夾取、捏取（捏 ㄋㄧㄝ）。"],"examples":[{"pattern":"（　）香","answers":["拈"]},{"pattern":"（　）花惹草","answers":["拈"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-30","char":"沾","zhuyin":"ㄓㄢ","type":"fill","defs":["接觸、接近。","感染、染上。","浸溼。"],"examples":[{"pattern":"滴酒不（　）","answers":["沾"],"sense":0},{"pattern":"（　）染","answers":["沾"],"sense":1},{"pattern":"（　）溼","answers":["沾"],"sense":2},{"pattern":"淚（　）巾","answers":["沾"],"sense":2}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-31","char":"砧","zhuyin":"ㄓㄣ","type":"fill","defs":["切菜時所墊（墊 ㄉㄧㄢˋ）的板子。"],"examples":[{"pattern":"（　）板","answers":["砧"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-32","char":"玷","zhuyin":"ㄉㄧㄢˋ","type":"fill","defs":["原指玉石上的瑕疵（瑕 ㄒㄧㄚˊ，疵 ㄘ）、斑點；借喻為缺失或汙辱。"],"examples":[{"pattern":"（　）汙","answers":["玷"]},{"pattern":"（　）辱","answers":["玷"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-33","char":"乩","zhuyin":"ㄐㄧ","type":"fill","defs":["民間求神占卜方法之一種。"],"examples":[{"pattern":"（　）童","answers":["乩"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-34","char":"黏","zhuyin":"ㄋㄧㄢˊ","type":"fill","defs":["膠附、黏住。"],"examples":[{"pattern":"（　）貼","answers":["黏"]}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-35","char":"粘","zhuyin":"ㄋㄧㄢˊ","type":"fill","defs":["附著、糊貼。通「黏」。","姓。"],"examples":[{"pattern":"（　）郵票","answers":["粘"],"sense":0},{"pattern":"（　）先生","answers":["粘"],"sense":1}],"source":{"page":5,"photo":"IMG_0953.HEIC"}},{"id":"r01-card-36","char":"淳","zhuyin":"ㄔㄨㄣˊ","type":"fill","defs":["篤厚（篤 ㄉㄨˇ）、樸實的。"],"examples":[{"pattern":"（　）厚","answers":["淳"]},{"pattern":"民風（　）樸","answers":["淳"]}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-37","char":"諄","zhuyin":"ㄓㄨㄣ","type":"fill","defs":["誨人（誨 ㄏㄨㄟˋ）不倦的樣子。"],"examples":[{"pattern":"（　）（　）教誨","answers":["諄","諄"]}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-38","char":"醇","zhuyin":"ㄔㄨㄣˊ","type":"fill","defs":["酒味濃厚。","質樸的。通「淳」。"],"examples":[{"pattern":"（　）酒","answers":["醇"],"sense":0},{"pattern":"（　）美","answers":["醇"],"sense":1}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-39","char":"墩","zhuyin":"ㄉㄨㄣ","type":"fill","defs":["沙土堆成的高丘。","用來支撐、墊物的粗壯木石或磚石所砌（砌 ㄑㄧˋ）成的基礎。"],"examples":[{"pattern":"沙（　）","answers":["墩"],"sense":0},{"pattern":"石（　）","answers":["墩"],"sense":1},{"pattern":"橋（　）","answers":["墩"],"sense":1}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-40","char":"燉","zhuyin":"ㄉㄨㄣˋ","type":"fill","defs":["以慢火來烹調。"],"examples":[{"pattern":"（　）煮","answers":["燉"]},{"pattern":"（　）湯","answers":["燉"]}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-41","char":"暾","zhuyin":"ㄊㄨㄣ","type":"fill","defs":["早晨初升的太陽。"],"examples":[{"pattern":"朝（　）","answers":["暾"]}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-42","char":"敦","zhuyin":"ㄉㄨㄣ","type":"fill","defs":["督理。","和睦、使融洽。","質樸、篤厚。","誠心、誠懇。"],"examples":[{"pattern":"（　）促","answers":["敦"],"sense":0},{"pattern":"（　）品勵學","answers":["敦"],"sense":0},{"pattern":"（　）親睦鄰","answers":["敦"],"sense":1,"note":"睦 ㄇㄨˋ"},{"pattern":"（　）厚","answers":["敦"],"sense":2},{"pattern":"（　）聘","answers":["敦"],"sense":3,"note":"聘 ㄆㄧㄣˋ"},{"pattern":"（　）請","answers":["敦"],"sense":3}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-43","char":"毫","zhuyin":"ㄏㄠˊ","type":"fill","defs":["細而尖的毛。","極小、極細微。","一點點。"],"examples":[{"pattern":"明察秋（　）","answers":["毫"],"sense":0},{"pattern":"（　）髮無傷","answers":["毫"],"sense":1},{"pattern":"（　）釐之差","answers":["毫"],"sense":1,"note":"釐 ㄌㄧˊ"},{"pattern":"（　）不在意","answers":["毫"],"sense":2},{"pattern":"（　）無頭緒","answers":["毫"],"sense":2},{"pattern":"（　）不相干","answers":["毫"],"sense":2}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-44","char":"豪","zhuyin":"ㄏㄠˊ","type":"fill","defs":["才德智能出眾的人。","富有而勢力強大的人。","爽快無拘束的。","勢大而量多的。","強橫。"],"examples":[{"pattern":"文（　）","answers":["豪"],"sense":0},{"pattern":"（　）傑","answers":["豪"],"sense":0},{"pattern":"土（　）","answers":["豪"],"sense":1},{"pattern":"（　）劣紳","answers":["豪"],"sense":1,"note":"劣 ㄌㄧㄝˋ；與上格合為「土豪劣紳」"},{"pattern":"（　）邁","answers":["豪"],"sense":2},{"pattern":"（　）情壯志","answers":["豪"],"sense":2},{"pattern":"（　）雨","answers":["豪"],"sense":3},{"pattern":"（　）賭","answers":["豪"],"sense":3},{"pattern":"巧取（　）奪","answers":["豪"],"sense":4}],"source":{"page":6,"photo":"IMG_0954.HEIC"},"notes":["「強橫」之「強」旁印有注音。"],"uncertain":[{"field":"def4","detail":"「強橫」的「強」旁有注音，音值未再單獨放大確認。"}]},{"id":"r01-card-45","char":"卯","zhuyin":"ㄇㄠˇ","type":"fill","defs":["時辰名，約早晨五點到七點之間。"],"examples":[{"pattern":"（　）時","answers":["卯"]},{"pattern":"寅吃（　）糧","answers":["卯"],"note":"寅 ㄧㄣˊ"}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-46","char":"仰","zhuyin":"ㄧㄤˇ","type":"fill","defs":["抬頭。","敬慕。","依賴。"],"examples":[{"pattern":"（　）天長嘯","answers":["仰"],"sense":0,"note":"嘯 ㄒㄧㄠˋ"},{"pattern":"俯（　）無愧","answers":["仰"],"sense":0},{"pattern":"（　）首伸眉","answers":["仰"],"sense":0},{"pattern":"（　）慕","answers":["仰"],"sense":1},{"pattern":"景（　）","answers":["仰"],"sense":1},{"pattern":"久（　）大名","answers":["仰"],"sense":1},{"pattern":"（　）賴","answers":["仰"],"sense":2},{"pattern":"（　）人鼻息","answers":["仰"],"sense":2}],"source":{"page":6,"photo":"IMG_0954.HEIC"},"uncertain":[{"field":"examples-sense1","detail":"敬慕義例詞空格暫依「仰慕、景仰、久仰大名」排列，請核對原書空格位置。"}]},{"id":"r01-card-47","char":"抑","zhuyin":"ㄧˋ","type":"fill","defs":["壓制、扣住。","降低。"],"examples":[{"pattern":"壓（　）","answers":["抑"],"sense":0},{"pattern":"扶弱（　）強","answers":["抑"],"sense":0},{"pattern":"怒不可（　）","answers":["抑"],"sense":0},{"pattern":"（　）揚頓挫","answers":["抑"],"sense":1}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-48","char":"昂","zhuyin":"ㄤˊ","type":"fill","defs":["高漲、上揚。","精神氣度超眾。","仰起、高舉。"],"examples":[{"pattern":"（　）貴","answers":["昂"],"sense":0},{"pattern":"鬥志高（　）","answers":["昂"],"sense":0},{"pattern":"器宇軒（　）","answers":["昂"],"sense":1,"note":"軒 ㄒㄩㄢ"},{"pattern":"（　）首闊步","answers":["昂"],"sense":2}],"source":{"page":6,"photo":"IMG_0954.HEIC"}},{"id":"r01-card-49","char":"孚","zhuyin":"ㄈㄨˊ","type":"fill","defs":["使人信服。"],"examples":[{"pattern":"深（　）眾望","answers":["孚"]}],"source":{"page":7,"photo":"IMG_0955.HEIC"}},{"id":"r01-card-50","char":"浮","zhuyin":"ㄈㄨˊ","type":"fill","defs":["漂在水面上。","飄在空中。","顯現。","超過。","虛而不實的。","輕佻（佻 ㄊㄧㄠˊ）、不沉著（著 ㄓㄨㄛˊ）。"],"examples":[{"pattern":"漂（　）","answers":["浮"],"sense":0},{"pattern":"懸（　）","answers":["浮"],"sense":0},{"pattern":"飄（　）","answers":["浮"],"sense":1},{"pattern":"（　）現","answers":["浮"],"sense":2},{"pattern":"人（　）於事","answers":["浮"],"sense":3},{"pattern":"（　）誇","answers":["浮"],"sense":4},{"pattern":"（　）名虛利","answers":["浮"],"sense":4},{"pattern":"輕（　）","answers":["浮"],"sense":5},{"pattern":"心（　）氣躁","answers":["浮"],"sense":5}],"source":{"page":7,"photo":"IMG_0955.HEIC"}},{"id":"r01-card-51","char":"俘","zhuyin":"ㄈㄨˊ","type":"fill","defs":["作戰時所擒獲的敵人。","擄獲（擄 ㄌㄨˇ）。"],"examples":[{"pattern":"（　）虜","answers":["俘"],"sense":0,"note":"虜 ㄌㄨˇ"},{"pattern":"戰（　）","answers":["俘"],"sense":0},{"pattern":"被（　）","answers":["俘"],"sense":1}],"source":{"page":7,"photo":"IMG_0955.HEIC"}},{"id":"r01-card-52","char":"殍","zhuyin":"ㄆㄧㄠˇ","type":"fill","defs":["餓死的人。通「莩」（莩 ㄆㄧㄠˇ）。"],"examples":[{"pattern":"餓（　）","answers":["殍"]}],"source":{"page":7,"photo":"IMG_0955.HEIC"}},{"id":"r01-card-53","char":"孵","zhuyin":"ㄈㄨ","type":"fill","defs":["鳥類伏卵生雛，蟲魚由產卵到出生幼兒，或指以人工方法使卵內胚胎發育成雛的過程，統稱為「孵」。"],"examples":[{"pattern":"（　）化","answers":["孵"]},{"pattern":"（　）育","answers":["孵"]}],"source":{"page":7,"photo":"IMG_0955.HEIC"}},{"id":"r01-card-54","char":"沒","zhuyin":["ㄇㄛˋ","ㄇㄟˊ"],"type":"study","defs":[],"examples":[],"source":{"page":7,"photo":"IMG_0955.HEIC"},"readings":[{"zhuyin":"ㄇㄛˋ","defs":["沉入水中。","消失、隱而不見。","扣收財物。"],"examples":[{"pattern":"沉沒"},{"pattern":"湮沒","note":"湮 ㄧㄣ"},{"pattern":"沒收"}]},{"zhuyin":"ㄇㄟˊ","defs":["無。","不如。"],"examples":[{"pattern":"沒緣"},{"pattern":"沒良心"},{"pattern":"我沒你有錢"},{"pattern":"你跑得沒我快"}]}]},{"id":"r01-card-55","char":"中","zhuyin":["ㄓㄨㄥ","ㄓㄨㄥˋ"],"type":"study","defs":[],"examples":[],"source":{"page":7,"photo":"IMG_0955.HEIC"},"readings":[{"zhuyin":"ㄓㄨㄥ","defs":["距離四方或兩端相等的部位。","正好。"],"examples":[{"pattern":"日正當中"},{"pattern":"適中"}]},{"zhuyin":"ㄓㄨㄥˋ","defs":["合、正對上。","遭受、感染。","得。","考取。"],"examples":[{"pattern":"百發百中"},{"pattern":"中規中矩"},{"pattern":"中毒"},{"pattern":"中風"},{"pattern":"中獎"},{"pattern":"考中大學"}]}]},{"id":"r01-card-56","char":"比","zhuyin":["ㄅㄧˇ","ㄅㄧˋ"],"type":"study","defs":[],"examples":[],"source":{"page":7,"photo":"IMG_0955.HEIC"},"readings":[{"zhuyin":"ㄅㄧˇ","defs":["較量。","表示勝負結果的對比。","用手勢摹擬（摹 ㄇㄛˊ）動作。"],"examples":[{"pattern":"比上不足，比下有餘"},{"pattern":"競賽結果為五比一"},{"pattern":"比手畫腳"}]},{"zhuyin":"ㄅㄧˋ","defs":["到處。","緊靠、相並。","結黨營私。"],"examples":[{"pattern":"比比皆是"},{"pattern":"比鄰而居"},{"pattern":"櫛比鱗次","note":"櫛 ㄐㄧㄝˊ，鱗 ㄌㄧㄣˊ"},{"pattern":"朋比為奸"}]}]},{"id":"r01-card-57","char":"慟","zhuyin":"ㄊㄨㄥˋ","type":"study","defs":["過度悲傷。"],"examples":[{"pattern":"哀慟","answers":[]},{"pattern":"悲慟","answers":[]}],"source":{"page":7,"photo":"IMG_0955.HEIC"}}]},"advanced":{"title":"進階練習","zhiyin":{"title":"一、字音練習","instruction":"每格一分，共一百分。","note":"「每格一分，共一百分」為進階練習全回計分說明，印於字音欄上方。每題兩個「」中的字，各填一個注音。","source":{"page":8,"photo":"IMG_0956.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"items":[{"id":"r01-zy-01","n":1,"stem":"每次打「靶」，他都百發百「中」。","targets":["靶","中"],"answers":["ㄅㄚˇ","ㄓㄨㄥˋ"]},{"id":"r01-zy-02","n":2,"stem":"李白是被「貶」入凡間的「謫」仙人。","targets":["貶","謫"],"answers":["ㄅㄧㄢˇ","ㄓㄜˊ"]},{"id":"r01-zy-03","n":3,"stem":"違「禁」品全部被「沒」收了。","targets":["禁","沒"],"answers":["ㄐㄧㄣˋ","ㄇㄛˋ"]},{"id":"r01-zy-04","n":4,"stem":"他常針「砭」時「弊」，提出建言。","targets":["砭","弊"],"answers":["ㄅㄧㄢ","ㄅㄧˋ"]},{"id":"r01-zy-05","n":5,"stem":"他被譽為當今文「壇」的奇「葩」。","targets":["壇","葩"],"answers":["ㄊㄢˊ","ㄆㄚ"]},{"id":"r01-zy-06","n":6,"stem":"媽媽在「砧」板上切「蔥」。","targets":["砧","蔥"],"answers":["ㄓㄣ","ㄘㄨㄥ"]},{"id":"r01-zy-07","n":7,"stem":"這本週刊專門揭人「瘡疤」。","targets":["瘡","疤"],"answers":["ㄔㄨㄤ","ㄅㄚ"],"note":"原書以一組「瘡疤」加引號，兩字各填一個注音。"},{"id":"r01-zy-08","n":8,"stem":"「乩」童正在為人「占」卜。","targets":["乩","占"],"answers":["ㄐㄧ","ㄓㄢ"]},{"id":"r01-zy-09","n":9,"stem":"王先生幸運的抽中「超」級大「獎」。","targets":["超","獎"],"answers":["ㄔㄠ","ㄐㄧㄤˇ"]},{"id":"r01-zy-10","n":10,"stem":"海內存知「己」，天涯若「比」鄰。","targets":["己","比"],"answers":["ㄐㄧˇ","ㄅㄧˋ"]}]},"guozi":{"title":"二、國字練習","instruction":"","source":{"page":8,"photo":"IMG_0956.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"items":[{"id":"r01-gz-01","n":1,"stem":"舉行夏令「ㄧㄥˊ」的地方，可以看到許多「ㄧㄥˊ」火蟲。","answers":["營","螢"]},{"id":"r01-gz-02","n":2,"stem":"弟弟最愛吃「ㄆㄧˊㄆㄚˊ」。","answers":["枇","杷"],"note":"原書注音寫在同一組引號內：ㄆㄧˊㄆㄚˊ。"},{"id":"r01-gz-03","n":3,"stem":"王婆婆包完水餃後，會滾上一些麵粉，避免水餃「ㄓㄢ ㄋㄧㄢˊ」在一起。","answers":["沾","粘"],"alt_answers":[["沾","黏"]],"note":"解答頁作「沾粘（或黏）」。"},{"id":"r01-gz-04","n":4,"stem":"這場「ㄅㄧㄢˋ」論會將在下星期六，由臺灣大學舉「ㄅㄢˋ」。","answers":["辯","辦"]},{"id":"r01-gz-05","n":5,"stem":"陳大哥興趣十分「ㄉㄨㄣ ㄏㄡˋ」。","answers":["敦","厚"],"uncertain":[{"field":"answers","detail":"題幹注音為ㄉㄨㄣ ㄏㄡˋ，與「敦厚」相符；解答頁同一欄第5題卻印「廣泛」。暫依題幹作答「敦厚」，請核對原書。"}],"answer_page_shows":["廣","泛"]},{"id":"r01-gz-06","n":6,"stem":"築水「ㄅㄚˋ」的工人「ㄅㄚˋ」工了。","answers":["壩","罷"]},{"id":"r01-gz-07","n":7,"stem":"「ㄉㄨㄣ」親「ㄇㄨˋ」鄰很重要。","answers":["敦","睦"],"note":"中間「親」為印出的字，不是空格。成語為「敦親睦鄰」。"},{"id":"r01-gz-08","n":8,"stem":"竹籬「ㄅㄚ」內種了一棵「ㄅㄚ」蕉樹。","answers":["笆","芭"]},{"id":"r01-gz-09","n":9,"stem":"學如「ㄋㄧˋ」水行舟，不「ㄐㄧㄣˋ」則退。","answers":["逆","進"]},{"id":"r01-gz-10","n":10,"stem":"他很「ㄧㄤˇ」慕那位大文「ㄏㄠˊ」。","answers":["仰","豪"]}]},"gaicuo_short":{"title":"三、改錯題","subtitle":"一、找出錯別字，寫出正確的字。","source":{"page":8,"photo":"IMG_0956.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"items":[{"id":"r01-gc-s01","n":1,"stem":"一顆露珠在玫瑰花辯上滾動。","wrong":"辯","correct":"瓣","uncertain":[{"field":"wrong","detail":"錯字在「花□上」。放大後比較像「辯」（言字中），但不能完全排除「辨」。暫錄「辯」。答案頁為「瓣」。"}]},{"id":"r01-gc-s02","n":2,"stem":"她的皮膚看起來晶塋剔透。","wrong":"塋","correct":"瑩","uncertain":[{"field":"wrong","detail":"錯字在「晶□剔透」。答案頁為「瑩」（玉字底）。題幹底部偏像「土」（塋），但不能完全排除螢、營。暫錄「塋」。"}]},{"id":"r01-gc-s03","n":3,"stem":"這個小鎮民風諄樸。","wrong":"諄","correct":"淳"},{"id":"r01-gc-s04","n":4,"stem":"妹妹貶著一雙大眼睛。","wrong":"貶","correct":"眨"},{"id":"r01-gc-s05","n":5,"stem":"這次車禍他很幸運的豪髮無傷。","wrong":"豪","correct":"毫"},{"id":"r01-gc-s06","n":6,"stem":"這家公司產品獨罷市場。","wrong":"罷","correct":"霸"},{"id":"r01-gc-s07","n":7,"stem":"寄名信片參加抽獎。","wrong":"名","correct":"明"},{"id":"r01-gc-s08","n":8,"stem":"這件事還要抑賴你的幫忙。","wrong":"抑","correct":"仰"}]},"gaicuo_passages":{"id":"r01-gc-p","type":"group","title":"二、下列文章中共有十個錯別字，請找出錯別字，寫出正確的字。","source":{"page":9,"photo":"IMG_0957.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"passages":[{"n":1,"text":"中央汽象局表示，今天天氣非常不隱定，隨時可能發布大雨特報，降雨將持序到週六。氣象局預側，今天北部、東北部降雨機率高達百分之八十，中部及東半部百分之五十，南部及東南部扔有機會見到陽光。"},{"n":2,"text":"晉朝人車胤（胤 ㄧㄣˋ）好學不捲，但因為家境貪困，無法經常使用燈油，所以夏天時，他便用白絹縫了一個小袋子，放入幾十支螢火蟲，利用螢光照明。晉朝人孫康上進好學，由於家境清寒，沒有油可以點燈，所以他常在冬夜裡，利用雪面上的反光來讀書。後人根據這兩人的事績，引申出「囊瑩映雪」，用來形容人在艱困的環境中勤奮讀書。"}],"items":[{"n":1,"wrong":"汽","correct":"氣","in":"汽象局"},{"n":2,"wrong":"隱","correct":"穩","in":"不隱定"},{"n":3,"wrong":"序","correct":"續","in":"持序"},{"n":4,"wrong":"側","correct":"測","in":"預側"},{"n":5,"wrong":"扔","correct":"仍","in":"扔有"},{"n":6,"wrong":"捲","correct":"倦","in":"不捲"},{"n":7,"wrong":"貪","correct":"貧","in":"貪困"},{"n":8,"wrong":"支","correct":"隻","in":"幾十支"},{"n":9,"wrong":"績","correct":"蹟","in":"事績"},{"n":10,"wrong":"瑩","correct":"螢","in":"囊瑩映雪"}],"note":"兩篇短文為同一題組，不可拆開。題幹須保留故意錯字，不可改成正字。「東半部」不是錯字。"},"peidui":[{"id":"r01-pd-1","type":"group","title":"四、配對題　一、請將語詞的代碼，填入正確的解釋中。","source":{"page":9,"photo":"IMG_0957.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"codes":[["A","一窩蜂"],["B","抱佛腳"],["C","門外漢"],["D","酸葡萄"],["E","打交道"],["F","烏紗帽"],["G","中三元"],["H","佼佼者"],["I","擺架子"],["J","敲竹槓"],["K","應聲蟲"],["L","假惺惺"]],"items":[{"n":1,"stem":"官職、官位的代稱。","answer":"F"},{"n":2,"stem":"虛偽做作，而無真實的情意。","answer":"L"},{"n":3,"stem":"指對某事不熟悉、無經驗的人。","answer":"C"},{"n":4,"stem":"比喻胸無定見、隨聲附和的人。","answer":"K"},{"n":5,"stem":"比喻接二連三的獲勝。","answer":"G"},{"n":6,"stem":"比喻事到臨頭才慌忙準備。","answer":"B"},{"n":7,"stem":"比喻藉機勒索他人財物，或故意抬高價錢。","answer":"J"},{"n":8,"stem":"指才能美好出眾的人。","answer":"H"},{"n":9,"stem":"形容人多聲雜，如群蜂般一擁而上。","answer":"A"},{"n":10,"stem":"比喻把自己得不到而別人擁有的東西，說成是不好的，以自我安慰。","answer":"D"},{"n":11,"stem":"故意驕傲誇張的凸顯自己的身分比別人高貴。","answer":"I","note":"「凸顯」照原書，不改「突顯」。"},{"n":12,"stem":"彼此接觸往來、交際或協商處理事務。","answer":"E"}]},{"id":"r01-pd-2","type":"group","title":"四、配對題　二、請將成語的代碼，填入正確的解釋中。","source":{"page":10,"photo":"IMG_0958.HEIC"},"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"codes":[["A","明察秋毫"],["B","魂牽夢縈"],["C","仰人鼻息"],["D","步步為營"],["E","朋比為奸"],["F","俯仰無愧"],["G","鳩佔鵲巢"],["H","不卑不亢"],["I","櫛比鱗次"],["J","夙夜匪懈"],["K","泛泛之交"],["L","乏人問津"]],"items":[{"n":1,"stem":"形容人行事光明正大，無愧於天地。","answer":"F"},{"n":2,"stem":"形容十分掛念、思念的樣子。","answer":"B"},{"n":3,"stem":"兩個人或一群人勾結在一起做壞事。","answer":"E"},{"n":4,"stem":"處事待人不傲慢也不卑屈，態度恰到好處，非常得體。","answer":"H"},{"n":5,"stem":"形容排列密集而整齊。","answer":"I"},{"n":6,"stem":"形容事物遭冷落，沒有人洽詢探問。","answer":"L"},{"n":7,"stem":"形容行事小心謹慎，防備周全。","answer":"D"},{"n":8,"stem":"比喻依靠他人生活或看別人的臉色行事，不能自主。","answer":"C"},{"n":9,"stem":"比喻坐享其成，強占他人成果、地盤。","answer":"G"},{"n":10,"stem":"比喻交情普通，認識不深的朋友。","answer":"K"},{"n":11,"stem":"從早到晚，不休息，不懈怠；形容工作勤奮。","answer":"J"},{"n":12,"stem":"比喻能洞察一切，看出極細微的地方。","answer":"A"}],"note":"代碼 G「鳩佔鵲巢」之「佔」照原書。"}],"xuanze":{"title":"五、選擇題","source":[{"page":10,"photo":"IMG_0958.HEIC","items":"1–約一半"},{"page":11,"photo":"IMG_0959.HEIC","items":"其餘至18"}],"answer_source":{"page":133,"photo":"IMG_1082.HEIC"},"items":[{"id":"r01-xz-01","n":1,"stem":"下列形似字，哪一組字音完全相同？","options":{"A":"巴／葩／琶","B":"營／縈／螢","C":"乏／泛／砭","D":"泛／眨／貶"},"answer":"B"},{"id":"r01-xz-02","n":2,"stem":"下列語詞，何者用字完全正確？","options":{"A":"新聞報導","B":"國際動泰","C":"建康生活","D":"流形時尚"},"answer":"A"},{"id":"r01-xz-03","n":3,"stem":"下列語詞，哪一個有「失去自由」的意思？","options":{"A":"害群之馬","B":"井底之蛙","C":"籠中之鳥","D":"漏網之魚"},"answer":"C"},{"id":"r01-xz-04","n":4,"stem":"下列各組「　」中字的讀音，哪一組兩兩相同？","options":{"A":"自討「沒」趣／埋「沒」人才","B":"目「中」無人／正「中」下懷","C":"「比」鄰而居／無與倫「比」","D":"革職查「辦」／一手包「辦」"},"answer":"D"},{"id":"r01-xz-05","n":5,"stem":"下列「營」字的意思，哪一個和其他三者不同？","options":{"A":"營私舞弊","B":"結黨營私","C":"汲汲營營","D":"身在曹營心在漢"},"answer":"D"},{"id":"r01-xz-06","n":6,"stem":"下列「　」中的語詞，哪一個使用最正確？","options":{"A":"這本書很「憨厚」","B":"這家服裝店平時沒什麼客人「光顧」","C":"今天的天氣很「寒酸」","D":"姐姐的個性爽朗又「逼真」"},"answer":"B"},{"id":"r01-xz-07","n":7,"stem":"下列「　」中注音何者不正確？","options":{"A":"綠草如「茵」：ㄧㄣ","B":"草「菅」人命：ㄐㄧㄢ","C":"一「擲」千金：ㄓˊ","D":"不寒而「慄」：ㄌㄩˋ"},"answer":"D"},{"id":"r01-xz-08","n":8,"stem":"「奮怒長從愚蠢開使，在後誨中結束。」上列的句子中共有幾個錯別字？","options":{"A":"二個","B":"三個","C":"四個","D":"五個"},"answer":"C","note":"題幹錯字照原書保留。"},{"id":"r01-xz-09","n":9,"stem":"「趙老師□□於博愛國中，是一位□□的教育工作者，將教育工作視為自己的□□。」上列□□中的語詞，依序應填上","options":{"A":"任職、稱職、天職","B":"稱職、本職、公職","C":"調職、失職、官職","D":"本職、稱職、要職"},"answer":"A"},{"id":"r01-xz-10","n":10,"stem":"下列成語，哪一組意義相反？","options":{"A":"千瘡百孔／體無完膚","B":"屢見不鮮／司空見慣","C":"比比皆是／屈指可數","D":"不可勝數／不計其數"},"answer":"C"},{"id":"r01-xz-11","n":11,"stem":"「佳話」之於「美談」，如同「巴結」之於","options":{"A":"口吃","B":"合作","C":"討好","D":"打擊"},"answer":"C"},{"id":"r01-xz-12","n":12,"stem":"「欲窮千里目，更上一層樓。」句中的「窮」字是什麼意思？","options":{"A":"貧困","B":"偏遠","C":"困阨","D":"極、盡"},"answer":"D","note":"選項（C）「困阨」照原書，不改「困厄」。"},{"id":"r01-xz-13","n":13,"stem":"下列「　」中的注音寫成國字後，何組相同？","options":{"A":"「ㄧㄥˊ」光幕／「ㄧㄥˊ」火蟲","B":"往前「ㄆㄚˊ」／彈琵「ㄆㄚˊ」","C":"「ㄈㄢˋ」濫成災／作奸「ㄈㄢˋ」科","D":"「ㄇㄛˋ」齒難忘／本「ㄇㄛˋ」倒置"},"answer":"A"},{"id":"r01-xz-14","n":14,"stem":"下列語詞，哪一組意義相反？","options":{"A":"發表／揭曉","B":"刻薄／尖酸","C":"歇業／營業","D":"慚愧／內疚"},"answer":"C"},{"id":"r01-xz-15","n":15,"stem":"下列「　」中語詞的解釋，哪一個不正確？","options":{"A":"她們兩個人是「死黨」：感情很好的朋友","B":"這件作品是「抄襲」來的：獨創","C":"這個案件很「棘手」：比喻事情很難處理","D":"他的演技受到評審的「青睞」：特別重視"},"answer":"B"},{"id":"r01-xz-16","n":16,"stem":"下列哪一個字去掉部首後，讀音不變？","options":{"A":"剿","B":"暾","C":"咄","D":"俘"},"answer":"D"},{"id":"r01-xz-17","n":17,"stem":"下列「　」中的字，何組意義不同？","options":{"A":"「仰」天長嘯／俯「仰」無愧","B":"欲「罷」不能／善「罷」甘休","C":"「耀」武揚威／光宗「耀」祖","D":"「狂」風暴雨／力挽「狂」瀾"},"answer":"C"},{"id":"r01-xz-18","n":18,"stem":"下列有關各種朋友的解釋，哪一個不正確？","options":{"A":"密友：彼此心中藏有祕密的朋友","B":"諍友：能用直言相規勸的益友","C":"損友：對自己有害無益的壞朋友","D":"摯友：情誼深厚的好朋友"},"answer":"A","note":"選項（A）「祕密」之「祕」照原書。"}]}}};
-const STORE = "roby-xyy-r01";
+const STORE = "roby-xyy-r01-v2";
 
 function load(){
   try{ return JSON.parse(localStorage.getItem(STORE) || "{}"); }catch(e){ return {}; }
@@ -116,8 +139,9 @@ function save(state){
   localStorage.setItem(STORE, JSON.stringify(state));
 }
 let S = Object.assign({
-  view:"warmup", card:0, seenStudy:{}, answers:{}, graded:false, grade:null
+  view:"warmup", card:0, seenStudy:{}, answers:{}, checked:{}, graded:false, grade:null
 }, load());
+if(!S.checked) S.checked = {};
 
 function normZY(s){
   s = String(s||"").trim().replace(/\s+/g,"");
@@ -130,6 +154,7 @@ function zyEq(a,b){ return normZY(a)===normZY(b); }
 function chEq(a,b){ return String(a||"").trim()===String(b||"").trim(); }
 function getA(id){ return (S.answers[id]||[]); }
 function setA(id, idx, val){
+  if(isLocked(id, idx)) return;
   const arr = getA(id).slice();
   arr[idx]=val;
   S.answers[id]=arr;
@@ -138,26 +163,153 @@ function setA(id, idx, val){
   updateFoot();
 }
 
+function isLocked(id, idx){
+  const c = S.checked[id];
+  return !!(c && (c[idx]===true || c[idx]===false));
+}
+function getLockOk(id, idx){
+  return !!(S.checked[id] && S.checked[id][idx]===true);
+}
+function setLocked(id, idx, ok){
+  const arr = (S.checked[id]||[]).slice();
+  arr[idx]=ok;
+  S.checked[id]=arr;
+  save(S);
+}
+function isZyId(id){ return String(id).indexOf("r01-zy-")===0; }
+
+function expectedAt(id, idx){
+  for(const c of DATA.warmup.cards){
+    if(c.id!==id) continue;
+    const all=[];
+    (c.examples||[]).forEach(ex => (ex.answers||[]).forEach(a => all.push(a)));
+    return all[idx]==null? [] : [all[idx]];
+  }
+  for(const it of DATA.advanced.zhiyin.items){
+    if(it.id===id) return it.answers[idx]==null? [] : [it.answers[idx]];
+  }
+  for(const it of DATA.advanced.guozi.items){
+    if(it.id!==id) continue;
+    const opts=[];
+    if(it.answers[idx]!=null) opts.push(it.answers[idx]);
+    (it.alt_answers||[]).forEach(al => {
+      if(al[idx]!=null && opts.indexOf(al[idx])<0) opts.push(al[idx]);
+    });
+    return opts;
+  }
+  for(const it of DATA.advanced.gaicuo_short.items){
+    if(it.id===id) return [idx===0?it.wrong:it.correct];
+  }
+  const gp=DATA.advanced.gaicuo_passages;
+  for(const it of gp.items){
+    if(gp.id+"-"+it.n===id) return [idx===0?it.wrong:it.correct];
+  }
+  for(const p of DATA.advanced.peidui){
+    for(const it of p.items){
+      if(p.id+"-"+it.n===id) return [it.answer];
+    }
+  }
+  for(const it of DATA.advanced.xuanze.items){
+    if(it.id===id) return [it.answer];
+  }
+  return [];
+}
+
+function matchExpected(id, idx, got){
+  const exps = expectedAt(id, idx);
+  const eq = isZyId(id)? zyEq : chEq;
+  return exps.some(e => eq(got, e));
+}
+
+function formatExpected(id, idx){
+  const exps = expectedAt(id, idx);
+  if(!exps.length) return "";
+  return exps[0] + (exps.length>1? "（或 "+exps.slice(1).join("／")+"）" : "");
+}
+
+function feedbackHTML(id, idx){
+  if(!isLocked(id, idx)) return "";
+  if(getLockOk(id, idx)) return `<span class="fb ok">正確</span>`;
+  return `<span class="fb bad">正確：${esc(formatExpected(id, idx))}</span>`;
+}
+
+function blankHTML(id, idx, cls, placeholder){
+  const locked = isLocked(id, idx);
+  const ok = getLockOk(id, idx);
+  const v = esc(getA(id)[idx]||"");
+  const lockCls = locked ? (ok?" locked ok":" locked bad") : "";
+  const ro = locked ? " readonly tabindex='-1'" : "";
+  const ph = placeholder? ` placeholder="${esc(placeholder)}"` : "";
+  let h = `<span class="blank-wrap" data-id="${esc(id)}" data-i="${idx}" data-cls="${esc(cls||"")}" data-ph="${esc(placeholder||"")}">`;
+  h += `<input class="blank ${cls||""}${lockCls}" data-id="${esc(id)}" data-i="${idx}" value="${v}" autocomplete="off" autocapitalize="off" spellcheck="false"${ph}${ro}>`;
+  if(!locked){
+    h += `<button type="button" class="chk-btn" data-id="${esc(id)}" data-i="${idx}">對答案</button>`;
+  } else {
+    h += feedbackHTML(id, idx);
+  }
+  h += `</span>`;
+  return h;
+}
+
+function checkBlank(id, idx, allowEmpty){
+  if(isLocked(id, idx)) return false;
+  const got = getA(id)[idx];
+  if(!allowEmpty && !String(got||"").trim()){
+    const inp = document.querySelector(`input.blank[data-id="${CSS.escape(id)}"][data-i="${idx}"]`);
+    if(inp){
+      inp.classList.add("need");
+      inp.focus();
+      setTimeout(()=>inp.classList.remove("need"), 900);
+    }
+    return false;
+  }
+  setLocked(id, idx, matchExpected(id, idx, got));
+  refreshWrap(id, idx);
+  updateFoot();
+  return true;
+}
+
+function refreshWrap(id, idx){
+  const wrap = document.querySelector(`.blank-wrap[data-id="${CSS.escape(id)}"][data-i="${idx}"]`);
+  if(!wrap) return;
+  const cls = wrap.dataset.cls||"";
+  const ph = wrap.dataset.ph||"";
+  const html = blankHTML(id, idx, cls, ph);
+  wrap.outerHTML = html;
+  const nw = document.querySelector(`.blank-wrap[data-id="${CSS.escape(id)}"][data-i="${idx}"]`);
+  if(nw) bindOneWrap(nw);
+}
+
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
 
-function renderBlanks(pattern, id, answers, kind){
-  // split on （　） fullwidth blanks
-  const parts = String(pattern).split("（　）");
-  let html="";
-  const n = parts.length-1;
-  parts.forEach((p,i)=>{
-    html += esc(p);
-    if(i<n){
-      const cls = kind==="zy"?"blank zy-in":(kind==="gz"?"blank gz-in":"blank");
-      const v = esc(getA(id)[i]||"");
-      html += `<input class="${cls}" data-id="${esc(id)}" data-i="${i}" value="${v}" autocomplete="off" autocapitalize="off" spellcheck="false">`;
-    }
-  });
-  return html;
+function bindOneWrap(wrap){
+  const inp = wrap.querySelector("input.blank");
+  const btn = wrap.querySelector(".chk-btn");
+  if(inp && !inp.readOnly){
+    inp.addEventListener("input", ev=>{
+      setA(ev.target.dataset.id, +ev.target.dataset.i, ev.target.value);
+    });
+    inp.addEventListener("keydown", ev=>{
+      if(ev.key==="Enter"){
+        ev.preventDefault();
+        checkBlank(ev.target.dataset.id, +ev.target.dataset.i, false);
+      }
+    });
+  }
+  if(btn){
+    btn.addEventListener("click", ev=>{
+      ev.preventDefault();
+      const b = ev.currentTarget;
+      checkBlank(b.dataset.id, +b.dataset.i, false);
+    });
+  }
 }
 
 function bindBlanks(root){
+  root.querySelectorAll(".blank-wrap").forEach(bindOneWrap);
+  // leftover bare inputs (shouldn't happen)
   root.querySelectorAll("input.blank").forEach(inp=>{
+    if(inp.closest(".blank-wrap")) return;
     inp.addEventListener("input", ev=>{
       setA(ev.target.dataset.id, +ev.target.dataset.i, ev.target.value);
     });
@@ -181,37 +333,21 @@ function warmupCard(){
       });
       body += `</div>`;
     });
-    if(!c.readings && c.examples){
-      // already handled if readings missing - 慟
-    }
     body += `<p class="hint">這張是多音字或已填好的例詞，請先看過，不必填空。</p>`;
   }else{
     c.defs.forEach((d,di)=>{
       body += `<div class="def">${c.defs.length>1?`<b>${di+1}. </b>`:""}${esc(d)}</div>`;
     });
-    const groups={};
-    c.examples.forEach((ex,ei)=>{
-      const k = (ex.sense??"all");
-      (groups[k]||=[]).push({ex,ei});
-    });
-    // render in order
-    let blankIndex=0;
-    // We need a consistent id per blank across the card. Use running index into answers array.
-    // Rebuild pattern list in order
     body += `<div style="margin-top:8px">`;
     let cursor=0;
-    c.examples.forEach((ex,ei)=>{
+    c.examples.forEach((ex)=>{
       const id = c.id;
-      // temporarily map this example's answers to a slice starting at cursor
-      const n = (ex.answers||[]).length;
-      // custom render: replace blanks with inputs bound to cursor..
       const parts = String(ex.pattern).split("（　）");
       let html="例：";
       parts.forEach((p,pi)=>{
         html += esc(p);
         if(pi<parts.length-1){
-          const v = esc(getA(id)[cursor]||"");
-          html += `<input class="blank" data-id="${esc(id)}" data-i="${cursor}" value="${v}" autocomplete="off" spellcheck="false">`;
+          html += blankHTML(id, cursor, "", "");
           cursor++;
         }
       });
@@ -219,8 +355,8 @@ function warmupCard(){
       body += `<div class="ex-row">${html}</div>`;
     });
     body += `</div>`;
+    body += `<p class="hint">每格填完請按「對答案」或 Enter，立刻看對錯。第一次對過就鎖定計分。</p>`;
   }
-  const pct = Math.round((i)/(cards.length-1)*100);
   return `<section class="card" id="warmup">
     <div class="sec-title">基礎練習　字卡暖身　${i+1}／${cards.length}</div>
     <div class="progress"><i style="width:${(i+1)/cards.length*100}%"></i></div>
@@ -241,12 +377,12 @@ function qStem(stem){
 function sectionZhiyin(){
   const sec = DATA.advanced.zhiyin;
   let h = `<section class="card" id="sec-zy"><div class="sec-title">${esc(sec.title)}</div>
-    <p class="instr">${esc(sec.instruction||"")}　請把引號裡的字寫成注音。聲調可用 ˊˇˋ，或寫 2、3、4；空白不計。</p>`;
+    <p class="instr">${esc(sec.instruction||"")}　請把引號裡的字寫成注音。聲調可用 ˊˇˋ，或寫 2、3、4；空白不計。每格填完請按「對答案」或 Enter，第一次對過就鎖定。</p>`;
   sec.items.forEach(it=>{
     const a=getA(it.id);
-    h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${qStem(it.stem)}</span><div>`;
+    h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${qStem(it.stem)}</span><div class="fill-row">`;
     it.targets.forEach((t,i)=>{
-      h += `<label>${esc(t)} <input class="blank zy-in" data-id="${it.id}" data-i="${i}" value="${esc(a[i]||"")}" autocomplete="off" spellcheck="false" placeholder="注音"></label> `;
+      h += `<label class="fill-lab">${esc(t)} ${blankHTML(it.id, i, "zy-in", "注音")}</label> `;
     });
     h += `</div></div>`;
   });
@@ -256,14 +392,11 @@ function sectionZhiyin(){
 function sectionGuozi(){
   const sec = DATA.advanced.guozi;
   let h = `<section class="card" id="sec-gz"><div class="sec-title">${esc(sec.title)}</div>
-    <p class="instr">請把注音寫成國字。一格一字。</p>`;
+    <p class="instr">請把注音寫成國字。一格一字。每格填完請按「對答案」或 Enter，第一次對過就鎖定。</p>`;
   sec.items.forEach(it=>{
-    const a=getA(it.id);
-    // replace 「注音」 with input. May be one or two zhuyin in one quote pair, or two separate quotes.
-    // Simpler: show stem and N inputs below, plus highlight quotes.
-    h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${qStem(it.stem)}</span><div>`;
+    h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${qStem(it.stem)}</span><div class="fill-row">`;
     it.answers.forEach((_,i)=>{
-      h += `<input class="blank gz-in" data-id="${it.id}" data-i="${i}" value="${esc(a[i]||"")}" autocomplete="off" spellcheck="false">`;
+      h += blankHTML(it.id, i, "gz-in", "");
     });
     h += `</div></div>`;
   });
@@ -273,12 +406,11 @@ function sectionGuozi(){
 function sectionGcShort(){
   const sec = DATA.advanced.gaicuo_short;
   let h = `<section class="card" id="sec-gcs"><div class="sec-title">${esc(sec.title)}</div>
-    <p class="instr">${esc(sec.subtitle)}　每題寫出題中的錯字，以及正確的字。</p>`;
+    <p class="instr">${esc(sec.subtitle)}　每題寫出題中的錯字，以及正確的字。每格填完請按「對答案」或 Enter，第一次對過就鎖定。</p>`;
   sec.items.forEach(it=>{
-    const a=getA(it.id);
     h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${qStem(it.stem)}</span>
-      <div>錯字 <input class="blank gc-in" data-id="${it.id}" data-i="0" value="${esc(a[0]||"")}">　
-      正字 <input class="blank gc-in" data-id="${it.id}" data-i="1" value="${esc(a[1]||"")}"></div></div>`;
+      <div class="fill-row">錯字 ${blankHTML(it.id, 0, "gc-in", "")}　
+      正字 ${blankHTML(it.id, 1, "gc-in", "")}</div></div>`;
   });
   return h+`</section>`;
 }
@@ -286,17 +418,16 @@ function sectionGcShort(){
 function sectionGcPass(){
   const sec = DATA.advanced.gaicuo_passages;
   let h = `<section class="card" id="sec-gcp"><div class="sec-title">${esc(sec.title)}</div>
-    <p class="instr">兩篇短文為同一題組，請找出十個錯別字。一格一個錯字、一個正字。</p>`;
+    <p class="instr">兩篇短文為同一題組，請找出十個錯別字。一格一個錯字、一個正字。每格可單獨按「對答案」或 Enter，第一次對過就鎖定。</p>`;
   sec.passages.forEach(p=>{
     h += `<div class="pass"><h3>短文${p.n}</h3><div>${esc(p.text)}</div></div>`;
   });
   h += `<table class="gc10"><thead><tr><th>題號</th><th>錯字</th><th>正字</th></tr></thead><tbody>`;
   sec.items.forEach(it=>{
     const id = sec.id+"-"+it.n;
-    const a=getA(id);
     h += `<tr><td>${it.n}</td>
-      <td><input class="blank gc-in" data-id="${id}" data-i="0" value="${esc(a[0]||"")}"></td>
-      <td><input class="blank gc-in" data-id="${id}" data-i="1" value="${esc(a[1]||"")}"></td></tr>`;
+      <td>${blankHTML(id, 0, "gc-in", "")}</td>
+      <td>${blankHTML(id, 1, "gc-in", "")}</td></tr>`;
   });
   h += `</tbody></table></section>`;
   return h;
@@ -304,33 +435,66 @@ function sectionGcPass(){
 
 function sectionPeidui(p){
   let h = `<section class="card" id="${p.id}"><div class="sec-title">${esc(p.title)}</div>
+    <p class="instr">選好代碼後請按「對答案」，立刻看對錯。第一次對過就鎖定。</p>
     <div class="codes">`;
   p.codes.forEach(([k,v])=>{ h += `<span><b>${k}</b>　${esc(v)}</span>`; });
   h += `</div>`;
   p.items.forEach(it=>{
     const id=p.id+"-"+it.n;
     const sel=(getA(id)[0]||"");
-    h += `<div class="item"><span class="qnum">${it.n}.</span> <span class="stem">${esc(it.stem)}</span>
-      <div class="letters" data-id="${id}">`;
+    const locked=isLocked(id,0);
+    const ok=getLockOk(id,0);
+    const ans=it.answer;
+    h += `<div class="item" data-pd="${esc(id)}"><span class="qnum">${it.n}.</span> <span class="stem">${esc(it.stem)}</span>
+      <div class="letters${locked?" locked":""}" data-id="${id}">`;
     "ABCDEFGHIJKL".split("").forEach(L=>{
-      h += `<button type="button" data-l="${L}" class="${sel===L?"sel":""}">${L}</button>`;
+      let cls = sel===L?"sel":"";
+      if(locked){
+        if(L===sel && ok) cls += " ok";
+        else if(L===sel && !ok) cls += " bad";
+        if(L===ans) cls += " reveal";
+      }
+      h += `<button type="button" data-l="${L}" class="${cls.trim()}">${L}</button>`;
     });
-    h += `</div></div>`;
+    h += `</div>`;
+    if(!locked){
+      h += `<button type="button" class="chk-btn pd-chk" data-id="${esc(id)}" data-i="0">對答案</button>`;
+    } else {
+      h += feedbackHTML(id, 0);
+    }
+    h += `</div>`;
   });
   return h+`</section>`;
 }
 
+function findXz(id){
+  return DATA.advanced.xuanze.items.find(it=>it.id===id);
+}
+
 function sectionXuanze(){
   const sec = DATA.advanced.xuanze;
-  let h = `<section class="card" id="sec-xz"><div class="sec-title">${esc(sec.title)}</div>`;
+  let h = `<section class="card" id="sec-xz"><div class="sec-title">${esc(sec.title)}</div>
+    <p class="instr">點選後立即顯示對錯與正確答案。第一次作答即鎖定計分。</p>`;
   sec.items.forEach(it=>{
     const sel=getA(it.id)[0]||"";
-    h += `<div class="item"><div class="stem"><span class="qnum">${it.n}.</span> ${qStem(it.stem)}</div><div class="opts">`;
+    const locked=isLocked(it.id,0);
+    const ok=getLockOk(it.id,0);
+    h += `<div class="item" data-xz="${it.id}"><div class="stem"><span class="qnum">${it.n}.</span> ${qStem(it.stem)}</div><div class="opts">`;
     Object.keys(it.options).forEach(k=>{
-      const on = sel===k?"on":"";
-      h += `<label class="opt ${on}"><input type="radio" name="${it.id}" value="${k}" ${sel===k?"checked":""}> <span>(${k}) ${esc(it.options[k])}</span></label>`;
+      let cls="opt";
+      if(sel===k) cls+=" on";
+      if(locked){
+        cls+=" locked";
+        if(k===it.answer) cls+=" ok";
+        else if(k===sel) cls+=" bad";
+      }
+      h += `<label class="${cls}"><input type="radio" name="${it.id}" value="${k}" ${sel===k?"checked":""} ${locked?"disabled":""}> <span>(${k}) ${esc(it.options[k])}</span></label>`;
     });
-    h += `</div></div>`;
+    h += `</div>`;
+    if(locked){
+      h += ok? `<div class="fb ok">正確</div>` : `<div class="fb bad">正確答案：(${it.answer}) ${esc(it.options[it.answer])}</div>`;
+    }
+    h += `</div>`;
   });
   return h+`</section>`;
 }
@@ -363,6 +527,26 @@ function countAdvancedFilled(){
   return {n,total};
 }
 
+function countCheckedAdvanced(){
+  let m=0, k=0;
+  function one(id, idx){
+    if(isLocked(id, idx)){ m++; if(getLockOk(id, idx)) k++; }
+  }
+  DATA.advanced.zhiyin.items.forEach(it=> it.answers.forEach((_,i)=>one(it.id,i)));
+  DATA.advanced.guozi.items.forEach(it=> it.answers.forEach((_,i)=>one(it.id,i)));
+  DATA.advanced.gaicuo_short.items.forEach(it=>{ one(it.id,0); one(it.id,1); });
+  // 改錯短句 scored per question (both blanks) in gradeAll, but lock is per blank.
+  // Footer "已對答案" can be per blank for fills, but 改錯 short scores 8 not 16.
+  // Keep footer simple: filled / 100 and optional 已對 X 格.
+  DATA.advanced.gaicuo_passages.items.forEach(it=>{
+    const id=DATA.advanced.gaicuo_passages.id+"-"+it.n;
+    one(id,0); one(id,1);
+  });
+  DATA.advanced.peidui.forEach(p=> p.items.forEach(it=> one(p.id+"-"+it.n, 0)));
+  DATA.advanced.xuanze.items.forEach(it=> one(it.id, 0));
+  return {checked:m, correct:k};
+}
+
 function gzMatch(it, given){
   const alts = [it.answers].concat(it.alt_answers||[]);
   return alts.some(ans => ans.every((ch,i)=> chEq(given[i], ch)));
@@ -371,7 +555,6 @@ function gzMatch(it, given){
 function gradeAll(){
   const wrong=[];
   let zy=0,gz=0,gcs=0,gcp=0,pd=0,xz=0;
-  let wy=0,wg=0,wgc=0,wp=0; // warmup not in 100
 
   DATA.advanced.zhiyin.items.forEach(it=>{
     const a=getA(it.id);
@@ -414,7 +597,6 @@ function gradeAll(){
     if(ok) xz++; else wrong.push({sec:"選擇", n:it.n, stem:it.stem, got:a, ans:[it.answer], options:it.options, kind:"xz"});
   });
 
-  // warmup score (informational)
   let wOk=0,wTot=0;
   DATA.warmup.cards.forEach(c=>{
     if(c.type!=="fill") return;
@@ -436,6 +618,27 @@ function gradeAll(){
     warmup:{ok:wOk,total:wTot},
     wrong
   };
+}
+
+function lockRemaining(){
+  function lock(id, idx){
+    if(isLocked(id, idx)) return;
+    setLocked(id, idx, matchExpected(id, idx, getA(id)[idx]));
+  }
+  DATA.warmup.cards.forEach(c=>{
+    if(c.type!=="fill") return;
+    let k=0;
+    c.examples.forEach(ex=> (ex.answers||[]).forEach(()=>{ lock(c.id, k++); }));
+  });
+  DATA.advanced.zhiyin.items.forEach(it=> it.answers.forEach((_,i)=>lock(it.id,i)));
+  DATA.advanced.guozi.items.forEach(it=> it.answers.forEach((_,i)=>lock(it.id,i)));
+  DATA.advanced.gaicuo_short.items.forEach(it=>{ lock(it.id,0); lock(it.id,1); });
+  DATA.advanced.gaicuo_passages.items.forEach(it=>{
+    const id=DATA.advanced.gaicuo_passages.id+"-"+it.n;
+    lock(id,0); lock(id,1);
+  });
+  DATA.advanced.peidui.forEach(p=> p.items.forEach(it=> lock(p.id+"-"+it.n, 0)));
+  DATA.advanced.xuanze.items.forEach(it=> lock(it.id, 0));
 }
 
 function resultHTML(g){
@@ -475,7 +678,7 @@ function resultHTML(g){
     <h3>錯題 ${g.wrong.length} 題</h3>
     ${wr}
     <div class="rowbtns">
-      <button class="btn primary" id="backEdit">回到題目更改</button>
+      <button class="btn primary" id="backEdit">回到題目</button>
       <button class="btn ghost" id="retryWrong">只重看錯題（題目仍保留）</button>
     </div>
   </section>`;
@@ -495,11 +698,53 @@ function updateFoot(){
 }
 
 function onSubmit(){
+  lockRemaining();
   const g=gradeAll();
   S.graded=true; S.grade=g; S.view="result"; save(S);
   render();
   const r=document.getElementById("result");
   if(r) r.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function applyChoiceLock(itemEl, it, sel){
+  itemEl.querySelectorAll(".opt").forEach(o=>{
+    const val=o.querySelector("input").value;
+    o.querySelector("input").disabled=true;
+    o.classList.add("locked");
+    o.classList.toggle("ok", val===it.answer);
+    o.classList.toggle("bad", val===sel && val!==it.answer);
+    o.classList.toggle("on", val===sel);
+  });
+  let fb=itemEl.querySelector(":scope > .fb");
+  if(fb) fb.remove();
+  const div=document.createElement("div");
+  const ok = sel===it.answer;
+  div.className = ok? "fb ok" : "fb bad";
+  div.textContent = ok? "正確" : `正確答案：(${it.answer}) ${it.options[it.answer]}`;
+  itemEl.appendChild(div);
+}
+
+function applyPeiduiLock(itemEl, id){
+  const sel=getA(id)[0]||"";
+  const ok=getLockOk(id,0);
+  const ans=expectedAt(id,0)[0];
+  const box=itemEl.querySelector(".letters");
+  if(box){
+    box.classList.add("locked");
+    box.querySelectorAll("button").forEach(b=>{
+      const L=b.dataset.l;
+      b.classList.toggle("sel", L===sel);
+      b.classList.toggle("ok", L===sel && ok);
+      b.classList.toggle("bad", L===sel && !ok);
+      b.classList.toggle("reveal", L===ans);
+    });
+  }
+  const oldBtn=itemEl.querySelector(".pd-chk");
+  if(oldBtn) oldBtn.remove();
+  itemEl.querySelectorAll(":scope > .fb").forEach(x=>x.remove());
+  const span=document.createElement("span");
+  span.innerHTML = feedbackHTML(id, 0);
+  itemEl.appendChild(span.firstChild);
 }
 
 function wireAdvanced(root){
@@ -509,17 +754,32 @@ function wireAdvanced(root){
       const b=ev.target.closest("button[data-l]");
       if(!b) return;
       const id=box.dataset.id;
+      if(isLocked(id,0)) return;
       const cur=getA(id)[0];
       const next = cur===b.dataset.l? "": b.dataset.l;
       setA(id,0,next);
       box.querySelectorAll("button").forEach(x=>x.classList.toggle("sel", x.dataset.l===next && next));
     });
   });
+  root.querySelectorAll(".pd-chk").forEach(btn=>{
+    btn.addEventListener("click", ev=>{
+      ev.preventDefault();
+      const id=btn.dataset.id;
+      if(!checkBlank(id, 0, false)) return;
+      const item=btn.closest(".item");
+      if(item) applyPeiduiLock(item, id);
+    });
+  });
   root.querySelectorAll(".opt input[type=radio]").forEach(inp=>{
     inp.addEventListener("change", ev=>{
-      setA(ev.target.name, 0, ev.target.value);
-      ev.target.closest(".item").querySelectorAll(".opt").forEach(o=>o.classList.remove("on"));
-      ev.target.closest(".opt").classList.add("on");
+      const id=ev.target.name;
+      if(isLocked(id,0)) return;
+      setA(id, 0, ev.target.value);
+      setLocked(id, 0, matchExpected(id, 0, ev.target.value));
+      const item=ev.target.closest(".item");
+      const it=findXz(id);
+      if(item && it) applyChoiceLock(item, it, ev.target.value);
+      updateFoot();
     });
   });
 }
@@ -551,7 +811,7 @@ function render(){
     wireAdvanced(main);
     if(S.graded){
       const be=document.getElementById("backEdit");
-      if(be) be.onclick=()=>{ S.view="advanced"; S.graded=false; save(S); render(); };
+      if(be) be.onclick=()=>{ S.view="advanced"; save(S); render(); };
       const rw=document.getElementById("retryWrong");
       if(rw) rw.onclick=()=>{ document.getElementById("result").scrollIntoView({behavior:"smooth"}); };
     }
